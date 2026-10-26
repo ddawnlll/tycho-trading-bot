@@ -1,0 +1,194 @@
+{
+  "headline": "leader_breakout REJECT; tsmom REJECT; dual_momentum REJECT; vol_expansion REJECT; trend_long REJECT",
+  "results": [
+    {
+      "expert": "leader_breakout",
+      "final": {
+        "params": {
+          "n": 40
+        },
+        "req": {
+          "top_k": 5
+        }
+      },
+      "wf_pass": false,
+      "holdout_perp": {
+        "cagr": 0.01715908833658486,
+        "total": 0.10266053189826141,
+        "max_dd": 0.28349017759951256,
+        "sharpe": 0.21281778138300858,
+        "trades": 458,
+        "win_rate": 0.2816593886462882,
+        "avg_r": 0.05804747029717487,
+        "stress_total": -0.0947325664457449,
+        "bootstrap_lower": -0.00012787796860605168,
+        "null_p": 0.3058470764617691
+      },
+      "perp_pass": false,
+      "holdout_spot": {
+        "cagr": 0.0580359071833183,
+        "total": 0.11918065819483203,
+        "max_dd": 0.06924015201620981,
+        "sharpe": 0.7449578831905934,
+        "trades": 75,
+        "win_rate": 0.38666666666666666,
+        "avg_r": 0.32008619667203636,
+        "stress_total": 0.07946170654475271,
+        "bootstrap_lower": -4.8737052817341244e-05,
+        "null_p": 0.14492753623188406
+      },
+      "spot_pass": true,
+      "verdict": "REJECT"
+    },
+    {
+      "expert": "tsmom",
+      "final": {
+        "params": {
+          "stop_atr": 3.0
+        },
+        "req": {
+          "_gate": "any"
+        }
+      },
+      "wf_pass": false,
+      "holdout_perp": {
+        "cagr": 0.09354006765569722,
+        "total": 0.6713482236560313,
+        "max_dd": 0.44208636375598676,
+        "sharpe": 0.44365008852558807,
+        "trades": 330,
+        "win_rate": 0.20606060606060606,
+        "avg_r": 0.3758296967194142,
+        "stress_total": 0.5440137548482922,
+        "bootstrap_lower": -0.00018072797987718205,
+        "null_p": 0.12543728135932034
+      },
+      "perp_pass": false,
+      "holdout_spot": {
+        "cagr": 0.0607091528278052,
+        "total": 0.12483161527792497,
+        "max_dd": 0.19887291421921538,
+        "sharpe": 0.4985659704905628,
+        "trades": 18,
+        "win_rate": 0.2222222222222222,
+        "avg_r": 1.4363870792988356,
+        "stress_total": 0.11904696812469084,
+        "bootstrap_lower": -0.00022897721490718536,
+        "null_p": 0.2563718140929535
+      },
+      "spot_pass": true,
+      "verdict": "REJECT"
+    },
+    {
+      "expert": "dual_momentum",
+      "final": {
+        "params": {
+          "top_k": 3,
+          "exit_rank": 5
+        },
+        "req": {}
+      },
+      "wf_pass": true,
+      "holdout_perp": {
+        "cagr": -0.005113013973808256,
+        "total": -0.029015280577855962,
+        "max_dd": 0.17968246149893408,
+        "sharpe": -0.06635912705698595,
+        "trades": 222,
+        "win_rate": 0.35135135135135137,
+        "avg_r": -0.03497387688617566,
+        "stress_total": -0.05092875464357238,
+        "bootstrap_lower": -9.311381923487383e-05,
+        "null_p": 0.5787106446776612
+      },
+      "perp_pass": false,
+      "holdout_spot": {
+        "cagr": 0.017401418263432555,
+        "total": 0.035032312214733796,
+        "max_dd": 0.06517500652815045,
+        "sharpe": 0.3248887158237589,
+        "trades": 22,
+        "win_rate": 0.2727272727272727,
+        "avg_r": 0.34977091987565057,
+        "stress_total": 0.03213346615212531,
+        "bootstrap_lower": -0.00014537221699479705,
+        "null_p": 0.35082458770614694
+      },
+      "spot_pass": true,
+      "verdict": "REJECT"
+    },
+    {
+      "expert": "vol_expansion",
+      "final": {
+        "params": {
+          "k": 1.5,
+          "trail_atr": 3.0
+        },
+        "req": {}
+      },
+      "wf_pass": true,
+      "holdout_perp": {
+        "cagr": -0.1652857331509443,
+        "total": -0.6457478673257959,
+        "max_dd": 0.7267042805676248,
+        "sharpe": -0.8435056727163396,
+        "trades": 1990,
+        "win_rate": 0.30452261306532663,
+        "avg_r": -0.08971165944039358,
+        "stress_total": -0.8279884132320143,
+        "bootstrap_lower": -0.000747540600934099,
+        "null_p": 0.9875062468765617
+      },
+      "perp_pass": false,
+      "holdout_spot": {
+        "cagr": 0.03912003834548283,
+        "total": 0.0796003017149729,
+        "max_dd": 0.05145953653685553,
+        "sharpe": 0.7746942404951995,
+        "trades": 56,
+        "win_rate": 0.42857142857142855,
+        "avg_r": 0.2791542444659293,
+        "stress_total": 0.058084259846151065,
+        "bootstrap_lower": -3.391342083013467e-05,
+        "null_p": 0.12693653173413294
+      },
+      "spot_pass": true,
+      "verdict": "REJECT"
+    },
+    {
+      "expert": "trend_long",
+      "final": {
+        "params": {},
+        "req": {}
+      },
+      "wf_pass": true,
+      "holdout_perp": {
+        "cagr": 0.06694323782782186,
+        "total": 0.45092185674839613,
+        "max_dd": 0.4984015688388729,
+        "sharpe": 0.381741925227081,
+        "trades": 968,
+        "win_rate": 0.25826446280991733,
+        "avg_r": 0.05556850598725699,
+        "stress_total": 0.09904419127772845,
+        "bootstrap_lower": -0.00024375786220957456,
+        "null_p": 0.22188905547226387
+      },
+      "perp_pass": false,
+      "holdout_spot": {
+        "cagr": 0.058461406196949506,
+        "total": 0.12007916756583414,
+        "max_dd": 0.09520120369046103,
+        "sharpe": 0.6538838549940299,
+        "trades": 59,
+        "win_rate": 0.3898305084745763,
+        "avg_r": 0.40584733769939046,
+        "stress_total": 0.10331369194982032,
+        "bootstrap_lower": -6.029590699105478e-05,
+        "null_p": 0.14292853573213393
+      },
+      "spot_pass": true,
+      "verdict": "REJECT"
+    }
+  ]
+}

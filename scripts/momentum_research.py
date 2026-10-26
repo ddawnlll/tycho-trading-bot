@@ -53,9 +53,10 @@ def stats(rets: pd.Series, n_trades: int) -> dict:
                 max_dd=float((1 - eq / eq.cummax()).max()), sharpe=sh, trades=int(n_trades), days=len(rets))
 
 
-def run_cell(data, ms, name, params, req, start, end, tradable=None, cost_mult=1.0, slip_alt=0.0005):
+def run_cell(data, ms, name, params, req, start, end, tradable=None, cost_mult=1.0, slip_alt=0.0005, **build_kw):
     ex = make_expert(name, params, req)
-    cols, sigs, costs, groups = build(data, [ex], ms, tradable=tradable, cost_mult=cost_mult, slip_alt=slip_alt)
+    cols, sigs, costs, groups = build(data, [ex], ms, tradable=tradable, cost_mult=cost_mult, slip_alt=slip_alt,
+                                      **build_kw)
     d, s = window(cols, sigs, start, end)
     res = run_multi(d, s, costs=costs, groups=groups, **KW)
     return res["equity"], res["trades"]
@@ -194,6 +195,55 @@ def stage_holdout():
     print("saved", d)
 
 
+def stage_diagnostics():
+    """POST-HOC diagnostics on holdout A after the verdicts (never change a verdict):
+    measured delisted/renamed list, positions stuck open after a coin's data ends, pre-registered
+    configs re-run with BTC excluded from the rank and the 200-bar rule applied to the rank, and the
+    context baselines (reproducible here)."""
+    from tycho.momentum import liquid_mask
+    wf = latest_wf()
+    data = load_holdout_perp()
+    ms = build_state(data)
+    S, E = pd.Timestamp("2021-01-01", tz="UTC"), pd.Timestamp("2026-09-30 20:00", tz="UTC")
+    tradable = [s for s in data if s != "BTCUSDT"]
+    ended = {s: str(df.index[-1]) for s, df in data.items() if s != "BTCUSDT" and df.index[-1] < E}
+    out = dict(series_ending_before_holdout_end=ended)
+    stuck = {}
+    for name in CANDIDATES:
+        cfg = wf[name]["final"]
+        _, tr = run_cell(data, ms, name, cfg["params"], cfg["req"], S, E, tradable, 1.0, 0.0010)
+        sym = tr.symbol.str.split(":").str[1] if len(tr) else pd.Series(dtype=str)
+        dead = tr[(tr.reason == "eod") & sym.isin(list(ended))] if len(tr) else tr
+        stuck[name] = [dict(symbol=r.symbol, entry=str(r.entry_time), r=float(r.r)) for r in dead.itertuples()]
+    out["positions_open_after_coin_data_ended"] = stuck
+    posthoc = {}
+    for name in ("leader_breakout", "dual_momentum"):
+        cfg = wf[name]["final"]
+        eq, tr = run_cell(data, ms, name, cfg["params"], cfg["req"], S, E, tradable, 1.0, 0.0010,
+                          rank_exclude=("BTCUSDT",), strict_rank=True)
+        m = metrics(eq, tr)
+        posthoc[name] = dict(cagr=m["cagr"], sharpe=m["sharpe"], max_dd=-m["max_dd"], trades=m["n_trades"])
+    out["rank_without_btc_and_200bar_rule"] = posthoc
+    rets = []
+    for s in tradable:
+        df = data[s]
+        d = df["close"].resample("1D").last()
+        live = liquid_mask(df).resample("1D").last().shift(1).fillna(False).astype(bool)
+        rets.append(d.pct_change().where(live).rename(s))
+    R = pd.concat(rets, axis=1)
+    R = R[(R.index >= S) & (R.index <= E)]
+    btc = data["BTCUSDT"]["close"].resample("1D").last()
+    b = btc.pct_change()[(btc.index >= S) & (btc.index <= E)].dropna()
+    out["context_baselines"] = dict(pit_liquid_equal_weight_basket=stats(R.mean(axis=1, skipna=True).fillna(0), 0),
+                                    btc_buy_hold=stats(b, 1))
+    append_trial(LEDGER, dict(event="holdout_posthoc_diagnostics", classification="POST_HOC_DIAGNOSTIC_NO_VERDICT_CHANGE",
+                              **json.loads(json.dumps(out, default=str))))
+    d = runlog.new_run("momentum_holdout_diagnostics")
+    runlog.save(d, {}, dict(headline="post-hoc holdout diagnostics", **out))
+    print(json.dumps(out, default=str, indent=1))
+    print("saved", d)
+
+
 # ------------------------------------------------------------------------------------------- nautilus
 def derived_filters(data: dict[str, pd.DataFrame]) -> dict[str, dict]:
     """Tick/step for symbols missing from today's exchangeInfo (delisted): fine enough not to bind."""
@@ -225,7 +275,11 @@ def nautilus_confirm(name, cfg, data, start, end, tradable, slip_alt):
     ex = make_expert(name, cfg["params"], cfg["req"])
     cols, sigs, _, groups = build(rounded, [ex], ms, tradable=tradable)
     d, sg = window(cols, sigs, start, end)
-    nt = NF.run({s: rounded[s] for s in tradable}, d, sg, start, end, filt, fee, **KW)
+    # A coin with no entry signal in the window can never be traded: dropping its bars is exact and
+    # keeps the 500+-coin holdout within memory (signals/MarketState were computed outside Nautilus).
+    d = {k: v for k, v in d.items() if sg[k].long_entry.any()}
+    sg = {k: sg[k] for k in d}
+    nt = NF.run({k.split(":")[1]: rounded[k.split(":")[1]] for k in d}, d, sg, start, end, filt, fee, **KW)
     costs = {k: Costs(fee=fee[k.split(":")[1]], slippage=0.0) for k in d}
     ty = run_multi(d, sg, costs=costs, groups=groups, **KW)
     eq = nt["equity"]
@@ -239,7 +293,7 @@ def nautilus_confirm(name, cfg, data, start, end, tradable, slip_alt):
                 valid=abs(gap) <= 0.01), eq
 
 
-def stage_nautilus(which: str):
+def stage_nautilus(which: str, only: list[str] | None = None):
     wf = latest_wf()
     if which == "dev":
         data, start, end, slip_alt = load_dev(), "2021-01-01", str(DEV_END), 0.0005
@@ -249,7 +303,7 @@ def stage_nautilus(which: str):
         data, start, end, slip_alt = load_holdout_perp(), "2021-01-01", "2026-09-30 20:00", 0.0010
         tradable = [s for s in data if s != "BTCUSDT"]
     rows, eqs = [], {}
-    for name in CANDIDATES:
+    for name in (only or CANDIDATES):
         res, eq = nautilus_confirm(name, wf[name]["final"], data, start, end, tradable, slip_alt)
         rows.append(dict(expert=name, dataset=which, **res))
         eqs[name] = eq.resample("1D").last()
@@ -267,6 +321,6 @@ def stage_nautilus(which: str):
 if __name__ == "__main__":
     stage = sys.argv[1] if len(sys.argv) > 1 else "wf"
     if stage == "nautilus":
-        stage_nautilus(sys.argv[2] if len(sys.argv) > 2 else "dev")
+        stage_nautilus(sys.argv[2] if len(sys.argv) > 2 else "dev", sys.argv[3].split(",") if len(sys.argv) > 3 else None)
     else:
-        {"wf": stage_wf, "holdout": stage_holdout}[stage]()
+        {"wf": stage_wf, "holdout": stage_holdout, "diagnostics": stage_diagnostics}[stage]()

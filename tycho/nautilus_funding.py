@@ -27,7 +27,10 @@ BAR_NS = NB.BAR_NS
 
 class FundingModule(SimulationModule):
     """Charges qty * bar open * summed funding rate of the bar, at the bar's close timestamp, for
-    every open position (longs pay positive funding). Same convention as tycho.engine_multi."""
+    every position still open then (longs pay positive funding). Differs from tycho.engine_multi,
+    which charges positions held at the bar OPEN (Binance settles at 00/08/16 UTC = bar opens): a
+    position stopped out inside a funding bar escapes that bar's funding here. Measured effect on
+    the dev runs is inside the <= 1% parity gaps."""
 
     def __init__(self, schedule: dict[str, dict[int, tuple[float, float]]]):
         super().__init__(SimulationModuleConfig())
