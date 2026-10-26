@@ -99,7 +99,7 @@ def fetch_closed_bars(symbol: str, n: int) -> pd.DataFrame:
             break
     df = pd.DataFrame(rows, columns=["t", "open", "high", "low", "close", "volume", "ct", "qvol", "n", "a", "b", "x"])
     df = df.drop_duplicates("t")
-    closed = df["ct"].astype("int64") < int(time.time() * 1000)
+    closed = df["ct"].astype("int64") < int(server_now().timestamp() * 1000)  # exchange clock, not local
     df = df[closed]
     out = df[["open", "high", "low", "close", "volume", "qvol"]].astype(float)
     out.index = pd.to_datetime(df["t"].astype("int64"), unit="ms", utc=True)
@@ -143,14 +143,14 @@ class PaperBroker:
         self.state["cash"] += p.qty * (px - p.entry) - p.qty * px * c.fee
         return px
 
-    def place_stop(self, p: Position):
+    def place_stop(self, p: Position, stop: float):
         return None
 
     def check_stops(self, positions, prices):
         hit = []
         for s, p in positions.items():
             if prices[s] <= p.stop:
-                hit.append((s, self.sell(p, min(prices[s], p.stop))))
+                hit.append((s, self.sell(p, prices[s])))  # stop-market fills at market
         return hit
 
 
@@ -197,38 +197,38 @@ class BinanceBroker:
 
     def sell(self, p: Position, ref_px):
         sym = self.ccxt_sym(p.symbol)
-        self.cancel_stop(p)
         o = self.x.create_order(sym, "market", "sell", p.qty, params={"reduceOnly": True})
+        self.cancel_order(p.symbol, p.stop_order_id)
         return float(o.get("average") or o.get("price") or ref_px)
 
-    def place_stop(self, p: Position):
+    def place_stop(self, p: Position, stop: float) -> str:
+        """Create the NEW stop first, cancel the old one only after it exists (never unprotected).
+        Trigger on last trade price (CONTRACT_PRICE) to match the backtest's use of bar lows."""
         sym = self.ccxt_sym(p.symbol)
-        self.cancel_stop(p)
-        stop = float(self.x.price_to_precision(sym, p.stop))
         o = self.x.create_order(sym, "market", "sell", p.qty,
-                                params={"stopLossPrice": stop, "reduceOnly": True, "workingType": "MARK_PRICE"})
+                                params={"stopLossPrice": float(self.x.price_to_precision(sym, stop)),
+                                        "reduceOnly": True, "workingType": "CONTRACT_PRICE"})
+        self.cancel_order(p.symbol, p.stop_order_id)
         return str(o["id"])
 
-    def cancel_stop(self, p: Position):
-        if p.stop_order_id:
+    def cancel_order(self, symbol, order_id):
+        if order_id:
             try:
-                self.x.cancel_order(p.stop_order_id, self.ccxt_sym(p.symbol), params={"stop": True})
-            except Exception as e:  # already filled/cancelled
-                log({"event": "cancel_stop_failed", "symbol": p.symbol, "error": str(e)})
-            p.stop_order_id = None
+                self.x.cancel_order(order_id, self.ccxt_sym(symbol), params={"stop": True})
+            except Exception as e:  # already triggered/cancelled
+                log({"event": "cancel_stop_failed", "symbol": symbol, "error": str(e)})
 
     def check_stops(self, positions, prices):
         """Exchange executes stops; detect positions that disappeared."""
         live = self.exchange_positions()
         return [(s, prices[s]) for s in positions if s not in live]  # exit px is an estimate (last price)
 
-    def reconcile(self, positions):
+    def reconcile(self, positions) -> list[str]:
         live = self.exchange_positions()
-        for s in set(live) - set(positions):
-            log({"event": "warn_untracked_exchange_position", "symbol": s, "qty": live[s]})
-        for s, p in positions.items():
-            if s in live and abs(live[s] - p.qty) > 1e-9:
-                log({"event": "warn_qty_mismatch", "symbol": s, "state": p.qty, "exchange": live[s]})
+        problems = [f"untracked exchange position {s} qty={live[s]}" for s in set(live) - set(positions)]
+        problems += [f"qty mismatch {s}: state={p.qty} exchange={live[s]}"
+                     for s, p in positions.items() if s in live and abs(live[s] - p.qty) > 1e-9]
+        return problems
 
 
 # ----------------------------------------------------------------------------- state + journal
@@ -263,22 +263,41 @@ def log(rec: dict):
 
 
 # ----------------------------------------------------------------------------- loop
-def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk: float):
-    """One decision cycle right after a 4h bar closes."""
+def server_now() -> pd.Timestamp:
+    return pd.Timestamp(int(_get("/fapi/v1/time", {})["serverTime"]), unit="ms", tz="UTC")
+
+
+def _stopped(s, px, p, account, positions, mode):
+    log({"event": "stopped", "symbol": s, "exit_est": px, "entry": p.entry, "qty": p.qty,
+         "r": (px - p.entry) * p.qty / p.r_unit})
+    save_state(mode, account, positions)
+
+
+def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk: float) -> bool:
+    """One decision cycle after a 4h bar closes. Returns False if the latest closed bar isn't
+    available yet (caller retries). Idempotent per bar: a restart never re-acts on a processed bar."""
+    expected_last = server_now().floor(C.TIMEFRAME) - BAR  # open time of the last CLOSED bar
     bars = fetch_all_bars()
+    if bars["BTCUSDT"].index[-1] != expected_last:
+        log({"event": "bars_not_ready", "have": str(bars["BTCUSDT"].index[-1]), "want": str(expected_last)})
+        return False
     prices = {s: last_price(s) for s in C.UNIVERSE}
-    # 1) positions closed by stops since last cycle
     for s, px in broker.check_stops(positions, prices):
-        p = positions.pop(s)
-        log({"event": "stopped", "symbol": s, "exit": px, "entry": p.entry, "qty": p.qty,
-             "r": (px - p.entry) * p.qty / p.r_unit})
+        _stopped(s, px, positions.pop(s), account, positions, mode)
     dec = decide(bars, positions)
-    # 2) ratchet trailing stops
+    if account.get("last_bar") == str(dec.bar_time):
+        log({"event": "bar_already_processed", "bar": str(dec.bar_time)})
+        return True
+    # ratchet trailing stops; on failure the old stop stays live and the move is retried next bar
     for s, new_stop in dec.stop_moves.items():
-        positions[s].stop = new_stop
-        positions[s].stop_order_id = broker.place_stop(positions[s])
-        log({"event": "stop_moved", "symbol": s, "stop": new_stop})
-    # 3) entries
+        p = positions[s]
+        try:
+            p.stop_order_id = broker.place_stop(p, new_stop)
+            p.stop = new_stop
+            log({"event": "stop_moved", "symbol": s, "stop": new_stop})
+        except Exception as e:
+            log({"event": "stop_move_failed", "symbol": s, "stop": new_stop, "kept": p.stop, "error": repr(e)})
+        save_state(mode, account, positions)
     for s, stop in dec.entries:
         if len(positions) >= C.MAX_POSITIONS:
             log({"event": "entry_skipped_full", "symbol": s})
@@ -295,18 +314,24 @@ def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk
             log({"event": "entry_skipped_min_notional", "symbol": s, "qty": qty})
             continue
         p = Position(s, filled, px, stop, filled * (px - stop), str(dec.bar_time))
-        p.stop_order_id = broker.place_stop(p)
         positions[s] = p
+        save_state(mode, account, positions)  # persist the fill before anything else can fail
         log({"event": "entry", "symbol": s, "qty": filled, "price": px, "stop": stop, "equity": eq})
+        try:
+            p.stop_order_id = broker.place_stop(p, stop)
+        except Exception as e:  # never hold an unprotected position: flatten it
+            log({"event": "entry_stop_failed_flattening", "symbol": s, "error": repr(e)})
+            exit_px = broker.sell(p, prices[s])
+            positions.pop(s)
+            log({"event": "flattened", "symbol": s, "exit": exit_px})
+        save_state(mode, account, positions)
+    account["last_bar"] = str(dec.bar_time)
     eq = broker.equity(positions, prices)
     log({"event": "cycle", "bar": str(dec.bar_time), "regime_bull": dec.regime_bull, "equity": eq,
          "open": {s: dict(qty=p.qty, entry=p.entry, stop=p.stop, upnl=p.qty * (prices[s] - p.entry))
                   for s, p in positions.items()}})
     save_state(mode, account, positions)
-
-
-def next_close(now: pd.Timestamp) -> pd.Timestamp:
-    return now.floor(C.TIMEFRAME) + BAR
+    return True
 
 
 def main(mode: str = "paper", risk: float = C.RISK_DEFAULT, once: bool = False, poll: int = 60):
@@ -314,29 +339,29 @@ def main(mode: str = "paper", risk: float = C.RISK_DEFAULT, once: bool = False, 
     account, positions = load_state(mode)
     broker = PaperBroker(account) if mode == "paper" else BinanceBroker(testnet=(mode == "testnet"))
     if hasattr(broker, "reconcile"):
-        broker.reconcile(positions)
+        problems = broker.reconcile(positions)
+        if problems:
+            for msg in problems:
+                log({"event": "reconcile_problem", "detail": msg})
+            raise SystemExit("state and exchange disagree; resolve manually (see journal) before starting")
     log({"event": "start", "risk": risk, "config": {k: getattr(C, k) for k in dir(C) if k.isupper()},
          "positions": list(positions)})
-    cycle(mode, broker, account, positions, risk)
-    if once:
-        return
-    nxt = next_close(pd.Timestamp.now(tz="UTC"))
+    done_bar = None
     while True:
-        now = pd.Timestamp.now(tz="UTC")
-        if now >= nxt + pd.Timedelta(seconds=20):  # small delay so the exchange has closed the bar
-            try:
-                cycle(mode, broker, account, positions, risk)
-            except Exception as e:
-                log({"event": "cycle_error", "error": repr(e)})
-            nxt = next_close(now)
-        elif mode == "paper" and positions:  # paper: emulate resting stop orders
-            try:
+        try:
+            now = server_now()
+            cur = now.floor(C.TIMEFRAME)
+            if cur != done_bar and now >= cur + pd.Timedelta(seconds=15):
+                if cycle(mode, broker, account, positions, risk):
+                    done_bar = cur
+                if once and done_bar is not None:
+                    return
+            elif mode == "paper" and positions:  # paper: emulate resting stop orders between bars
                 prices = {s: last_price(s) for s in positions}
                 for s, px in broker.check_stops(positions, prices):
-                    p = positions.pop(s)
-                    log({"event": "stopped", "symbol": s, "exit": px, "entry": p.entry, "qty": p.qty,
-                         "r": (px - p.entry) * p.qty / p.r_unit})
-                    save_state(mode, account, positions)
-            except Exception as e:
-                log({"event": "poll_error", "error": repr(e)})
+                    _stopped(s, px, positions.pop(s), account, positions, mode)
+        except Exception as e:
+            log({"event": "loop_error", "error": repr(e)})
+            if once:
+                raise
         time.sleep(poll)

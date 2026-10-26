@@ -13,7 +13,7 @@ from tycho.live import PaperBroker, Position, decide, size
 from tycho.portfolio import MAJORS, load_universe
 from scripts.multi_research import build, window
 
-START, END = "2024-01-01", "2024-05-01"
+WINDOWS = [("2024-01-01", "2024-05-01"), ("2021-10-01", "2022-04-01")]  # 2nd spans the BTC regime flip
 DATA_OK = all((Path(__file__).resolve().parent.parent / "data" / f"{s}_1h.parquet").exists() for s in C.UNIVERSE)
 
 
@@ -34,7 +34,8 @@ def replay(data, start, end, risk):
             pos[s].stop = st
         opens = {s: data[s].at[t, "open"] for s in syms if t in data[s].index}
         for s, stop in dec.entries:
-            if len(pos) >= C.MAX_POSITIONS or s not in opens:
+            # the backtest window has no decision bar before its first bar, so it can't enter there
+            if t == idx[0] or len(pos) >= C.MAX_POSITIONS or s not in opens:
                 continue
             eq = broker.equity(pos, opens)
             gross = sum(p.qty * opens[x] for x, p in pos.items())
@@ -57,7 +58,8 @@ def replay(data, start, end, risk):
 
 
 @pytest.mark.skipif(not DATA_OK, reason="historical data not downloaded")
-def test_live_decisions_match_backtest():
+@pytest.mark.parametrize("START,END", WINDOWS)
+def test_live_decisions_match_backtest(START, END):
     data = {s: df.assign(funding=0.0) for s, df in load_universe(C.UNIVERSE, C.TIMEFRAME).items()}
     risk = C.RISK_DEFAULT
     sigs, ranks, costs = build(data, C.STRATEGY, C.PARAMS, C.REGIME_N)
@@ -67,7 +69,7 @@ def test_live_decisions_match_backtest():
     bt_tr = bt["trades"][bt["trades"].reason == "stop"]
     bt_set = {(r.symbol, str(r.entry_time), str(r.exit_time)) for r in bt_tr.itertuples()}
     lv_tr, lv_eq = replay(data, START, END, risk)
-    assert len(bt_set) > 10
+    assert len(bt_set) > 5
     assert set(lv_tr) == bt_set
     # equity paths agree (both ignore funding here); allow tiny float drift from EWM warmup
     bt_eq = bt["equity"].reindex(lv_eq.index)

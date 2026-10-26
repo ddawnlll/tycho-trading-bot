@@ -2,7 +2,9 @@
 
 Provenance (see runs/):
   * signal params: IS-plateau center of portfolio_grid (runs/*_portfolio_grid_donchian_rg1200)
-  * portfolio constraints: IS pick by MAR in multi_research (runs/*_multi_research)
+  * portfolio constraints: IS pick by MAR in multi_research (runs/*_multi_research) was
+    max_positions=5, max_gross=3.0, risk=0.01. Live deliberately tightens gross to 2.0 (the cap
+    rarely binds: identical IS/OOS metrics at risk 0.005) and defaults risk to 0.005.
 """
 UNIVERSE = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "DOGEUSDT",
             "ADAUSDT", "AVAXUSDT", "LINKUSDT", "LTCUSDT", "DOTUSDT", "TRXUSDT"]
