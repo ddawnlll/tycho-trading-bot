@@ -52,8 +52,17 @@ Testnet/live need `BINANCE_API_KEY` / `BINANCE_API_SECRET` in the environment:
 
 ## Known limitations
 - Backtest ≠ future. OOS is one 34-month window; 2025–26 were roughly flat.
-- testnet/live order paths (ccxt market orders, `stopLossPrice` reduce-only stops, demo trading
-  switch) were **not executed** during development — no keys were used. Run testnet first.
+- testnet/live order paths (ccxt market orders, `stopLossPrice` reduce-only stops routed to
+  Binance's Algo Order API, demo trading switch) were checked against the ccxt 4.5.90 source but
+  **never executed** — no keys were used. Unverified: `reduceOnly` acceptance on algo orders,
+  `totalMarginBalance` on the demo account, one-way/cross margin mode (assumed, not set). Run
+  testnet first.
+- Safety behaviour (tested with a fake broker in `tests/test_live_cycle.py`): new stop is placed
+  before the old one is cancelled; if an entry's stop can't be placed the position is flattened;
+  state is saved after every fill; a bar is never processed twice (restart-safe); stale bars are
+  not traded; testnet/live refuse to start if state and exchange positions disagree.
+- Stops trigger on last price in live (CONTRACT_PRICE) like the backtest's bar lows; real
+  fills on fast moves will be worse than the stop price.
 - Live exit price after an exchange stop is logged as an estimate (last price), not the fill.
 - The bot starts flat; it does not adopt positions the backtest would already hold.
 - BNB funding history has many exact-zero records (can't distinguish from missing) → BNB long
