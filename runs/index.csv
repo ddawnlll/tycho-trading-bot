@@ -17,3 +17,4 @@ run,git,headline
 20261026-153838_nautilus_crosscheck,4b0134c,1_btc_trend: PASS trades 44/44 final eq gap 0.040% | 2_universe_trend: PASS trades 286/286 final eq gap -0.028% | 3_ensemble: PASS trades 252/252 final eq gap -0.028%
 20261026-155304_validate_risk0.005,4b0134c,"risk 0.005: full CAGR 26.2% DD -20.6% Sharpe 1.22; OOS base 16.6%, x3 costs 12.9%; P(losing year) 18%"
 20261026-155317_validate_risk0.005,4b0134c,"risk 0.005: full CAGR 26.2% DD -20.6% Sharpe 1.22; OOS base 16.6%, x3 costs 12.9%; P(losing year) 18%"
+20261026-160403_nautilus_crosscheck,96e410b,1_btc_trend: PASS trades 44/44 final eq gap 0.040% | 2_universe_trend: PASS trades 286/286 final eq gap -0.028% | 3_ensemble: PASS trades 252/252 final eq gap -0.028%

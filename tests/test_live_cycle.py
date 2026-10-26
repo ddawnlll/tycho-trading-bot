@@ -98,3 +98,14 @@ def test_signal_exit_and_one_expert_per_coin(env):
     live.cycle("paper", b, {}, pos, 0.005)
     assert b.sells == ["ETHUSDT"] and "ETHUSDT" not in pos
     assert b.buys == ["SOLUSDT"] and pos["SOLUSDT"].expert == "trend_long" and pos["SOLUSDT"].stop == 90.0
+
+
+def test_failed_exit_keeps_position_tracked(env):
+    class SellFails(FakeBroker):
+        def sell(self, p, px):
+            raise RuntimeError("network")
+    pos = {"ETHUSDT": Position("ETHUSDT", 1.0, 100.0, 90.0, 10.0, "x", stop_order_id="s", expert="xs_momentum")}
+    env["dec"] = Decision(bar_time=LAST + live.BAR, exits=["ETHUSDT"], regime_bull=True)
+    with pytest.raises(RuntimeError):
+        live.cycle("paper", SellFails(), {}, pos, 0.005)
+    assert "ETHUSDT" in pos

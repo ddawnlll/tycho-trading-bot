@@ -1,227 +1,228 @@
-[1m2026-10-26T15:46:11.748325600Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.751306500Z[0m [36m[INFO] TYCHO-001.TradingNode:  NAUTILUS TRADER - Automated Algorithmic Trading Platform[0m
-[1m2026-10-26T15:46:11.751308100Z[0m [36m[INFO] TYCHO-001.TradingNode:  by Nautech Systems Pty Ltd.[0m
-[1m2026-10-26T15:46:11.751308500Z[0m [36m[INFO] TYCHO-001.TradingNode:  Copyright (C) 2015-2026. All rights reserved.[0m
-[1m2026-10-26T15:46:11.751308900Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.751309100Z[0m [INFO] TYCHO-001.TradingNode: [0m
-[1m2026-10-26T15:46:11.751309200Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751309700Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⣿⠀⢸⣿⣿⣿⣿⣶⣶⣤⣀⠀⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751310300Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⢀⣴⡇⢀⣾⣿⣿⣿⣿⣿⠀⣾⣿⣿⣿⣿⣿⣿⣿⠿⠓⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751310500Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⣰⣿⣿⡀⢸⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⠟⠁⣠⣄⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751310800Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⢠⣿⣿⣿⣇⠀⢿⣿⣿⣿⣿⣿⠀⢻⣿⣿⣿⡿⢃⣠⣾⣿⣿⣧⡀⠀⠀[0m
-[1m2026-10-26T15:46:11.751311300Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠠⣾⣿⣿⣿⣿⣿⣧⠈⠋⢀⣴⣧⠀⣿⡏⢠⡀⢸⣿⣿⣿⣿⣿⣿⣿⡇⠀[0m
-[1m2026-10-26T15:46:11.751313200Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⣀⠙⢿⣿⣿⣿⣿⣿⠇⢠⣿⣿⣿⡄⠹⠃⠼⠃⠈⠉⠛⠛⠛⠛⠛⠻⠇⠀[0m
-[1m2026-10-26T15:46:11.751313400Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⢸⡟⢠⣤⠉⠛⠿⢿⣿⠀⢸⣿⡿⠋⣠⣤⣄⠀⣾⣿⣿⣶⣶⣶⣦⡄⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751313700Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠸⠀⣾⠏⣸⣷⠂⣠⣤⠀⠘⢁⣴⣾⣿⣿⣿⡆⠘⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751313800Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠛⠀⣿⡟⠀⢻⣿⡄⠸⣿⣿⣿⣿⣿⣿⣿⡀⠘⣿⣿⣿⣿⠟⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751314100Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⢻⡿⠀⠈⠻⣿⣿⣿⣿⣿⡇⠀⢹⣿⠿⠋⠀⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751314400Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⠋⠀⠀⠀⡘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠀⠀⠀⠀⠀⠀⠀[0m
-[1m2026-10-26T15:46:11.751314600Z[0m [INFO] TYCHO-001.TradingNode: [0m
-[1m2026-10-26T15:46:11.751314800Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.751315000Z[0m [36m[INFO] TYCHO-001.TradingNode:  SYSTEM SPECIFICATION[0m
-[1m2026-10-26T15:46:11.751315400Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.751316500Z[0m [INFO] TYCHO-001.TradingNode: CPU architecture: AMD Ryzen 5 5600X 6-Core Processor             [0m
-[1m2026-10-26T15:46:11.751317300Z[0m [INFO] TYCHO-001.TradingNode: CPU(s): 12 @ 3701 MHz[0m
-[1m2026-10-26T15:46:11.751322500Z[0m [INFO] TYCHO-001.TradingNode: OS: kernel-26300 Windows 11 Pro[0m
-[1m2026-10-26T15:46:11.751472100Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.751472600Z[0m [36m[INFO] TYCHO-001.TradingNode:  MEMORY USAGE[0m
-[1m2026-10-26T15:46:11.751472900Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.752312900Z[0m [INFO] TYCHO-001.TradingNode: RAM-Total: 15.93 GiB[0m
-[1m2026-10-26T15:46:11.752314700Z[0m [INFO] TYCHO-001.TradingNode: RAM-Used: 14.68 GiB (92.18%)[0m
-[1m2026-10-26T15:46:11.752315100Z[0m [INFO] TYCHO-001.TradingNode: RAM-Avail: 1.25 GiB (7.82%)[0m
-[1m2026-10-26T15:46:11.752316400Z[0m [INFO] TYCHO-001.TradingNode: Swap-Total: 32.88 GiB[0m
-[1m2026-10-26T15:46:11.752316800Z[0m [INFO] TYCHO-001.TradingNode: Swap-Used: 31.23 GiB (94.96%)[0m
-[1m2026-10-26T15:46:11.752317100Z[0m [INFO] TYCHO-001.TradingNode: Swap-Avail: 1.66 GiB (5.04%)[0m
-[1m2026-10-26T15:46:11.752318600Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.752318900Z[0m [36m[INFO] TYCHO-001.TradingNode:  IDENTIFIERS[0m
-[1m2026-10-26T15:46:11.752319100Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.752319600Z[0m [INFO] TYCHO-001.TradingNode: trader_id: TYCHO-001[0m
-[1m2026-10-26T15:46:11.752320300Z[0m [INFO] TYCHO-001.TradingNode: machine_id: DESKTOP-VU1M7R6[0m
-[1m2026-10-26T15:46:11.752321400Z[0m [INFO] TYCHO-001.TradingNode: instance_id: ca14589a-f42c-4ef0-9f70-c83d9da4a2a5[0m
-[1m2026-10-26T15:46:11.752321800Z[0m [INFO] TYCHO-001.TradingNode: PID: 32760[0m
-[1m2026-10-26T15:46:11.752321900Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.752322000Z[0m [36m[INFO] TYCHO-001.TradingNode:  VERSIONING[0m
-[1m2026-10-26T15:46:11.752322100Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.753949500Z[0m [INFO] TYCHO-001.TradingNode: nautilus_trader: 1.231.0[0m
-[1m2026-10-26T15:46:11.753967800Z[0m [INFO] TYCHO-001.TradingNode: python: 3.12.10[0m
-[1m2026-10-26T15:46:11.753972100Z[0m [INFO] TYCHO-001.TradingNode: numpy: 2.5.4[0m
-[1m2026-10-26T15:46:11.753975500Z[0m [INFO] TYCHO-001.TradingNode: pandas: 3.1.0[0m
-[1m2026-10-26T15:46:11.753979600Z[0m [INFO] TYCHO-001.TradingNode: msgspec: 0.22.0[0m
-[1m2026-10-26T15:46:11.753983300Z[0m [INFO] TYCHO-001.TradingNode: pyarrow: 26.0.0[0m
-[1m2026-10-26T15:46:11.753987600Z[0m [INFO] TYCHO-001.TradingNode: pytz: 2026.5[0m
-[1m2026-10-26T15:46:11.755249100Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
-[1m2026-10-26T15:46:11.755296900Z[0m [INFO] TYCHO-001.TradingNode: Building system kernel[0m
-[1m2026-10-26T15:46:11.757108400Z[0m [94m[INFO] TYCHO-001.MessageBus: config.database=None[0m
-[1m2026-10-26T15:46:11.757116400Z[0m [94m[INFO] TYCHO-001.MessageBus: config.encoding='json'[0m
-[1m2026-10-26T15:46:11.757118600Z[0m [94m[INFO] TYCHO-001.MessageBus: config.timestamps_as_iso8601=False[0m
-[1m2026-10-26T15:46:11.757119500Z[0m [94m[INFO] TYCHO-001.MessageBus: config.buffer_interval_ms=None[0m
-[1m2026-10-26T15:46:11.757128700Z[0m [94m[INFO] TYCHO-001.MessageBus: config.autotrim_mins=None[0m
-[1m2026-10-26T15:46:11.757129900Z[0m [94m[INFO] TYCHO-001.MessageBus: config.use_trader_prefix=True[0m
-[1m2026-10-26T15:46:11.757130800Z[0m [94m[INFO] TYCHO-001.MessageBus: config.use_trader_id=True[0m
-[1m2026-10-26T15:46:11.757131700Z[0m [94m[INFO] TYCHO-001.MessageBus: config.use_instance_id=False[0m
-[1m2026-10-26T15:46:11.757132900Z[0m [94m[INFO] TYCHO-001.MessageBus: config.streams_prefix='stream'[0m
-[1m2026-10-26T15:46:11.757134500Z[0m [94m[INFO] TYCHO-001.MessageBus: config.types_filter=None[0m
-[1m2026-10-26T15:46:11.759359500Z[0m [INFO] TYCHO-001.Cache: READY[0m
-[1m2026-10-26T15:46:11.773156600Z[0m [INFO] TYCHO-001.DataEngine: READY[0m
-[1m2026-10-26T15:46:11.777064800Z[0m [94m[INFO] TYCHO-001.DataEngine: config.graceful_shutdown_on_exception=False[0m
-[1m2026-10-26T15:46:11.778057700Z[0m [INFO] TYCHO-001.RiskEngine: READY[0m
-[1m2026-10-26T15:46:11.782749400Z[0m [94m[INFO] TYCHO-001.RiskEngine: TradingState is ACTIVE[0m
-[1m2026-10-26T15:46:11.783473500Z[0m [INFO] TYCHO-001.Throttler-ORDER_SUBMIT_THROTTLER: READY[0m
-[1m2026-10-26T15:46:11.784164300Z[0m [94m[INFO] TYCHO-001.RiskEngine: Set MAX_ORDER_SUBMIT_RATE: 100/00:00:01[0m
-[1m2026-10-26T15:46:11.784226900Z[0m [INFO] TYCHO-001.Throttler-ORDER_MODIFY_THROTTLER: READY[0m
-[1m2026-10-26T15:46:11.784243100Z[0m [94m[INFO] TYCHO-001.RiskEngine: Set MAX_ORDER_MODIFY_RATE: 100/00:00:01[0m
-[1m2026-10-26T15:46:11.784310800Z[0m [94m[INFO] TYCHO-001.RiskEngine: config.graceful_shutdown_on_exception=False[0m
-[1m2026-10-26T15:46:11.786215900Z[0m [INFO] TYCHO-001.ExecEngine: READY[0m
-[1m2026-10-26T15:46:11.787125300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.snapshot_orders=False[0m
-[1m2026-10-26T15:46:11.787131200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.snapshot_positions=False[0m
-[1m2026-10-26T15:46:11.787132500Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.snapshot_positions_interval_secs=None[0m
-[1m2026-10-26T15:46:11.787134200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.allow_overfills=False[0m
-[1m2026-10-26T15:46:11.787217300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation=True[0m
-[1m2026-10-26T15:46:11.787224000Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation_lookback_mins=None[0m
-[1m2026-10-26T15:46:11.787225500Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation_instrument_ids=None[0m
-[1m2026-10-26T15:46:11.787226800Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.filter_unclaimed_external_orders=False[0m
-[1m2026-10-26T15:46:11.787227900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.filter_position_reports=False[0m
-[1m2026-10-26T15:46:11.787229000Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.filtered_client_order_ids=None[0m
-[1m2026-10-26T15:46:11.787230000Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.inflight_check_interval_ms=2000[0m
-[1m2026-10-26T15:46:11.787230900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.inflight_check_threshold_ms=5000[0m
-[1m2026-10-26T15:46:11.787231700Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.inflight_check_retries=5[0m
-[1m2026-10-26T15:46:11.787232600Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.own_books_audit_interval_secs=None[0m
-[1m2026-10-26T15:46:11.787233500Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_interval_secs=None[0m
-[1m2026-10-26T15:46:11.787234400Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_open_only=True[0m
-[1m2026-10-26T15:46:11.787235300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_lookback_mins=60[0m
-[1m2026-10-26T15:46:11.787236100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_threshold_ms=5000[0m
-[1m2026-10-26T15:46:11.787237100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_missing_retries=5[0m
-[1m2026-10-26T15:46:11.787239300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.max_single_order_queries_per_cycle=10[0m
-[1m2026-10-26T15:46:11.787240300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.single_order_query_delay_ms=100[0m
-[1m2026-10-26T15:46:11.787241100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_interval_secs=None[0m
-[1m2026-10-26T15:46:11.787241900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_lookback_mins=60[0m
-[1m2026-10-26T15:46:11.787242900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_threshold_ms=5000[0m
-[1m2026-10-26T15:46:11.787244000Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_retries=3[0m
-[1m2026-10-26T15:46:11.787247400Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation_startup_delay_secs=10.0[0m
-[1m2026-10-26T15:46:11.787248300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_orders_interval_mins=None[0m
-[1m2026-10-26T15:46:11.787249300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_orders_buffer_mins=None[0m
-[1m2026-10-26T15:46:11.787250300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_positions_interval_mins=None[0m
-[1m2026-10-26T15:46:11.787251200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_positions_buffer_mins=None[0m
-[1m2026-10-26T15:46:11.787252100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_account_events_interval_mins=None[0m
-[1m2026-10-26T15:46:11.787252900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_account_events_lookback_mins=None[0m
-[1m2026-10-26T15:46:11.787254000Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_from_database=False[0m
-[1m2026-10-26T15:46:11.787254800Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.graceful_shutdown_on_exception=False[0m
-[1m2026-10-26T15:46:11.791940800Z[0m [INFO] TYCHO-001.Cache: Cached 0 general objects from database[0m
-[1m2026-10-26T15:46:11.791951800Z[0m [INFO] TYCHO-001.Cache: Cached 0 currencies from database[0m
-[1m2026-10-26T15:46:11.791962400Z[0m [INFO] TYCHO-001.Cache: Cached 0 instruments from database[0m
-[1m2026-10-26T15:46:11.792583500Z[0m [INFO] TYCHO-001.Cache: Cached 0 accounts from database[0m
-[1m2026-10-26T15:46:11.792591700Z[0m [INFO] TYCHO-001.Cache: Cached 0 orders from database[0m
-[1m2026-10-26T15:46:11.792596900Z[0m [INFO] TYCHO-001.Cache: Cached 0 order lists from database[0m
-[1m2026-10-26T15:46:11.792604100Z[0m [INFO] TYCHO-001.Cache: Cached 0 positions from database[0m
-[1m2026-10-26T15:46:11.792621000Z[0m [INFO] TYCHO-001.Cache: Checking data integrity[0m
-[1m2026-10-26T15:46:11.793132800Z[0m [92m[INFO] TYCHO-001.Cache: Integrity check passed in 1007μs[0m
-[1m2026-10-26T15:46:11.794565300Z[0m [INFO] TYCHO-001.ExecEngine: Loaded cache in 3ms[0m
-[1m2026-10-26T15:46:11.797060600Z[0m [INFO] TYCHO-001.OrderEmulator: READY[0m
-[1m2026-10-26T15:46:11.798801600Z[0m [INFO] TYCHO-001.TYCHO-001: READY[0m
-[1m2026-10-26T15:46:11.798850500Z[0m [INFO] TYCHO-001.TradingNode: Initialized in 512ms[0m
-[1m2026-10-26T15:46:11.798873200Z[0m [94m[INFO] TYCHO-001.TradingNode: has_cache_backing=False[0m
-[1m2026-10-26T15:46:11.798878200Z[0m [94m[INFO] TYCHO-001.TradingNode: has_msgbus_backing=False[0m
-[1m2026-10-26T15:46:11.800435600Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: READY[0m
-[1m2026-10-26T15:46:11.802220400Z[0m [INFO] TYCHO-001.ExecEngine: Registered OMS.UNSPECIFIED for Strategy EnsembleLiveStrategy-000[0m
-[1m2026-10-26T15:46:11.802230300Z[0m [INFO] TYCHO-001.TYCHO-001: Registered Strategy EnsembleLiveStrategy-000[0m
-[1m2026-10-26T15:46:11.802238500Z[0m [INFO] TYCHO-001.TradingNode: Building data client for BINANCE[0m
-[1m2026-10-26T15:46:11.824987100Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: READY[0m
-[1m2026-10-26T15:46:11.829049500Z[0m [INFO] TYCHO-001.DataClient-BINANCE: READY[0m
-[1m2026-10-26T15:46:11.829110800Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Account type: USDT_FUTURES[0m
-[1m2026-10-26T15:46:11.829117300Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: config.update_instruments_interval_mins=60[0m
-[1m2026-10-26T15:46:11.829119000Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: config.use_agg_trade_ticks=False[0m
-[1m2026-10-26T15:46:11.829144300Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Base url HTTP https://fapi.binance.com[0m
-[1m2026-10-26T15:46:11.829145600Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Base url WebSocket wss://fstream.binance.com/market[0m
-[1m2026-10-26T15:46:11.829523300Z[0m [INFO] TYCHO-001.DataEngine: Registered BINANCE[0m
-[1m2026-10-26T15:46:11.829538400Z[0m [INFO] TYCHO-001.TradingNode: Building execution client for BINANCE[0m
-[1m2026-10-26T15:46:11.832772200Z[0m [INFO] TYCHO-001.InstrumentProvider: READY[0m
-[1m2026-10-26T15:46:11.833747300Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: READY[0m
-[1m2026-10-26T15:46:11.839928200Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): OmsType=NETTING[0m
-[1m2026-10-26T15:46:11.841547500Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: READY[0m
-[1m2026-10-26T15:46:11.842310200Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Registered ExecutionClient-BINANCE[0m
-[1m2026-10-26T15:46:11.850768600Z[0m [INFO] TYCHO-001.Portfolio: Updated AccountState(account_id=BINANCE-001, account_type=MARGIN, base_currency=USDT, is_reported=True, balances=[AccountBalance(total=10_000.00000000 USDT, locked=0.00000000 USDT, free=10_000.00000000 USDT)], margins=[], event_id=0b114c40-b6d1-41ef-a5fe-20f1c0edb136)[0m
-[1m2026-10-26T15:46:11.851338300Z[0m [INFO] TYCHO-001.ExecEngine: Registered ExecutionClient-BINANCE[0m
-[1m2026-10-26T15:46:11.852339700Z[0m [INFO] TYCHO-001.TradingNode: STARTING[0m
-[1m2026-10-26T15:46:11.853033400Z[0m [INFO] TYCHO-001.DataClient-BINANCE: RUNNING[0m
-[1m2026-10-26T15:46:11.853667200Z[0m [INFO] TYCHO-001.DataEngine: RUNNING[0m
-[1m2026-10-26T15:46:11.853709000Z[0m [INFO] TYCHO-001.RiskEngine: RUNNING[0m
-[1m2026-10-26T15:46:11.853740000Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: RUNNING[0m
-[1m2026-10-26T15:46:11.853771100Z[0m [94m[INFO] TYCHO-001.ExecEngine: Started reconciliation task[0m
-[1m2026-10-26T15:46:11.853791800Z[0m [INFO] TYCHO-001.ExecEngine: RUNNING[0m
-[1m2026-10-26T15:46:11.853800000Z[0m [INFO] TYCHO-001.DataEngine: Connecting all clients...[0m
-[1m2026-10-26T15:46:11.853803900Z[0m [INFO] TYCHO-001.DataClient-BINANCE: Connecting...[0m
-[1m2026-10-26T15:46:11.853832500Z[0m [INFO] TYCHO-001.ExecEngine: Connecting all clients...[0m
-[1m2026-10-26T15:46:11.853838700Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: Connecting...[0m
-[1m2026-10-26T15:46:11.854343200Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: Connected[0m
-[1m2026-10-26T15:46:11.854360900Z[0m [94m[INFO] TYCHO-001.TradingNode: Awaiting engine connections and initializations (60.0s timeout)...[0m
-[1m2026-10-26T15:46:11.856578500Z[0m [94m[INFO] TYCHO-001.ExecEngine: Starting continuous reconciliation with intervals: inflight=2000ms, consistency=Nones, position=Nones[0m
-[1m2026-10-26T15:46:11.856586700Z[0m [94m[INFO] TYCHO-001.ExecEngine: Awaiting startup reconciliation completion before starting continuous checks[0m
-[1m2026-10-26T15:46:11.856611400Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Initializing instruments...[0m
-[1m2026-10-26T15:46:11.856645900Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Loading instruments: TRXUSDT-PERP.BINANCE, DOTUSDT-PERP.BINANCE, BTCUSDT-PERP.BINANCE, LTCUSDT-PERP.BINANCE, ADAUSDT-PERP.BINANCE, ETHUSDT-PERP.BINANCE, BNBUSDT-PERP.BINANCE, DOGEUSDT-PERP.BINANCE, XRPUSDT-PERP.BINANCE, LINKUSDT-PERP.BINANCE, SOLUSDT-PERP.BINANCE, AVAXUSDT-PERP.BINANCE...[0m
-[1m2026-10-26T15:46:13.635312200Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Loaded 12 instruments[0m
-[1m2026-10-26T15:46:13.635324100Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Initialized instruments[0m
-[1m2026-10-26T15:46:13.637050500Z[0m [92m[INFO] TYCHO-001.DataClient-BINANCE: Connected[0m
-[1m2026-10-26T15:46:13.637152100Z[0m [94m[INFO] TYCHO-001.TradingNode: Awaiting execution state reconciliation (30.0s timeout)...[0m
-[1m2026-10-26T15:46:13.643870900Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument TRXUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644557900Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument DOTUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644604500Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument BTCUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644644600Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument LTCUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644685400Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument ADAUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644725000Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument ETHUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644763200Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument BNBUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644800400Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument DOGEUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644830800Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument XRPUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644867700Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument LINKUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644908900Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument SOLUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.644948600Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument AVAXUSDT-PERP.BINANCE and created matching engine[0m
-[1m2026-10-26T15:46:13.645020700Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: Generating ExecutionMassStatus...[0m
-[1m2026-10-26T15:46:13.647587600Z[0m [94m[INFO] TYCHO-001.ExecEngine: Reconciling ExecutionMassStatus for BINANCE[0m
-[1m2026-10-26T15:46:13.647602700Z[0m [94m[INFO] TYCHO-001.ExecEngine: Attempting to adjust fills for 0 instruments[0m
-[1m2026-10-26T15:46:13.655674700Z[0m [94m[INFO] TYCHO-001.ExecEngine: Updating adjusted fills for 0 instruments[0m
-[1m2026-10-26T15:46:13.655685500Z[0m [94m[INFO] TYCHO-001.ExecEngine: Final order_reports contains 0 orders, fill_reports contains 0 fills across all instruments[0m
-[1m2026-10-26T15:46:13.655751200Z[0m [92m[INFO] TYCHO-001.ExecEngine: Reconciliation for BINANCE succeeded[0m
-[1m2026-10-26T15:46:13.655772800Z[0m [92m[INFO] TYCHO-001.TradingNode: Execution state reconciled[0m
-[1m2026-10-26T15:46:13.656268000Z[0m [INFO] TYCHO-001.OrderEmulator: No emulated orders to reactivate[0m
-[1m2026-10-26T15:46:13.656292200Z[0m [INFO] TYCHO-001.OrderEmulator: RUNNING[0m
-[1m2026-10-26T15:46:13.656725600Z[0m [INFO] TYCHO-001.Portfolio: Initialized 0 open orders[0m
-[1m2026-10-26T15:46:13.657197000Z[0m [INFO] TYCHO-001.Portfolio: Initialized 0 open positions[0m
-[1m2026-10-26T15:46:13.657213800Z[0m [94m[INFO] TYCHO-001.TradingNode: Awaiting portfolio initialization (10.0s timeout)...[0m
-[1m2026-10-26T15:46:13.657331300Z[0m [92m[INFO] TYCHO-001.ExecEngine: Startup reconciliation completed[0m
-[1m2026-10-26T15:46:13.657346900Z[0m [94m[INFO] TYCHO-001.ExecEngine: Applying post-reconciliation startup delay (10.0s)[0m
-[1m2026-10-26T15:46:13.657398900Z[0m [92m[INFO] TYCHO-001.TradingNode: Portfolio initialized[0m
-[1m2026-10-26T15:46:13.657433200Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: self.config.oms_type=None[0m
-[1m2026-10-26T15:46:13.657435800Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: self.config.external_order_claims=None[0m
-[1m2026-10-26T15:46:13.657437300Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: self.config.manage_gtd_expiry=False[0m
-[1m2026-10-26T15:46:13.658467600Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: Set ClientOrderIdGenerator client_order_id count to 0[0m
-[1m2026-10-26T15:46:13.658478100Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: Set ClientOrderIdGenerator order_list_id count to 0[0m
-[1m2026-10-26T15:46:13.683874700Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=BTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684050800Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=ETHUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684151200Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=SOLUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684234500Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=BNBUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684314500Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=XRPUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684395600Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=DOGEUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684472200Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=ADAUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684564200Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=AVAXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684645600Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=LINKUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684723400Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=LTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684808400Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=DOTUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:13.684888900Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=TRXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
-[1m2026-10-26T15:46:44.139268800Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: MARKET_STATE {"bar_open": "2026-10-26 08:00:00+00:00", "btc_bull": true, "breadth": 0.08333333333333333, "btc_vol_pct": 0.16575342465753426, "experts": {"trend_long": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT", "AVAXUSDT", "LINKUSDT", "LTCUSDT", "DOTUSDT", "TRXUSDT"], "xs_momentum": []}}[0m
-[1m2026-10-26T15:46:44.139288300Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: HELD {}[0m
-[1m2026-10-26T15:46:44.139868700Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: RUNNING[0m
-[1m2026-10-26T15:46:44.139892200Z[0m [INFO] TYCHO-001.TYCHO-001: RUNNING[0m
-[1m2026-10-26T15:46:44.139904500Z[0m [INFO] TYCHO-001.TradingNode: RUNNING[0m
-[1m2026-10-26T15:46:45.133703400Z[0m [94m[INFO] TYCHO-001.BinanceWebSocketClient: ws-client 0: Connected to wss://fstream.binance.com/market[0m
-[1m2026-10-26T15:46:45.134654800Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed BTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.135539600Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed LTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.135551200Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed ETHUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136095700Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed BNBUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136110900Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed DOTUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136115400Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed ADAUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136118300Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed SOLUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136120500Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed AVAXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136123100Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed DOGEUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136164900Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed LINKUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136367400Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed TRXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-[1m2026-10-26T15:46:45.136389200Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed XRPUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
-exit 124
+[1m2026-10-26T16:04:14.725355700Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.728948500Z[0m [36m[INFO] TYCHO-001.TradingNode:  NAUTILUS TRADER - Automated Algorithmic Trading Platform[0m
+[1m2026-10-26T16:04:14.728949900Z[0m [36m[INFO] TYCHO-001.TradingNode:  by Nautech Systems Pty Ltd.[0m
+[1m2026-10-26T16:04:14.728950300Z[0m [36m[INFO] TYCHO-001.TradingNode:  Copyright (C) 2015-2026. All rights reserved.[0m
+[1m2026-10-26T16:04:14.728950600Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.728950800Z[0m [INFO] TYCHO-001.TradingNode: [0m
+[1m2026-10-26T16:04:14.728951000Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728951300Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⣿⠀⢸⣿⣿⣿⣿⣶⣶⣤⣀⠀⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728954100Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⢀⣴⡇⢀⣾⣿⣿⣿⣿⣿⠀⣾⣿⣿⣿⣿⣿⣿⣿⠿⠓⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728954400Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⣰⣿⣿⡀⢸⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⠟⠁⣠⣄⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728954600Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⢠⣿⣿⣿⣇⠀⢿⣿⣿⣿⣿⣿⠀⢻⣿⣿⣿⡿⢃⣠⣾⣿⣿⣧⡀⠀⠀[0m
+[1m2026-10-26T16:04:14.728954700Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠠⣾⣿⣿⣿⣿⣿⣧⠈⠋⢀⣴⣧⠀⣿⡏⢠⡀⢸⣿⣿⣿⣿⣿⣿⣿⡇⠀[0m
+[1m2026-10-26T16:04:14.728956800Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⣀⠙⢿⣿⣿⣿⣿⣿⠇⢠⣿⣿⣿⡄⠹⠃⠼⠃⠈⠉⠛⠛⠛⠛⠛⠻⠇⠀[0m
+[1m2026-10-26T16:04:14.728957100Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⢸⡟⢠⣤⠉⠛⠿⢿⣿⠀⢸⣿⡿⠋⣠⣤⣄⠀⣾⣿⣿⣶⣶⣶⣦⡄⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728957300Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠸⠀⣾⠏⣸⣷⠂⣠⣤⠀⠘⢁⣴⣾⣿⣿⣿⡆⠘⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728957400Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠛⠀⣿⡟⠀⢻⣿⡄⠸⣿⣿⣿⣿⣿⣿⣿⡀⠘⣿⣿⣿⣿⠟⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728957600Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⢻⡿⠀⠈⠻⣿⣿⣿⣿⣿⡇⠀⢹⣿⠿⠋⠀⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728957800Z[0m [INFO] TYCHO-001.TradingNode: ⠀⠀⠀⠀⠀⠀⠋⠀⠀⠀⡘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠀⠀⠀⠀⠀⠀⠀[0m
+[1m2026-10-26T16:04:14.728958000Z[0m [INFO] TYCHO-001.TradingNode: [0m
+[1m2026-10-26T16:04:14.728958100Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.728958400Z[0m [36m[INFO] TYCHO-001.TradingNode:  SYSTEM SPECIFICATION[0m
+[1m2026-10-26T16:04:14.728958600Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.728959500Z[0m [INFO] TYCHO-001.TradingNode: CPU architecture: AMD Ryzen 5 5600X 6-Core Processor             [0m
+[1m2026-10-26T16:04:14.728960400Z[0m [INFO] TYCHO-001.TradingNode: CPU(s): 12 @ 3701 MHz[0m
+[1m2026-10-26T16:04:14.728965600Z[0m [INFO] TYCHO-001.TradingNode: OS: kernel-26300 Windows 11 Pro[0m
+[1m2026-10-26T16:04:14.729092200Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.729092700Z[0m [36m[INFO] TYCHO-001.TradingNode:  MEMORY USAGE[0m
+[1m2026-10-26T16:04:14.729092900Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.729098900Z[0m [INFO] TYCHO-001.TradingNode: RAM-Total: 15.93 GiB[0m
+[1m2026-10-26T16:04:14.729099500Z[0m [INFO] TYCHO-001.TradingNode: RAM-Used: 14.93 GiB (93.76%)[0m
+[1m2026-10-26T16:04:14.729101200Z[0m [INFO] TYCHO-001.TradingNode: RAM-Avail: 0.99 GiB (6.24%)[0m
+[1m2026-10-26T16:04:14.729101900Z[0m [INFO] TYCHO-001.TradingNode: Swap-Total: 32.88 GiB[0m
+[1m2026-10-26T16:04:14.729102200Z[0m [INFO] TYCHO-001.TradingNode: Swap-Used: 31.20 GiB (94.89%)[0m
+[1m2026-10-26T16:04:14.729102500Z[0m [INFO] TYCHO-001.TradingNode: Swap-Avail: 1.68 GiB (5.11%)[0m
+[1m2026-10-26T16:04:14.729103800Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.729104000Z[0m [36m[INFO] TYCHO-001.TradingNode:  IDENTIFIERS[0m
+[1m2026-10-26T16:04:14.729104200Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.729104700Z[0m [INFO] TYCHO-001.TradingNode: trader_id: TYCHO-001[0m
+[1m2026-10-26T16:04:14.729105100Z[0m [INFO] TYCHO-001.TradingNode: machine_id: DESKTOP-VU1M7R6[0m
+[1m2026-10-26T16:04:14.729106100Z[0m [INFO] TYCHO-001.TradingNode: instance_id: b4364ce7-3953-4f0d-ba56-8891220d8955[0m
+[1m2026-10-26T16:04:14.729106400Z[0m [INFO] TYCHO-001.TradingNode: PID: 30500[0m
+[1m2026-10-26T16:04:14.729106500Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.729106700Z[0m [36m[INFO] TYCHO-001.TradingNode:  VERSIONING[0m
+[1m2026-10-26T16:04:14.729106800Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.729132900Z[0m [INFO] TYCHO-001.TradingNode: nautilus_trader: 1.231.0[0m
+[1m2026-10-26T16:04:14.729139500Z[0m [INFO] TYCHO-001.TradingNode: python: 3.12.10[0m
+[1m2026-10-26T16:04:14.729142100Z[0m [INFO] TYCHO-001.TradingNode: numpy: 2.5.4[0m
+[1m2026-10-26T16:04:14.729144300Z[0m [INFO] TYCHO-001.TradingNode: pandas: 3.1.0[0m
+[1m2026-10-26T16:04:14.729146400Z[0m [INFO] TYCHO-001.TradingNode: msgspec: 0.22.0[0m
+[1m2026-10-26T16:04:14.729148500Z[0m [INFO] TYCHO-001.TradingNode: pyarrow: 26.0.0[0m
+[1m2026-10-26T16:04:14.729150900Z[0m [INFO] TYCHO-001.TradingNode: pytz: 2026.5[0m
+[1m2026-10-26T16:04:14.730057200Z[0m [36m[INFO] TYCHO-001.TradingNode: =================================================================[0m
+[1m2026-10-26T16:04:14.730093300Z[0m [INFO] TYCHO-001.TradingNode: Building system kernel[0m
+[1m2026-10-26T16:04:14.730188700Z[0m [94m[INFO] TYCHO-001.MessageBus: config.database=None[0m
+[1m2026-10-26T16:04:14.730191500Z[0m [94m[INFO] TYCHO-001.MessageBus: config.encoding='json'[0m
+[1m2026-10-26T16:04:14.730192600Z[0m [94m[INFO] TYCHO-001.MessageBus: config.timestamps_as_iso8601=False[0m
+[1m2026-10-26T16:04:14.730193400Z[0m [94m[INFO] TYCHO-001.MessageBus: config.buffer_interval_ms=None[0m
+[1m2026-10-26T16:04:14.730194600Z[0m [94m[INFO] TYCHO-001.MessageBus: config.autotrim_mins=None[0m
+[1m2026-10-26T16:04:14.730195400Z[0m [94m[INFO] TYCHO-001.MessageBus: config.use_trader_prefix=True[0m
+[1m2026-10-26T16:04:14.730196200Z[0m [94m[INFO] TYCHO-001.MessageBus: config.use_trader_id=True[0m
+[1m2026-10-26T16:04:14.730196800Z[0m [94m[INFO] TYCHO-001.MessageBus: config.use_instance_id=False[0m
+[1m2026-10-26T16:04:14.730197700Z[0m [94m[INFO] TYCHO-001.MessageBus: config.streams_prefix='stream'[0m
+[1m2026-10-26T16:04:14.730199300Z[0m [94m[INFO] TYCHO-001.MessageBus: config.types_filter=None[0m
+[1m2026-10-26T16:04:14.730262500Z[0m [INFO] TYCHO-001.Cache: READY[0m
+[1m2026-10-26T16:04:14.730996000Z[0m [INFO] TYCHO-001.DataEngine: READY[0m
+[1m2026-10-26T16:04:14.731126200Z[0m [94m[INFO] TYCHO-001.DataEngine: config.graceful_shutdown_on_exception=False[0m
+[1m2026-10-26T16:04:14.731171400Z[0m [INFO] TYCHO-001.RiskEngine: READY[0m
+[1m2026-10-26T16:04:14.731220700Z[0m [94m[INFO] TYCHO-001.RiskEngine: TradingState is ACTIVE[0m
+[1m2026-10-26T16:04:14.731282900Z[0m [INFO] TYCHO-001.Throttler-ORDER_SUBMIT_THROTTLER: READY[0m
+[1m2026-10-26T16:04:14.731316900Z[0m [94m[INFO] TYCHO-001.RiskEngine: Set MAX_ORDER_SUBMIT_RATE: 100/00:00:01[0m
+[1m2026-10-26T16:04:14.731348600Z[0m [INFO] TYCHO-001.Throttler-ORDER_MODIFY_THROTTLER: READY[0m
+[1m2026-10-26T16:04:14.731364600Z[0m [94m[INFO] TYCHO-001.RiskEngine: Set MAX_ORDER_MODIFY_RATE: 100/00:00:01[0m
+[1m2026-10-26T16:04:14.731410800Z[0m [94m[INFO] TYCHO-001.RiskEngine: config.graceful_shutdown_on_exception=False[0m
+[1m2026-10-26T16:04:14.731897000Z[0m [INFO] TYCHO-001.ExecEngine: READY[0m
+[1m2026-10-26T16:04:14.731957800Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.snapshot_orders=False[0m
+[1m2026-10-26T16:04:14.731963000Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.snapshot_positions=False[0m
+[1m2026-10-26T16:04:14.731964100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.snapshot_positions_interval_secs=None[0m
+[1m2026-10-26T16:04:14.731965100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.allow_overfills=False[0m
+[1m2026-10-26T16:04:14.732025300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation=True[0m
+[1m2026-10-26T16:04:14.732030600Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation_lookback_mins=None[0m
+[1m2026-10-26T16:04:14.732031900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation_instrument_ids=None[0m
+[1m2026-10-26T16:04:14.732032900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.filter_unclaimed_external_orders=False[0m
+[1m2026-10-26T16:04:14.732034200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.filter_position_reports=False[0m
+[1m2026-10-26T16:04:14.732035400Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.filtered_client_order_ids=None[0m
+[1m2026-10-26T16:04:14.732036600Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.inflight_check_interval_ms=2000[0m
+[1m2026-10-26T16:04:14.732037500Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.inflight_check_threshold_ms=5000[0m
+[1m2026-10-26T16:04:14.732038300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.inflight_check_retries=5[0m
+[1m2026-10-26T16:04:14.732038900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.own_books_audit_interval_secs=None[0m
+[1m2026-10-26T16:04:14.732039700Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_interval_secs=None[0m
+[1m2026-10-26T16:04:14.732040200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_open_only=True[0m
+[1m2026-10-26T16:04:14.732040700Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_lookback_mins=60[0m
+[1m2026-10-26T16:04:14.732041200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_threshold_ms=5000[0m
+[1m2026-10-26T16:04:14.732041700Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.open_check_missing_retries=5[0m
+[1m2026-10-26T16:04:14.732043100Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.max_single_order_queries_per_cycle=10[0m
+[1m2026-10-26T16:04:14.732043700Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.single_order_query_delay_ms=100[0m
+[1m2026-10-26T16:04:14.732044200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_interval_secs=None[0m
+[1m2026-10-26T16:04:14.732044700Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_lookback_mins=60[0m
+[1m2026-10-26T16:04:14.732045300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_threshold_ms=5000[0m
+[1m2026-10-26T16:04:14.732045800Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.position_check_retries=3[0m
+[1m2026-10-26T16:04:14.732047600Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.reconciliation_startup_delay_secs=10.0[0m
+[1m2026-10-26T16:04:14.732048200Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_orders_interval_mins=None[0m
+[1m2026-10-26T16:04:14.732048900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_orders_buffer_mins=None[0m
+[1m2026-10-26T16:04:14.732049400Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_positions_interval_mins=None[0m
+[1m2026-10-26T16:04:14.732049900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_closed_positions_buffer_mins=None[0m
+[1m2026-10-26T16:04:14.732050400Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_account_events_interval_mins=None[0m
+[1m2026-10-26T16:04:14.732050900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_account_events_lookback_mins=None[0m
+[1m2026-10-26T16:04:14.732051300Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.purge_from_database=False[0m
+[1m2026-10-26T16:04:14.732051900Z[0m [94m[INFO] TYCHO-001.ExecEngine: config.graceful_shutdown_on_exception=False[0m
+[1m2026-10-26T16:04:14.734363300Z[0m [INFO] TYCHO-001.Cache: Cached 0 general objects from database[0m
+[1m2026-10-26T16:04:14.734388900Z[0m [INFO] TYCHO-001.Cache: Cached 0 currencies from database[0m
+[1m2026-10-26T16:04:14.734396800Z[0m [INFO] TYCHO-001.Cache: Cached 0 instruments from database[0m
+[1m2026-10-26T16:04:14.734404000Z[0m [INFO] TYCHO-001.Cache: Cached 0 accounts from database[0m
+[1m2026-10-26T16:04:14.734406900Z[0m [INFO] TYCHO-001.Cache: Cached 0 orders from database[0m
+[1m2026-10-26T16:04:14.734412100Z[0m [INFO] TYCHO-001.Cache: Cached 0 order lists from database[0m
+[1m2026-10-26T16:04:14.734419600Z[0m [INFO] TYCHO-001.Cache: Cached 0 positions from database[0m
+[1m2026-10-26T16:04:14.734435900Z[0m [INFO] TYCHO-001.Cache: Checking data integrity[0m
+[1m2026-10-26T16:04:14.734460300Z[0m [92m[INFO] TYCHO-001.Cache: Integrity check passed in 0μs[0m
+[1m2026-10-26T16:04:14.734493800Z[0m [INFO] TYCHO-001.ExecEngine: Loaded cache in 0ms[0m
+[1m2026-10-26T16:04:14.734565500Z[0m [INFO] TYCHO-001.OrderEmulator: READY[0m
+[1m2026-10-26T16:04:14.734648500Z[0m [INFO] TYCHO-001.TYCHO-001: READY[0m
+[1m2026-10-26T16:04:14.734691300Z[0m [INFO] TYCHO-001.TradingNode: Initialized in 366ms[0m
+[1m2026-10-26T16:04:14.734711400Z[0m [94m[INFO] TYCHO-001.TradingNode: has_cache_backing=False[0m
+[1m2026-10-26T16:04:14.734713000Z[0m [94m[INFO] TYCHO-001.TradingNode: has_msgbus_backing=False[0m
+[1m2026-10-26T16:04:14.735644700Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: READY[0m
+[1m2026-10-26T16:04:14.735731900Z[0m [INFO] TYCHO-001.ExecEngine: Registered OMS.UNSPECIFIED for Strategy EnsembleLiveStrategy-000[0m
+[1m2026-10-26T16:04:14.735763800Z[0m [INFO] TYCHO-001.ExecEngine: Registered external order claims for EnsembleLiveStrategy-000: [InstrumentId('BTCUSDT-PERP.BINANCE'), InstrumentId('ETHUSDT-PERP.BINANCE'), InstrumentId('SOLUSDT-PERP.BINANCE'), InstrumentId('BNBUSDT-PERP.BINANCE'), InstrumentId('XRPUSDT-PERP.BINANCE'), InstrumentId('DOGEUSDT-PERP.BINANCE'), InstrumentId('ADAUSDT-PERP.BINANCE'), InstrumentId('AVAXUSDT-PERP.BINANCE'), InstrumentId('LINKUSDT-PERP.BINANCE'), InstrumentId('LTCUSDT-PERP.BINANCE'), InstrumentId('DOTUSDT-PERP.BINANCE'), InstrumentId('TRXUSDT-PERP.BINANCE')][0m
+[1m2026-10-26T16:04:14.735771400Z[0m [INFO] TYCHO-001.TYCHO-001: Registered Strategy EnsembleLiveStrategy-000[0m
+[1m2026-10-26T16:04:14.735779000Z[0m [INFO] TYCHO-001.TradingNode: Building data client for BINANCE[0m
+[1m2026-10-26T16:04:14.759428000Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: READY[0m
+[1m2026-10-26T16:04:14.762329700Z[0m [INFO] TYCHO-001.DataClient-BINANCE: READY[0m
+[1m2026-10-26T16:04:14.762390900Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Account type: USDT_FUTURES[0m
+[1m2026-10-26T16:04:14.762397500Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: config.update_instruments_interval_mins=60[0m
+[1m2026-10-26T16:04:14.762399400Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: config.use_agg_trade_ticks=False[0m
+[1m2026-10-26T16:04:14.762423100Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Base url HTTP https://fapi.binance.com[0m
+[1m2026-10-26T16:04:14.762424500Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Base url WebSocket wss://fstream.binance.com/market[0m
+[1m2026-10-26T16:04:14.762701500Z[0m [INFO] TYCHO-001.DataEngine: Registered BINANCE[0m
+[1m2026-10-26T16:04:14.762715300Z[0m [INFO] TYCHO-001.TradingNode: Building execution client for BINANCE[0m
+[1m2026-10-26T16:04:14.765239500Z[0m [INFO] TYCHO-001.InstrumentProvider: READY[0m
+[1m2026-10-26T16:04:14.765285000Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: READY[0m
+[1m2026-10-26T16:04:14.766503900Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): OmsType=NETTING[0m
+[1m2026-10-26T16:04:14.766565000Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: READY[0m
+[1m2026-10-26T16:04:14.766603400Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Registered ExecutionClient-BINANCE[0m
+[1m2026-10-26T16:04:14.766737000Z[0m [INFO] TYCHO-001.Portfolio: Updated AccountState(account_id=BINANCE-001, account_type=MARGIN, base_currency=USDT, is_reported=True, balances=[AccountBalance(total=10_000.00000000 USDT, locked=0.00000000 USDT, free=10_000.00000000 USDT)], margins=[], event_id=13180965-ead3-4fe0-a06f-17cbbe6720be)[0m
+[1m2026-10-26T16:04:14.766788300Z[0m [INFO] TYCHO-001.ExecEngine: Registered ExecutionClient-BINANCE[0m
+[1m2026-10-26T16:04:14.768535400Z[0m [INFO] TYCHO-001.TradingNode: STARTING[0m
+[1m2026-10-26T16:04:14.768608000Z[0m [INFO] TYCHO-001.DataClient-BINANCE: RUNNING[0m
+[1m2026-10-26T16:04:14.768649300Z[0m [INFO] TYCHO-001.DataEngine: RUNNING[0m
+[1m2026-10-26T16:04:14.768685300Z[0m [INFO] TYCHO-001.RiskEngine: RUNNING[0m
+[1m2026-10-26T16:04:14.768711500Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: RUNNING[0m
+[1m2026-10-26T16:04:14.768739500Z[0m [94m[INFO] TYCHO-001.ExecEngine: Started reconciliation task[0m
+[1m2026-10-26T16:04:14.768753900Z[0m [INFO] TYCHO-001.ExecEngine: RUNNING[0m
+[1m2026-10-26T16:04:14.768760800Z[0m [INFO] TYCHO-001.DataEngine: Connecting all clients...[0m
+[1m2026-10-26T16:04:14.768763700Z[0m [INFO] TYCHO-001.DataClient-BINANCE: Connecting...[0m
+[1m2026-10-26T16:04:14.768779600Z[0m [INFO] TYCHO-001.ExecEngine: Connecting all clients...[0m
+[1m2026-10-26T16:04:14.768786400Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: Connecting...[0m
+[1m2026-10-26T16:04:14.768817200Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: Connected[0m
+[1m2026-10-26T16:04:14.768827500Z[0m [94m[INFO] TYCHO-001.TradingNode: Awaiting engine connections and initializations (60.0s timeout)...[0m
+[1m2026-10-26T16:04:14.769711500Z[0m [94m[INFO] TYCHO-001.ExecEngine: Starting continuous reconciliation with intervals: inflight=2000ms, consistency=Nones, position=Nones[0m
+[1m2026-10-26T16:04:14.769720700Z[0m [94m[INFO] TYCHO-001.ExecEngine: Awaiting startup reconciliation completion before starting continuous checks[0m
+[1m2026-10-26T16:04:14.769741800Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Initializing instruments...[0m
+[1m2026-10-26T16:04:14.769771200Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Loading instruments: XRPUSDT-PERP.BINANCE, ETHUSDT-PERP.BINANCE, BNBUSDT-PERP.BINANCE, LTCUSDT-PERP.BINANCE, TRXUSDT-PERP.BINANCE, BTCUSDT-PERP.BINANCE, SOLUSDT-PERP.BINANCE, ADAUSDT-PERP.BINANCE, LINKUSDT-PERP.BINANCE, DOGEUSDT-PERP.BINANCE, AVAXUSDT-PERP.BINANCE, DOTUSDT-PERP.BINANCE...[0m
+[1m2026-10-26T16:04:16.520735300Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Loaded 12 instruments[0m
+[1m2026-10-26T16:04:16.520747200Z[0m [INFO] TYCHO-001.BinanceFuturesInstrumentProvider: Initialized instruments[0m
+[1m2026-10-26T16:04:16.522660300Z[0m [92m[INFO] TYCHO-001.DataClient-BINANCE: Connected[0m
+[1m2026-10-26T16:04:16.523274400Z[0m [94m[INFO] TYCHO-001.TradingNode: Awaiting execution state reconciliation (30.0s timeout)...[0m
+[1m2026-10-26T16:04:16.523972900Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument XRPUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524343800Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument ETHUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524394000Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument BNBUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524435000Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument LTCUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524475800Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument TRXUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524516000Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument BTCUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524553600Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument SOLUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524598600Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument ADAUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524633800Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument LINKUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524673800Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument DOGEUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524714500Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument AVAXUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524758200Z[0m [INFO] TYCHO-001.SimulatedExchange(BINANCE): Added instrument DOTUSDT-PERP.BINANCE and created matching engine[0m
+[1m2026-10-26T16:04:16.524802100Z[0m [INFO] TYCHO-001.ExecClient-BINANCE: Generating ExecutionMassStatus...[0m
+[1m2026-10-26T16:04:16.527286700Z[0m [94m[INFO] TYCHO-001.ExecEngine: Reconciling ExecutionMassStatus for BINANCE[0m
+[1m2026-10-26T16:04:16.527302100Z[0m [94m[INFO] TYCHO-001.ExecEngine: Attempting to adjust fills for 0 instruments[0m
+[1m2026-10-26T16:04:16.536058400Z[0m [94m[INFO] TYCHO-001.ExecEngine: Updating adjusted fills for 0 instruments[0m
+[1m2026-10-26T16:04:16.536089300Z[0m [94m[INFO] TYCHO-001.ExecEngine: Final order_reports contains 0 orders, fill_reports contains 0 fills across all instruments[0m
+[1m2026-10-26T16:04:16.536161100Z[0m [92m[INFO] TYCHO-001.ExecEngine: Reconciliation for BINANCE succeeded[0m
+[1m2026-10-26T16:04:16.536184100Z[0m [92m[INFO] TYCHO-001.TradingNode: Execution state reconciled[0m
+[1m2026-10-26T16:04:16.536211700Z[0m [INFO] TYCHO-001.OrderEmulator: No emulated orders to reactivate[0m
+[1m2026-10-26T16:04:16.536236500Z[0m [INFO] TYCHO-001.OrderEmulator: RUNNING[0m
+[1m2026-10-26T16:04:16.536268300Z[0m [INFO] TYCHO-001.Portfolio: Initialized 0 open orders[0m
+[1m2026-10-26T16:04:16.536279400Z[0m [INFO] TYCHO-001.Portfolio: Initialized 0 open positions[0m
+[1m2026-10-26T16:04:16.536288700Z[0m [94m[INFO] TYCHO-001.TradingNode: Awaiting portfolio initialization (10.0s timeout)...[0m
+[1m2026-10-26T16:04:16.536388300Z[0m [92m[INFO] TYCHO-001.ExecEngine: Startup reconciliation completed[0m
+[1m2026-10-26T16:04:16.536395100Z[0m [94m[INFO] TYCHO-001.ExecEngine: Applying post-reconciliation startup delay (10.0s)[0m
+[1m2026-10-26T16:04:16.536440000Z[0m [92m[INFO] TYCHO-001.TradingNode: Portfolio initialized[0m
+[1m2026-10-26T16:04:16.536463500Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: self.config.oms_type=None[0m
+[1m2026-10-26T16:04:16.536469400Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: self.config.external_order_claims=['BTCUSDT-PERP.BINANCE', 'ETHUSDT-PERP.BINANCE', 'SOLUSDT-PERP.BINANCE', 'BNBUSDT-PERP.BINANCE', 'XRPUSDT-PERP.BINANCE', 'DOGEUSDT-PERP.BINANCE', 'ADAUSDT-PERP.BINANCE', 'AVAXUSDT-PERP.BINANCE', 'LINKUSDT-PERP.BINANCE', 'LTCUSDT-PERP.BINANCE', 'DOTUSDT-PERP.BINANCE', 'TRXUSDT-PERP.BINANCE'][0m
+[1m2026-10-26T16:04:16.536471000Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: self.config.manage_gtd_expiry=False[0m
+[1m2026-10-26T16:04:16.536482800Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: Set ClientOrderIdGenerator client_order_id count to 0[0m
+[1m2026-10-26T16:04:16.536485600Z[0m [94m[INFO] TYCHO-001.EnsembleLiveStrategy: Set ClientOrderIdGenerator order_list_id count to 0[0m
+[1m2026-10-26T16:04:16.539194400Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=BTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539346600Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=ETHUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539432900Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=SOLUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539514500Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=BNBUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539602800Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=XRPUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539682200Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=DOGEUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539759700Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=ADAUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539835500Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=AVAXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.539926800Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=LINKUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.540031100Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=LTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.540114300Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=DOTUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.540202700Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: [CMD]--> SubscribeBars(bar_type=TRXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL, client_id=None, venue=BINANCE)[0m
+[1m2026-10-26T16:04:16.548654900Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: RUNNING[0m
+[1m2026-10-26T16:04:16.548688100Z[0m [INFO] TYCHO-001.TYCHO-001: RUNNING[0m
+[1m2026-10-26T16:04:16.548701300Z[0m [INFO] TYCHO-001.TradingNode: RUNNING[0m
+[1m2026-10-26T16:04:17.469928200Z[0m [94m[INFO] TYCHO-001.BinanceWebSocketClient: ws-client 0: Connected to wss://fstream.binance.com/market[0m
+[1m2026-10-26T16:04:17.470719600Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed BTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.471338300Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed ETHUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.471963800Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed LTCUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.471980200Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed AVAXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.471986900Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed ADAUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472245300Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed BNBUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472352600Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed SOLUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472379200Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed XRPUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472464600Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed TRXUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472475200Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed LINKUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472479700Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed DOGEUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:04:17.472483400Z[0m [94m[INFO] TYCHO-001.DataClient-BINANCE: Subscribed DOTUSDT-PERP.BINANCE-1-MINUTE-LAST-EXTERNAL bars[0m
+[1m2026-10-26T16:05:56.051994700Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: MARKET_STATE {"bar_open": "2026-10-26 12:00:00+00:00", "btc_bull": true, "breadth": 0.08333333333333333, "btc_vol_pct": 0.2465753424657534, "experts": {"trend_long": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT", "AVAXUSDT", "LINKUSDT", "LTCUSDT", "DOTUSDT", "TRXUSDT"], "xs_momentum": []}}[0m
+[1m2026-10-26T16:05:56.052015200Z[0m [INFO] TYCHO-001.EnsembleLiveStrategy: HELD {}[0m
+exit 124 (124 = stopped by timeout as intended)

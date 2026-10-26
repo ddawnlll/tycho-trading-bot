@@ -31,7 +31,7 @@ from nautilus_trader.model.identifiers import InstrumentId
 
 from . import config as C
 from .ensemble import build_columns, configured_experts
-from .live import STATE_DIR, fetch_all_bars, server_now
+from .live import STATE_DIR, fetch_all_bars, last_price, server_now
 from .marketstate import build_state
 from .nautilus_bt import VENUE, EnsembleConfig, EnsembleStrategy
 
@@ -62,11 +62,14 @@ def latest_plan(bars: dict[str, pd.DataFrame]) -> tuple[dict[str, pd.DataFrame],
 
 
 class EnsembleLiveStrategy(EnsembleStrategy):
+    MAX_DECISION_DELAY = pd.Timedelta(minutes=30)  # never act on a bar that closed longer ago than this
+
     def __init__(self, config: EnsembleConfig, mode: str):
         super().__init__(config, plan={}, instruments={}, bar_types={}, expected={})
         self.mode = mode
-        self.done_bar = None
         self.held_path = STATE_DIR / f"nautilus_{mode}_held.json"
+        saved = self._load()
+        self.done_bar = pd.Timestamp(saved["done_bar"]) if saved.get("done_bar") else None
 
     # ------------------------------------------------------------------ lifecycle
     def on_start(self):
@@ -82,25 +85,37 @@ class EnsembleLiveStrategy(EnsembleStrategy):
             self.subscribe_bars(bt)
         self._adopt()
         self.clock.set_timer("tycho_decide", pd.Timedelta(minutes=1), callback=self._tick)
-        self._tick(None)
 
     def on_bar(self, bar):
         sym = bar.bar_type.instrument_id.symbol.value.replace("-PERP", "")
         self.close[sym] = float(bar.close)
 
     def _tick(self, _event):
+        try:
+            self._tick_inner()
+        except Exception as e:  # never let a data hiccup kill the node; retried next minute
+            self.log.error(f"decision tick failed: {e!r}")
+
+    def _tick_inner(self):
         now = server_now()
         cur = now.floor(C.TIMEFRAME)
         if cur == self.done_bar or now < cur + pd.Timedelta(seconds=15):
             return
+        if now > cur + self.MAX_DECISION_DELAY:  # e.g. restarted mid-bar: wait for the next close
+            self.log.warning(f"bar closed at {cur} is older than {self.MAX_DECISION_DELAY}; skipping it")
+            self.done_bar = cur
+            self._persist()
+            return
+        # NOTE: blocking REST (~15-30 s once per 4h) inside the event loop; reduce-only stops rest on
+        # the exchange meanwhile.
         bars = fetch_all_bars()
         if bars["BTCUSDT"].index[-1] != cur - BAR:
             self.log.warning(f"bars not ready: have {bars['BTCUSDT'].index[-1]} want {cur - BAR}")
             return
         self.plan, state = latest_plan(bars)
         self.cols = list(self.plan)
-        for s, df in bars.items():
-            self.close.setdefault(s, float(df["close"].iloc[-1]))
+        for s in C.UNIVERSE:  # fresh prices for sizing (not the 4h close)
+            self.close[s] = last_price(s)
         t_open = int((cur - BAR).value)
         self._decide(t_open)
         self.done_bar = cur
@@ -108,38 +123,44 @@ class EnsembleLiveStrategy(EnsembleStrategy):
         self.log.info("MARKET_STATE " + json.dumps(state, default=str))
         self.log.info("HELD " + json.dumps({s: {k: str(v) for k, v in h.items()} for s, h in self.held.items()}))
 
-    # ------------------------------------------------------------------ safety
+    # ------------------------------------------------------------------ persistence + restart safety
+    def _load(self) -> dict:
+        try:
+            return json.loads(self.held_path.read_text()) if self.held_path.exists() else {}
+        except json.JSONDecodeError:
+            return {}
+
     def _persist(self):
         STATE_DIR.mkdir(exist_ok=True)
-        self.held_path.write_text(json.dumps({s: dict(col=h["col"], stop=h["stop"]) for s, h in self.held.items()}))
+        tmp = self.held_path.with_suffix(".tmp")
+        tmp.write_text(json.dumps({"done_bar": str(self.done_bar) if self.done_bar is not None else None,
+                                   "held": {s: dict(col=h["col"], stop=h["stop"]) for s, h in self.held.items()}}))
+        tmp.replace(self.held_path)
 
     def _adopt(self):
-        """Restart safety: every open position must be owned and protected, else flatten it."""
-        saved = json.loads(self.held_path.read_text()) if self.held_path.exists() else {}
+        """Every open position must be owned and protected, else cancel its orders and flatten it."""
+        saved = self._load().get("held", {})
         for pos in self.cache.positions_open(venue=VENUE):
             s = pos.instrument_id.symbol.value.replace("-PERP", "")
             stops = [o for o in self.cache.orders_open(instrument_id=pos.instrument_id)
                      if o.order_type == OrderType.STOP_MARKET and o.side == OrderSide.SELL]
-            if s in saved and stops:
+            if s in saved and len(stops) == 1:
                 self.held[s] = dict(col=saved[s]["col"], stop=float(stops[0].trigger_price),
                                     stop_order=stops[0].client_order_id, entry_order=None)
                 self.log.info(f"adopted {s} owned by {saved[s]['col']}")
             else:
-                self.log.warning(f"unowned or unprotected position {s}; flattening")
+                self.log.warning(f"unowned/unprotected position {s} ({len(stops)} stops); flattening")
+                self.cancel_all_orders(pos.instrument_id)
                 self.close_position(pos)
+        self._persist()
 
     def on_order_filled(self, event):
         super().on_order_filled(event)
         self._persist()
 
-    def on_order_rejected(self, event):
-        s = event.instrument_id.symbol.value.replace("-PERP", "")
-        h = self.held.get(s)
-        if h is not None and event.client_order_id == h.get("stop_order"):
-            self.log.error(f"stop rejected for {s}: {event.reason}; flattening")
-            h["stop_order"] = None
-            self._exit(s, "stop_rejected")
-            self._persist()
+    def _order_failed(self, event, what: str):
+        super()._order_failed(event, what)
+        self._persist()
 
 
 def build_node(mode: str, risk: float) -> TradingNode:
@@ -166,6 +187,7 @@ def build_node(mode: str, risk: float) -> TradingNode:
         data_clients={"BINANCE": data}, exec_clients={"BINANCE": exec_cfg}))
     node.add_data_client_factory("BINANCE", BinanceLiveDataClientFactory)
     node.add_exec_client_factory("BINANCE", exec_factory)
-    node.trader.add_strategy(EnsembleLiveStrategy(EnsembleConfig(risk=risk), mode))
+    claims = [str(instrument_id(s)) for s in C.UNIVERSE]  # own reconciled orders after a restart
+    node.trader.add_strategy(EnsembleLiveStrategy(EnsembleConfig(risk=risk, external_order_claims=claims), mode))
     node.build()
     return node

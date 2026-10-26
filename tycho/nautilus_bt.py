@@ -95,6 +95,7 @@ class EnsembleStrategy(Strategy):
         self.close: dict[str, float] = {}
         self.held: dict[str, dict] = {}       # symbol -> {col, stop, stop_order, pending}
         self.equity_log: list[tuple[int, float]] = []
+        self._cancelling: set = set()        # client ids we cancel on purpose
         self.cols = list(plan)
 
     def on_start(self):
@@ -125,6 +126,7 @@ class EnsembleStrategy(Strategy):
         return df.loc[t_open] if t_open in df.index else None
 
     def _decide(self, t_open: int):
+        self._sync_held()
         # 1) ratchet trailing stops (tycho: at close i, effective from bar i+1)
         for s, h in list(self.held.items()):
             r = self._row(h["col"], t_open)
@@ -132,14 +134,11 @@ class EnsembleStrategy(Strategy):
                 continue
             tr = r["long_trail"]
             if np.isfinite(tr) and tr > h["stop"]:
-                o = self.cache.order(h["stop_order"])
-                if o is not None and o.is_open:
-                    newp = self.inst[s].make_price(tr)
-                    if float(newp) < self.close[s]:
-                        self.modify_order(o, trigger_price=newp)
-                        h["stop"] = float(newp)
-                    else:  # trail already through the market: exit now (tycho would stop next bar)
-                        self._exit(s, "trail_through")
+                newp = self.inst[s].make_price(tr)
+                if float(newp) < self.close[s]:
+                    self._replace_stop(s, float(newp))
+                else:  # trail already through the market: exit now (tycho would stop next bar)
+                    self._exit(s, "trail_through")
         # 2) signal exits
         for s, h in list(self.held.items()):
             r = self._row(h["col"], t_open)
@@ -172,35 +171,96 @@ class EnsembleStrategy(Strategy):
             self.submit_order(order)
         self.equity_log.append((t_open + BAR_NS, eq))
 
+    # ------------------------------------------------------------------ order management
+    def _sync_held(self):
+        """Drop coins whose protected position is gone (e.g. a stop fill this strategy didn't see)."""
+        for s, h in list(self.held.items()):
+            if h["stop_order"] is not None and float(self.portfolio.net_position(self.inst[s].id)) == 0:
+                self._cancel(h["stop_order"])
+                self.held.pop(s)
+
+    def _cancel(self, client_order_id):
+        o = self.cache.order(client_order_id) if client_order_id is not None else None
+        if o is not None and o.is_open:
+            self._cancelling.add(client_order_id)
+            self.cancel_order(o)
+
+    def _submit_stop(self, s: str, stop: float):
+        inst = self.inst[s]
+        qty = float(self.portfolio.net_position(inst.id))
+        if qty <= 0:
+            return None
+        o = self.order_factory.stop_market(inst.id, OrderSide.SELL, inst.make_qty(qty), inst.make_price(stop),
+                                           trigger_type=TriggerType.LAST_PRICE, reduce_only=True)
+        self.submit_order(o)
+        return o.client_order_id
+
+    def _replace_stop(self, s: str, stop: float):
+        """New stop first, then cancel the old one (Binance rejects modify on STOP_MARKET)."""
+        h = self.held[s]
+        old = h["stop_order"]
+        new = self._submit_stop(s, stop)
+        if new is None:
+            return
+        h["stop_order"], h["stop"] = new, stop
+        self._cancel(old)
+
     def _exit(self, s: str, reason: str):
         h = self.held.get(s)
         if h is None:
             return
-        if h["stop_order"] is not None:
-            o = self.cache.order(h["stop_order"])
-            if o is not None and o.is_open:
-                self.cancel_order(o)
+        self._cancel(h["stop_order"])
         qty = self.portfolio.net_position(self.inst[s].id)
         if qty > 0:
             self.submit_order(self.order_factory.market(self.inst[s].id, OrderSide.SELL,
                                                         self.inst[s].make_qty(float(qty)), reduce_only=True))
         self.held.pop(s, None)
 
+    def _sym(self, event) -> str:
+        return event.instrument_id.symbol.value.replace("-PERP", "")
+
     def on_order_filled(self, event):
-        s = event.instrument_id.symbol.value.replace("-PERP", "")
+        s = self._sym(event)
         h = self.held.get(s)
         if h is None:
             return
-        if event.client_order_id == h.get("entry_order") and h["stop_order"] is None:
-            inst = self.inst[s]
-            qty = self.portfolio.net_position(inst.id)
-            stop = inst.make_price(h["stop"])
-            o = self.order_factory.stop_market(inst.id, OrderSide.SELL, inst.make_qty(float(qty)), stop,
-                                               trigger_type=TriggerType.LAST_PRICE, reduce_only=True)
-            h["stop_order"] = o.client_order_id
-            self.submit_order(o)
+        if event.client_order_id == h.get("entry_order"):
+            entry = self.cache.order(event.client_order_id)
+            if h["stop_order"] is None and entry is not None and entry.is_closed:  # protect the FULL fill
+                h["stop_order"] = self._submit_stop(s, h["stop"])
         elif event.client_order_id == h.get("stop_order"):
             self.held.pop(s, None)
+
+    def _order_failed(self, event, what: str):
+        s = self._sym(event)
+        h = self.held.get(s)
+        cid = event.client_order_id
+        if cid in self._cancelling:
+            self._cancelling.discard(cid)
+            return
+        if h is None:
+            return
+        if cid == h.get("entry_order"):
+            if float(self.portfolio.net_position(self.inst[s].id)) == 0:
+                self.held.pop(s, None)        # entry never happened: free the slot
+            elif h["stop_order"] is None:
+                h["stop_order"] = self._submit_stop(s, h["stop"])  # partially filled then failed
+        elif cid == h.get("stop_order"):
+            self.log.error(f"stop {what} for {s}; flattening")
+            h["stop_order"] = None
+            self._exit(s, f"stop_{what}")
+
+    def on_order_rejected(self, event):
+        self._order_failed(event, "rejected")
+
+    def on_order_denied(self, event):
+        self._order_failed(event, "denied")
+
+    def on_order_canceled(self, event):
+        self._order_failed(event, "canceled")
+
+    def on_order_expired(self, event):
+        self._order_failed(event, "expired")
 
 
 def make_bars(bt: BarType, inst: CryptoPerpetual, df: pd.DataFrame) -> list[Bar]:
@@ -246,6 +306,10 @@ def run(data: dict[str, pd.DataFrame], cols, sigs, start, end, equity0: float = 
     pos = engine.trader.generate_positions_report()
     fills = engine.trader.generate_order_fills_report()
     acct = engine.trader.generate_account_report(VENUE)
+    orders = engine.trader.generate_orders_report()
+    open_orders = len(engine.cache.orders_open())
+    held_end = dict(strat.held)
     eq = pd.Series({pd.Timestamp(t, tz="UTC"): v for t, v in strat.equity_log}).sort_index()
     engine.dispose()
-    return dict(equity=eq, positions=pos, fills=fills, account=acct)
+    return dict(equity=eq, positions=pos, fills=fills, account=acct, orders=orders, open_orders=open_orders,
+                held_end=held_end)

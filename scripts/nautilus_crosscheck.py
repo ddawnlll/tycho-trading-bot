@@ -13,6 +13,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -48,6 +49,23 @@ def stage(name, data, experts, start, end, kw):
                 nt_set.add((sym.split("-PERP")[0], o))  # nautilus fills at close of bar i == open of bar i+1
     matched = ty_set & nt_set
     unmatched = len(ty_set ^ nt_set)
+    # per-trade exit time + prices (nautilus stamps fills at bar close = next bar open; a stop hit
+    # inside bar j closes at ts(j)+BAR, a market exit decided at close i at ts(i)+BAR = tycho's fill bar)
+    ty_by = {(r.symbol.split(":")[1], r.entry_time): r for r in t.itertuples()}
+    exit_ok, d_entry, d_exit = 0, [], []
+    if len(p):
+        for r in p.itertuples():
+            if pd.isna(r.ts_closed):
+                continue
+            k = (str(r.instrument_id).split("-PERP")[0], pd.Timestamp(r.ts_opened, tz="UTC") if pd.Timestamp(r.ts_opened).tzinfo is None else pd.Timestamp(r.ts_opened))
+            tr = ty_by.get(k)
+            if tr is None:
+                continue
+            closed = pd.Timestamp(r.ts_closed)
+            closed = closed.tz_localize("UTC") if closed.tzinfo is None else closed
+            exit_ok += tr.exit_time in (closed - BAR, closed)
+            d_entry.append(abs(float(r.avg_px_open) / tr.entry - 1))
+            d_exit.append(abs(float(r.avg_px_close) / tr.exit - 1))
     eq_ty = ty["equity"]
     eq_nt = nt["equity"].copy()
     eq_nt.index = eq_nt.index - BAR  # nautilus logs at bar close; tycho indexes by bar open
@@ -58,11 +76,17 @@ def stage(name, data, experts, start, end, kw):
     m_ty = metrics(eq_ty, ty["trades"])
     m_nt = metrics(eq_nt, pd.DataFrame())
     res = dict(stage=name, tycho_trades=len(ty_set), nautilus_trades=len(nt_set), matched=len(matched),
+               exit_time_matched=exit_ok,
+               entry_px_diff_median=float(np.median(d_entry)) if d_entry else float("nan"),
+               entry_px_diff_p99=float(np.quantile(d_entry, 0.99)) if d_entry else float("nan"),
+               exit_px_diff_median=float(np.median(d_exit)) if d_exit else float("nan"),
+               exit_px_diff_p99=float(np.quantile(d_exit, 0.99)) if d_exit else float("nan"),
                unmatched_share=unmatched / max(len(ty_set | nt_set), 1), final_equity_gap=final_gap,
                max_daily_equity_gap=gap, tycho_cagr=m_ty["cagr"], nautilus_cagr=m_nt["cagr"],
                tycho_dd=m_ty["max_dd"], nautilus_dd=m_nt["max_dd"], tycho_sharpe=m_ty["sharpe"],
                nautilus_sharpe=m_nt["sharpe"])
-    res["pass"] = bool(res["unmatched_share"] <= 0.01 and abs(final_gap) < 0.005 and gap < 0.005)
+    res["pass"] = bool(res["unmatched_share"] <= 0.01 and exit_ok >= 0.99 * len(matched)
+                       and abs(final_gap) < 0.005 and gap < 0.005)
     return res, ty, nt, sorted(ty_set - nt_set)[:10], sorted(nt_set - ty_set)[:10]
 
 

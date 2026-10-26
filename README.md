@@ -44,16 +44,19 @@ Ensemble per year: 2020 +52%, 2021 +85%, 2022 −2%, 2023 +20%, 2024 +46%, **202
 **Adding experts barely improved on trend_long alone** — the honest headline.
 
 ## NautilusTrader cross-check (`runs/*_nautilus_crosscheck`)
-Same rounded bars, slippage 0, funding 0, both engines: BTC 44/44 trades identical, 12-coin trend
-286/286, ensemble 252/252; final equity within 0.03%, max daily gap ≤ 0.15%. Nautilus fills at the
-bar close (tycho: next open) and charges its own commissions, so the agreement is not by construction.
+Same rounded bars, slippage 0, funding 0, both engines: BTC 44/44 trades, 12-coin trend 286/286,
+ensemble 252/252 — matched on entry AND exit time; per-trade entry price diff p99 0.03%, exit p99
+0.01%; final equity within 0.03%, max daily gap ≤ 0.15%. Trade *timing* agreement is largely implied
+by the shared signals; the independent part is Nautilus' fills, stop triggers, fees and accounting.
+Nautilus order handling (stop cancel/replace, full-fill stop placement, denied entry) is also tested
+on synthetic data in `tests/test_nautilus_orders.py`.
 
 ## Run
 ```bash
 uv venv -p 3.12 .venv && uv pip install -p .venv/Scripts/python.exe numpy pandas pyarrow requests xgboost scikit-learn ccxt pytest pyflakes nautilus_trader
 .venv/Scripts/python.exe scripts/download.py                  # ~5 min, public data
 curl -s https://fapi.binance.com/fapi/v1/exchangeInfo -o data/exchange_info.json
-.venv/Scripts/python.exe -m pytest -q tests                   # ~4 min
+.venv/Scripts/python.exe -m pytest -q tests                   # 21 tests, ~4 min
 .venv/Scripts/python.exe -m scripts.expert_research           # per-expert IS/OOS
 .venv/Scripts/python.exe -m scripts.ensemble_research         # ensemble pick on IS
 .venv/Scripts/python.exe -m scripts.nautilus_crosscheck       # tycho vs NautilusTrader
@@ -73,7 +76,12 @@ Demo / live need `BINANCE_API_KEY` / `BINANCE_API_SECRET`:
   no keys were used. Nautilus sandbox and backtest exercised the Nautilus order logic (market entry,
   reduce-only STOP_MARKET, modify, cancel) on Nautilus' simulated exchange only. Run demo first.
 - Nautilus live: bar fetch for decisions is a blocking REST call (~15–30 s every 4 h) inside the
-  event loop; restart adoption flattens any position without a saved owner and an open stop.
+  event loop. Restart safety: last decided bar is persisted, bars that closed > 30 min ago are
+  skipped, reconciled orders are claimed, and any position without a saved owner and exactly one
+  open stop has its orders cancelled and is flattened. Stops move by submit-new-then-cancel-old
+  (Binance rejects modify on STOP_MARKET) — verified only on Nautilus' simulated exchange.
+- Selection was IS-only by rule, but OOS results were visible throughout and code changed between
+  two expert runs (see `runs/README.md` errata). The 2024+ window is no longer a clean holdout.
 - tycho live: exit price after an exchange stop is logged as an estimate; stops trigger on last price.
 - Funding is in tycho backtests but not in Nautilus (not simulated there).
 - BNB funding history has many exact-zero records → BNB long costs may be slightly understated.

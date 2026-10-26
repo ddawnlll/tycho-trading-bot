@@ -1,0 +1,25 @@
+{
+  "start": "2024-01-01",
+  "end": "2030-01-01",
+  "kw": {
+    "max_positions": 5,
+    "max_gross": 2.0,
+    "max_lev_pos": 1.0,
+    "risk": 0.005
+  },
+  "experts": [
+    [
+      "trend_long",
+      {},
+      {}
+    ],
+    [
+      "xs_momentum",
+      {
+        "top_k": 4,
+        "exit_rank": 7
+      },
+      {}
+    ]
+  ]
+}

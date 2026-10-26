@@ -66,24 +66,28 @@ def decide(bars: dict[str, pd.DataFrame], positions: dict[str, Position]) -> Dec
     d = Decision(bar_time=last + BAR, regime_bull=bool(ms.btc_bull.iloc[-1]))
     snap = ms.snapshot(last)
     d.state = dict(btc_bull=snap["btc_bull"], breadth=snap["breadth"], btc_vol_pct=snap["btc_vol_pct"], experts={})
-    for ex in configured_experts():
+    experts = configured_experts()
+    sigs = {(ex.name, s): ex.signals(live[s], ms.for_symbol(s)) for ex in experts for s in C.UNIVERSE if s in live}
+    # pass 1: manage held coins (owner's exit signal, else trailing stop)
+    for s, p in positions.items():
+        sig = sigs.get((p.expert, s))
+        if sig is None:
+            continue
+        if sig.long_exit[-1]:
+            d.exits.append(s)
+        elif np.isfinite(sig.long_trail[-1]) and sig.long_trail[-1] > p.stop:
+            d.stop_moves[s] = float(sig.long_trail[-1])
+    # pass 2: entries in priority order; a coin exiting this bar may be re-entered (as the engine does)
+    for ex in experts:
         active = []
         for s in C.UNIVERSE:
             if s not in live:
                 continue
             st = ms.for_symbol(s)
-            sig = ex.signals(live[s], st)
             if bool(ex.requires(st, **ex.req_params).fillna(False).iloc[-1]):
                 active.append(s)
-            p = positions.get(s)
-            if p is not None:
-                if p.expert != ex.name:
-                    continue
-                if sig.long_exit[-1]:
-                    d.exits.append(s)
-                elif np.isfinite(sig.long_trail[-1]) and sig.long_trail[-1] > p.stop:
-                    d.stop_moves[s] = float(sig.long_trail[-1])
-            elif sig.long_entry[-1] and np.isfinite(sig.long_stop[-1]):
+            sig = sigs[(ex.name, s)]
+            if (s not in positions or s in d.exits) and sig.long_entry[-1] and np.isfinite(sig.long_stop[-1]):
                 d.entries.append((ex.name, s, float(sig.long_stop[-1])))
         d.state["experts"][ex.name] = active  # coins where this expert's requested state holds
     return d
@@ -314,8 +318,9 @@ def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk
             log({"event": "stop_move_failed", "symbol": s, "stop": new_stop, "kept": p.stop, "error": repr(e)})
         save_state(mode, account, positions)
     for s in dec.exits:
-        p = positions.pop(s)
-        exit_px = broker.sell(p, prices[s])
+        p = positions[s]
+        exit_px = broker.sell(p, prices[s])  # sell first: if it raises, the position stays tracked
+        positions.pop(s)
         log({"event": "exit_signal", "symbol": s, "expert": p.expert, "exit": exit_px, "entry": p.entry,
              "r": (exit_px - p.entry) * p.qty / p.r_unit})
         save_state(mode, account, positions)
