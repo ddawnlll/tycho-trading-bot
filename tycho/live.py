@@ -177,6 +177,7 @@ class BinanceBroker:
     """ccxt binanceusdm. One-way mode, cross margin. Stops are exchange-side reduce-only orders."""
 
     def __init__(self, testnet: bool):
+        raise RuntimeError("Exchange execution disabled. Use python -m scripts.nautilus_live")
         import ccxt
         key, sec = os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET")
         if not key or not sec:
@@ -364,6 +365,7 @@ def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk
 
 
 def main(mode: str = "paper", risk: float = C.RISK_DEFAULT, once: bool = False, poll: int = 60):
+    raise RuntimeError("Legacy runner retired. Use python -m scripts.nautilus_live for Nautilus paper trading")
     _MODE[0] = mode
     account, positions = load_state(mode)
     broker = PaperBroker(account) if mode == "paper" else BinanceBroker(testnet=(mode == "testnet"))

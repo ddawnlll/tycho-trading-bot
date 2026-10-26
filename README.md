@@ -1,87 +1,127 @@
-# Tycho — crypto expert-ensemble bot (Binance USDT-M perpetuals)
+# Tycho: one paper bot, evidence-bound research
 
-Research → experts that trade only in the market state they request → the same rules in a
-tycho runner and a NautilusTrader node. Every research invocation is saved under `runs/`
-(see `runs/README.md`, `runs/index.csv`).
+**PRE-EXPERIMENTAL / EVIDENCE-BOUND — NO_ECONOMIC_CLAIM.**
+Main repository: `ddawnlll/tycho-trading-bot`. NautilusTrader owns orders, fills,
+protective stops, positions and balances. Binance supplies public USDT-M market
+data. No API keys are needed. Exchange execution (including real money and demo
+account execution) is disabled at the programmatic boundary and CLI.
 
-## Architecture
-- `tycho/marketstate.py` — **MarketState service**, causal, computed at each 4h close:
-  BTC regime (close vs EMA1200 ≈ 200 days), breadth (share of coins above EMA200), BTC vol
-  percentile, per-coin trend/range (EMA50/200 + efficiency ratio), funding z-score, 30-day
-  momentum rank.
-- `tycho/experts.py` — **experts**: each = signal rule + `requires(state)`; entries only where the
-  requested state holds. One expert per coin at a time (Binance one-way netting); priority = order
-  in `config.EXPERTS`.
-- `tycho/engine_multi.py` — shared-account backtester (caps: 5 positions, 2x gross, 1x per coin).
-- `tycho/nautilus_bt.py` — the same ensemble as a NautilusTrader `Strategy` (backtest).
-- `tycho/nautilus_live.py` — NautilusTrader `TradingNode` (sandbox / Binance demo / live).
-- `tycho/live.py` — lightweight ccxt runner (paper / demo / live) with the same decisions.
-- `tycho/config.py` — single source of truth for universe, experts, sizing.
+The two existing experts, `trend_long` and `xs_momentum`, are authorized only for
+paper observation by the owner. This is not a scientific admission or profitability
+claim. No new expert can enter the paper allowlist through research output.
 
-## Experts (selection on 2020–2023 only; OOS = 2024-01 → 2026-10, never used to select)
-| expert | requested state | IS Sharpe | admitted | OOS Sharpe |
-|---|---|---|---|---|
-| trend_long (Donchian 30/30, 3 ATR) | BTC bull | 1.42 | yes | 0.93 |
-| xs_momentum (top-4 by 30d return, daily) | BTC bull + breadth > 50% | 1.77 | yes | 0.33 |
-| funding_squeeze (shorts crowded) | BTC bull + funding z < −1 | 0.78 | yes | −0.44 |
-| squeeze_breakout (vol contraction) | low vol + bull | 0.36 | no | 0.22 |
-| trend_short (Donchian short) | BTC bear + weak breadth | 0.28 | no | −0.57 |
-| range_revert (RSI2 / Bollinger) | coin in range + bull | −0.59 | no | −2.06 |
+## Run on Windows
 
-Ensemble pick on IS (by MAR): **trend_long + xs_momentum, max 5 positions** (funding_squeeze lost
-OOS in every combination and was not picked).
+Python 3.12 or 3.13 is required. From this repository:
 
-## Results (0.5% risk/trade, fees 0.05%/side, slippage 2–5 bps, real funding)
-| | CAGR | max DD | Sharpe |
-|---|---|---|---|
-| Ensemble, OOS 2024–26 | 16.6% | −19.3% | 0.95 |
-| Ensemble, OOS, 3× costs | 12.9% | −20.0% | 0.77 |
-| trend_long alone, OOS | 16.2% | −18.8% | 0.93 |
-| BTC spot buy & hold, OOS | 15.9% | −60.7% | 0.51 |
-
-Ensemble per year: 2020 +52%, 2021 +85%, 2022 −2%, 2023 +20%, 2024 +46%, **2025 +2%, 2026 YTD −1%**.
-46% of months positive. 3-month block bootstrap: P(losing 12 months) ≈ 18%, 95th-pct DD ≈ −24%.
-**Adding experts barely improved on trend_long alone** — the honest headline.
-
-## NautilusTrader cross-check (`runs/*_nautilus_crosscheck`)
-Same rounded bars, slippage 0, funding 0, both engines: BTC 44/44 trades, 12-coin trend 286/286,
-ensemble 252/252 — matched on entry AND exit time; per-trade entry price diff p99 0.03%, exit p99
-0.01%; final equity within 0.03%, max daily gap ≤ 0.15%. Trade *timing* agreement is largely implied
-by the shared signals; the independent part is Nautilus' fills, stop triggers, fees and accounting.
-Nautilus order handling (stop cancel/replace, full-fill stop placement, denied entry) is also tested
-on synthetic data in `tests/test_nautilus_orders.py`.
-
-## Run
-```bash
-uv venv -p 3.12 .venv && uv pip install -p .venv/Scripts/python.exe numpy pandas pyarrow requests xgboost scikit-learn ccxt pytest pyflakes nautilus_trader
-.venv/Scripts/python.exe scripts/download.py                  # ~5 min, public data
-curl -s https://fapi.binance.com/fapi/v1/exchangeInfo -o data/exchange_info.json
-.venv/Scripts/python.exe -m pytest -q tests                   # 21 tests, ~4 min
-.venv/Scripts/python.exe -m scripts.expert_research           # per-expert IS/OOS
-.venv/Scripts/python.exe -m scripts.ensemble_research         # ensemble pick on IS
-.venv/Scripts/python.exe -m scripts.nautilus_crosscheck       # tycho vs NautilusTrader
-.venv/Scripts/python.exe -m scripts.validate --risk 0.005     # stress tests
-.venv/Scripts/python.exe -m scripts.nautilus_live             # Nautilus sandbox: live data, simulated fills
-.venv/Scripts/python.exe -m scripts.live                      # tycho paper runner
+```powershell
+uv venv -p 3.12 .venv
+uv pip install -p .venv/Scripts/python.exe -e '.[test]'
+.venv/Scripts/python.exe -m scripts.nautilus_live
 ```
-Demo / live need `BINANCE_API_KEY` / `BINANCE_API_SECRET`:
-`-m scripts.nautilus_live --mode testnet` (Binance demo account) or `--mode live --i-understand-real-money`
-(same flags for `-m scripts.live`). Journals: `journal/`; Nautilus logs MARKET_STATE each 4h bar.
 
-## Known limitations
-- Backtest ≠ future. OOS is one 34-month window; 2025–26 were roughly flat.
-- The 12-coin universe was picked in 2026 → survivorship bias, also in breadth/momentum rank.
-- Many variants were tried (all logged); IS-best parameters repeatedly did worse OOS than average.
-- Real-exchange order paths (tycho ccxt and Nautilus Binance exec client) were **never executed** —
-  no keys were used. Nautilus sandbox and backtest exercised the Nautilus order logic (market entry,
-  reduce-only STOP_MARKET, modify, cancel) on Nautilus' simulated exchange only. Run demo first.
-- Nautilus live: bar fetch for decisions is a blocking REST call (~15–30 s every 4 h) inside the
-  event loop. Restart safety: last decided bar is persisted, bars that closed > 30 min ago are
-  skipped, reconciled orders are claimed, and any position without a saved owner and exactly one
-  open stop has its orders cancelled and is flattened. Stops move by submit-new-then-cancel-old
-  (Binance rejects modify on STOP_MARKET) — verified only on Nautilus' simulated exchange.
-- Selection was IS-only by rule, but OOS results were visible throughout and code changed between
-  two expert runs (see `runs/README.md` errata). The 2024+ window is no longer a clean holdout.
-- tycho live: exit price after an exchange stop is logged as an estimate; stops trigger on last price.
-- Funding is in tycho backtests but not in Nautilus (not simulated there).
-- BNB funding history has many exact-zero records → BNB long costs may be slightly understated.
+`python -m scripts.live` is an alias to the same Nautilus bot. `--mode sandbox`
+is an alias for `--mode paper`. There is no live/testnet execution flag.
+Use `--run-seconds 155` for a bounded connection/reporting smoke test. Stop a
+foreground run with Ctrl+C. One OS lock prevents two local paper instances.
+
+```powershell
+.venv/Scripts/python.exe -m scripts.paper_status
+Get-Content journal/nautilus/latest.json
+New-Item -ItemType File live_state/PAUSE  # block new entries; continue managing exits/stops
+Remove-Item -LiteralPath live_state/PAUSE # allow entries again unless drawdown-halted
+```
+
+Decisions use complete, synchronized, validated closed 4h bars, sufficient warmup,
+fresh streamed prices, fixed expert manifests and a 30-minute decision deadline.
+An old bar on startup produces an observation and an explicit ABSTAIN, never a
+catch-up order. Signals, market state, entry/exit decisions, fills, ownership,
+funding and errors are recorded in `journal/nautilus/<session>.jsonl`. The latest
+account snapshot updates every minute, with net PnL, native realized/unrealized PnL,
+current/max drawdown, positions, cost deductions and lifecycle status.
+
+Every process start creates a **new 10,000 USDT simulated session**. Historical
+sessions are retained separately; positions/balances are not restored by the
+Nautilus sandbox adapter. Do not combine fresh sessions into a continuous equity
+curve or assume a restart resumes an old position. `paper_status` marks reports
+older than three minutes STALE. The node reconnects its data client; after a
+process/machine shutdown, run the command again. This is not an installed Windows
+service or a promise of uptime while this computer is off.
+
+## Risk and costs
+
+Defaults: 0.5% risk per trade, 5 positions, 2x gross and 1x per-symbol notional.
+Pending entries reserve gross exposure. Native reduce-only stops protect partial
+fills; denied orders free reservations. Exit ownership is retained until filled.
+A 20% drawdown halt flattens positions and blocks new entries for that session.
+Missing data or changed expert code/parameters blocks decisions. Network history
+fetches run outside the Nautilus event loop so simulated stops keep processing.
+
+Native instrument fees are charged by Nautilus. Additional adverse slippage of
+2bp per fill for BTC/ETH and 5bp for other coins is deducted in reported net equity
+and sizing. This is a cost reserve, not a claim that the sandbox filled at that
+price. Actual published Binance funding settlements (rate and settlement mark)
+are applied to the simulated inventory at settlement time, deduplicated per
+symbol/time. Pending settlement retrieval is retried; it is not credited as zero
+performance evidence. These models cannot prove real exchange fill quality.
+
+## Five candidates, sequential research, no automatic admission
+
+The fixed queue is `trend_long`, `xs_momentum`, `funding_squeeze`,
+`squeeze_breakout`, `range_revert`. The last three stay disabled. The sixth legacy
+short-only idea is outside this five-candidate scope. There is no optimizer,
+learned router, extra execution engine, factory framework or Kanban dependency in
+the supported workflow. Older backtest/ccxt modules remain only for regression
+and historical reproducibility; their runner and exchange broker are disabled.
+
+Research needs locally cached public data and instrument filters:
+
+```powershell
+.venv/Scripts/python.exe -m scripts.download
+Invoke-WebRequest https://fapi.binance.com/fapi/v1/exchangeInfo -OutFile data/exchange_info.json
+.venv/Scripts/python.exe -m scripts.research_queue
+```
+
+The queue uses NautilusTrader for execution and accounting. It writes native
+orders/fills/positions, cost-adjusted equity, a 3x-cost stress curve, 30-day block
+bootstrap/sign-null diagnostics and a hash-chained trial log. Data, code and expert
+manifests are identified. Existing `runs/` results are never inputs to admission.
+Historical reruns always report BLOCKED for approval, even when positive.
+The latest diagnostic audit found losses for all five fixed candidates; see the
+new `*_candidate_audit/summary.json`. No candidate was activated by those runs.
+
+`research/protocol.json` freezes a future 180-day observation window, five
+manifests, implementation hashes and provisional review thresholds. It is created
+once by `python -m scripts.freeze_research` and refuses overwrite. To review the
+frozen window after it completes and public cache coverage is refreshed:
+
+```powershell
+.venv/Scripts/python.exe -m scripts.research_queue --prospective
+```
+
+This refuses incomplete time windows, changed implementation/manifests or missing
+coverage. Thresholds: at least 180 days and 30 closed trades; positive net return
+and 3x-cost return; max drawdown at most 20%; positive 5th-percentile block-bootstrap
+mean; sign-null p <= 0.01 for a family of five. These are provisional screening
+rules, not proof of alpha. Success only produces AWAITING_OWNER_APPROVAL; it never
+changes configuration or starts a strategy. An explicit owner-approved code change
+is required to extend the two-expert paper allowlist. Real money remains disabled.
+
+Historical funding uses cached hourly funding rates and hourly open prices as mark
+proxies. The fixed 2026 universe has survivorship bias. Bar fills omit queue/impact
+uncertainty and 30-day bootstrap blocks may be too short for long holding periods.
+An owner review must address these limits before making any stronger claim.
+[Archived results](docs/LEGACY_RESULTS.md) are contaminated research history.
+[Migration notes](docs/MIGRATION.md) record what was selected from `ddawnlll/tycho`.
+
+## Verify
+
+```powershell
+.venv/Scripts/python.exe -m pytest -q tests
+.venv/Scripts/python.exe -m pyflakes tycho scripts
+```
+
+Tests cover causal signal parity, data rejection, broker disablement, manifests,
+costs/funding, report drawdowns, native partial fills/protective stops, pending
+exposure, trial tampering, process locks and fail-closed review. Synthetic execution
+tests establish mechanics, not economic success.

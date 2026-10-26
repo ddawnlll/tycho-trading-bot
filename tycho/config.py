@@ -1,4 +1,4 @@
-"""Single source of truth for the strategy that research validated and the live runner trades.
+"""Single source of truth for owner-authorized paper observation (not validated alpha).
 
 Provenance (see runs/):
   * signal params: IS-plateau center of portfolio_grid (runs/*_portfolio_grid_donchian_rg1200)

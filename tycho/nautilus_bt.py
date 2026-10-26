@@ -110,7 +110,9 @@ class EnsembleStrategy(Strategy):
         return bal + sum(float(m.as_double()) for m in upnl.values())
 
     def _gross(self) -> float:
-        return sum(abs(float(self.portfolio.net_position(self.inst[s].id))) * self.close[s] for s in self.held)
+        # Reserve unfilled entry quantity too: several asynchronous entries share one account.
+        return sum(max(abs(float(self.portfolio.net_position(self.inst[s].id))),
+                       h.get("pending_qty", 0.0)) * self.close[s] for s, h in self.held.items())
 
     # ------------------------------------------------------------------ events
     def on_bar(self, bar: Bar):
@@ -129,6 +131,8 @@ class EnsembleStrategy(Strategy):
         self._sync_held()
         # 1) ratchet trailing stops (tycho: at close i, effective from bar i+1)
         for s, h in list(self.held.items()):
+            if h.get("exiting"):
+                continue
             r = self._row(h["col"], t_open)
             if r is None or h["stop_order"] is None:
                 continue
@@ -141,11 +145,15 @@ class EnsembleStrategy(Strategy):
                     self._exit(s, "trail_through")
         # 2) signal exits
         for s, h in list(self.held.items()):
+            if h.get("exiting"):
+                continue
             r = self._row(h["col"], t_open)
             if r is not None and bool(r["long_exit"]):
                 self._exit(s, "signal")
         # 3) entries in priority order
         eq = self._equity()
+        if not np.isfinite(eq) or eq <= 0:
+            return
         for col in self.cols:
             if len(self.held) >= self.config.max_positions:
                 break
@@ -166,8 +174,11 @@ class EnsembleStrategy(Strategy):
             q = np.floor(q / step) * step
             if q < step:
                 continue
+            if inst.min_notional is not None and q * px < float(inst.min_notional):
+                continue
             order = self.order_factory.market(inst.id, OrderSide.BUY, inst.make_qty(q))
-            self.held[s] = dict(col=col, stop=float(inst.make_price(stop)), stop_order=None, entry_order=order.client_order_id)
+            self.held[s] = dict(col=col, stop=float(inst.make_price(stop)), stop_order=None,
+                                entry_order=order.client_order_id, pending_qty=q)
             self.submit_order(order)
         self.equity_log.append((t_open + BAR_NS, eq))
 
@@ -207,14 +218,18 @@ class EnsembleStrategy(Strategy):
 
     def _exit(self, s: str, reason: str):
         h = self.held.get(s)
-        if h is None:
+        if h is None or h.get("exiting"):
             return
-        self._cancel(h["stop_order"])
+        self._cancel(h.get("entry_order"))
         qty = self.portfolio.net_position(self.inst[s].id)
         if qty > 0:
-            self.submit_order(self.order_factory.market(self.inst[s].id, OrderSide.SELL,
-                                                        self.inst[s].make_qty(float(qty)), reduce_only=True))
-        self.held.pop(s, None)
+            order = self.order_factory.market(self.inst[s].id, OrderSide.SELL,
+                                               self.inst[s].make_qty(float(qty)), reduce_only=True)
+            h["exiting"] = order.client_order_id
+            self.submit_order(order)
+        else:
+            self._cancel(h["stop_order"])
+            self.held.pop(s, None)
 
     def _sym(self, event) -> str:
         return event.instrument_id.symbol.value.replace("-PERP", "")
@@ -226,10 +241,20 @@ class EnsembleStrategy(Strategy):
             return
         if event.client_order_id == h.get("entry_order"):
             entry = self.cache.order(event.client_order_id)
-            if h["stop_order"] is None and entry is not None and entry.is_closed:  # protect the FULL fill
-                h["stop_order"] = self._submit_stop(s, h["stop"])
+            old = h["stop_order"]
+            # Every partial fill needs protection; replacing uses the total filled quantity.
+            h["stop_order"] = self._submit_stop(s, h["stop"])
+            self._cancel(old)
+            if entry is not None and entry.is_closed:
+                h["pending_qty"] = 0.0
+        elif event.client_order_id == h.get("exiting"):
+            if float(self.portfolio.net_position(self.inst[s].id)) == 0:
+                self._cancel(h["stop_order"])
+                self.held.pop(s, None)
         elif event.client_order_id == h.get("stop_order"):
-            self.held.pop(s, None)
+            if float(self.portfolio.net_position(self.inst[s].id)) == 0:
+                self._cancel(h.get("entry_order"))
+                self.held.pop(s, None)
 
     def _order_failed(self, event, what: str):
         s = self._sym(event)
@@ -241,10 +266,14 @@ class EnsembleStrategy(Strategy):
         if h is None:
             return
         if cid == h.get("entry_order"):
+            h["pending_qty"] = 0.0
             if float(self.portfolio.net_position(self.inst[s].id)) == 0:
                 self.held.pop(s, None)        # entry never happened: free the slot
             elif h["stop_order"] is None:
                 h["stop_order"] = self._submit_stop(s, h["stop"])  # partially filled then failed
+        elif cid == h.get("exiting"):
+            h.pop("exiting", None)
+            self.log.error(f"exit {what} for {s}; protected position retained for retry")
         elif cid == h.get("stop_order"):
             self.log.error(f"stop {what} for {s}; flattening")
             h["stop_order"] = None

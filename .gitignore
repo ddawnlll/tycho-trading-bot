@@ -5,3 +5,12 @@ __pycache__/
 *.pyc
 .env
 live_state/
+*.egg-info/
+build/
+dist/
+journal/nautilus/
+journal/*verification*.log
+journal/*final.log
+journal/paper.stdout.log
+journal/paper.stderr.log
+journal/*.log
