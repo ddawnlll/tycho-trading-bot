@@ -1,0 +1,66 @@
+{
+  "created": "2026-10-26 17:27:48.837116+00:00",
+  "start": "2026-10-26 20:00:00+00:00",
+  "end": "2027-04-24 20:00:00+00:00",
+  "status": "PRE-EXPERIMENTAL / EVIDENCE-BOUND",
+  "economic_verdict": "NO_ECONOMIC_CLAIM",
+  "candidates": [
+    "trend_long",
+    "xs_momentum",
+    "funding_squeeze",
+    "squeeze_breakout",
+    "range_revert"
+  ],
+  "manifests": {
+    "trend_long": "8e3bd150c93af51966137c67a496351f40e38e2dc04aa550d0f7a5965fd862b4",
+    "xs_momentum": "a3bc7f4988711f86d5dfbb82e4d5f33f09392f27dda6d227ae0a5755de44adc6",
+    "funding_squeeze": "ccb8dd21e9155e8b37d9d0c4b7961159c22580f796189b67e000ca1d01bc9a65",
+    "squeeze_breakout": "d541e27dd1bdef47927f22ab9fa0c1962bb66533466250e64bf6600c1eac66e2",
+    "range_revert": "e4b1e84cc7006763caa1e6e6c2a826ec7917f5d35a2211c4a70359fac0762c79"
+  },
+  "files": {
+    "scripts/freeze_research.py": "48f9004a943aba3f648ecd7fd25d5c9625c82b05766f64e980ddaeae1c7ac5f1",
+    "scripts/research_queue.py": "a5c222e16ec42b8c10eb79ec7e53801fd5f017d8269f24aa88ef24a286d5abb0",
+    "tycho/__init__.py": "296d2c41f4088d8549c15456e3e727707c626b9bf8364bae35fda00a24947377",
+    "tycho/config.py": "41a8ceca1345eb7d9c69e3f23cae610c28a20fe45367e07cee20cfc63aaf0b22",
+    "tycho/data.py": "aaa433fbf050598296f72b8dc80943759334c472ce5b8bf5fe6d4353bf870ffc",
+    "tycho/engine.py": "8125bd22e48ad8f44138e88064ecce721dcc45f21366017782cf96dc3a498f78",
+    "tycho/engine_multi.py": "ed9df94fa2104fd30d6e3b5fabb7fb7fd6ea9fe6da326346610405fe6f97cfee",
+    "tycho/ensemble.py": "16d490ee592ab5f87f8125c7a18cce4972b2f199e28cd48a997f4de1cfaf49e4",
+    "tycho/evidence.py": "2feca833f7d980b2c4b206b1690935ac92db72c086652bcceac5fe17d55170a3",
+    "tycho/experts.py": "aeb9207da946b0ba759ac9f35bba638ed57aedf465483261d1e60ed221da66ca",
+    "tycho/features.py": "7b1397251edf54d3f5fe424327646f49424cb4652074e79f66e64eed469c4281",
+    "tycho/live.py": "48b6e8c779c33cf685c74a24d867260920fcf09e5ee62df1f8ac6cc7dab86e82",
+    "tycho/locking.py": "6c04a8ca6285753dd887811c4a02d9abba749f0ba35ae108896f0c4b009af25c",
+    "tycho/marketstate.py": "709b8b27929b74d36b69f771cd4d34b1fe3c3a46df0c3b774376cfdde2ea06a5",
+    "tycho/nautilus_bt.py": "3009c0387cc16ea7f515cbda218773e202e72285b3ea44157dc928b11816b3ce",
+    "tycho/nautilus_live.py": "43bc310bd48bedaac7b4744f8d18c3f9b06a0d364adcc727e6f33847fd63830a",
+    "tycho/portfolio.py": "aa2e9ff25bfadee7bec9cfd3411f6beb7bea06ffed1ae5dea9c1f1efb5c12c23",
+    "tycho/reporting.py": "6d123c02a8aa64a505376177482d63638bde848c2d04b11b77d27f5e54c64e22",
+    "tycho/runlog.py": "2c1ffcf9bdb2a50bc589e623c90a36240948401591f23a3e76d7ade9604a597f",
+    "tycho/safety.py": "6c6bee585ffe3eb8f8abb68bba01d6d55ef799b6c048088bfaec51308971aaa8",
+    "tycho/strategies.py": "fe71cef46342dbad65574f9c0aa9c7a54f463931196d91abd9804f7209f47904"
+  },
+  "policy": {
+    "min_days": 180,
+    "min_closed_trades": 30,
+    "max_drawdown": 0.2,
+    "min_net_return": 0,
+    "min_3x_cost_return": 0,
+    "bootstrap_lower_quantile": 0.05,
+    "bootstrap_block_days": 30,
+    "null_max_p": 0.01,
+    "null_family_size": 5,
+    "seed": 1729,
+    "repetitions": 2000,
+    "owner_approval_required": true,
+    "automatic_activation": false
+  },
+  "limitations": [
+    "Fixed 2026 universe has survivorship bias",
+    "Hourly funding/open price proxy, not historical settlement mark tape",
+    "Bar fills do not prove exchange fill quality",
+    "30-day bootstrap blocks may be short for long holding periods",
+    "AWAITING_OWNER_APPROVAL is a review queue, never an economic claim"
+  ]
+}

@@ -1,0 +1,160 @@
+[
+  {
+    "expert": "trend_long",
+    "manifest": "8e3bd150c93af51966137c67a496351f40e38e2dc04aa550d0f7a5965fd862b4",
+    "data_hash": "b93c205782ee48274d8649ff723213da9804c5186882d21a6e17f1969921f54a",
+    "start": "2025-10-26 12:00:00+00:00",
+    "end": "2026-10-26 12:00:00+00:00",
+    "closed_trades": 42,
+    "net_return": -0.03837505952833853,
+    "stress_return": -0.06666007826133391,
+    "max_drawdown": 0.09296909218341176,
+    "bootstrap_lower": -0.0005152959742628924,
+    "null_p": 0.6441779110444777,
+    "costs": {
+      "slippage": 43.323193855999996,
+      "funding": 32.76047283738523,
+      "extra_fees": 0.0
+    },
+    "stress_costs": {
+      "slippage": 129.96958156800002,
+      "funding": 128.66139536533802,
+      "extra_fees": 100.30287708999998
+    },
+    "protocol_hash": null,
+    "verdict": "BLOCKED",
+    "reasons": [
+      "historical/reused window is diagnostic only",
+      "net/stress return, drawdown, bootstrap or multiplicity-adjusted null criterion failed"
+    ],
+    "approval_ready": false,
+    "economic_verdict": "NO_ECONOMIC_CLAIM"
+  },
+  {
+    "expert": "xs_momentum",
+    "manifest": "a3bc7f4988711f86d5dfbb82e4d5f33f09392f27dda6d227ae0a5755de44adc6",
+    "data_hash": "b93c205782ee48274d8649ff723213da9804c5186882d21a6e17f1969921f54a",
+    "start": "2025-10-26 12:00:00+00:00",
+    "end": "2026-10-26 12:00:00+00:00",
+    "closed_trades": 17,
+    "net_return": -0.031148966305944104,
+    "stress_return": -0.039186076938606096,
+    "max_drawdown": 0.06267105525194383,
+    "bootstrap_lower": -0.00026960965000717935,
+    "null_p": 0.8070964517741129,
+    "costs": {
+      "slippage": 8.691843838,
+      "funding": 19.046550301441698,
+      "extra_fees": 0.0
+    },
+    "stress_costs": {
+      "slippage": 26.075531514,
+      "funding": 63.88263117206251,
+      "extra_fees": 18.15133778
+    },
+    "protocol_hash": null,
+    "verdict": "BLOCKED",
+    "reasons": [
+      "historical/reused window is diagnostic only",
+      "need >=180 prospective days and >=30 closed trades",
+      "net/stress return, drawdown, bootstrap or multiplicity-adjusted null criterion failed"
+    ],
+    "approval_ready": false,
+    "economic_verdict": "NO_ECONOMIC_CLAIM"
+  },
+  {
+    "expert": "funding_squeeze",
+    "manifest": "ccb8dd21e9155e8b37d9d0c4b7961159c22580f796189b67e000ca1d01bc9a65",
+    "data_hash": "b93c205782ee48274d8649ff723213da9804c5186882d21a6e17f1969921f54a",
+    "start": "2025-10-26 12:00:00+00:00",
+    "end": "2026-10-26 12:00:00+00:00",
+    "closed_trades": 15,
+    "net_return": -0.018568843399902835,
+    "stress_return": -0.02872861933188975,
+    "max_drawdown": 0.03155582147031688,
+    "bootstrap_lower": -0.00017581593075895543,
+    "null_p": 0.7861069465267366,
+    "costs": {
+      "slippage": 18.465424053999996,
+      "funding": -4.8728657749728,
+      "extra_fees": 0.0
+    },
+    "stress_costs": {
+      "slippage": 55.396272161999995,
+      "funding": 5.063594046898199,
+      "extra_fees": 54.73045139
+    },
+    "protocol_hash": null,
+    "verdict": "BLOCKED",
+    "reasons": [
+      "historical/reused window is diagnostic only",
+      "need >=180 prospective days and >=30 closed trades",
+      "net/stress return, drawdown, bootstrap or multiplicity-adjusted null criterion failed"
+    ],
+    "approval_ready": false,
+    "economic_verdict": "NO_ECONOMIC_CLAIM"
+  },
+  {
+    "expert": "squeeze_breakout",
+    "manifest": "d541e27dd1bdef47927f22ab9fa0c1962bb66533466250e64bf6600c1eac66e2",
+    "data_hash": "b93c205782ee48274d8649ff723213da9804c5186882d21a6e17f1969921f54a",
+    "start": "2025-10-26 12:00:00+00:00",
+    "end": "2026-10-26 12:00:00+00:00",
+    "closed_trades": 25,
+    "net_return": -0.026775583270322256,
+    "stress_return": -0.04334561903695211,
+    "max_drawdown": 0.03801881675089336,
+    "bootstrap_lower": -0.00022476354530815437,
+    "null_p": 0.7501249375312344,
+    "costs": {
+      "slippage": 32.452755539,
+      "funding": 10.0862002342206,
+      "extra_fees": 0.0
+    },
+    "stress_costs": {
+      "slippage": 97.35826661700001,
+      "funding": 32.7018930525212,
+      "extra_fees": 78.17915377
+    },
+    "protocol_hash": null,
+    "verdict": "BLOCKED",
+    "reasons": [
+      "historical/reused window is diagnostic only",
+      "need >=180 prospective days and >=30 closed trades",
+      "net/stress return, drawdown, bootstrap or multiplicity-adjusted null criterion failed"
+    ],
+    "approval_ready": false,
+    "economic_verdict": "NO_ECONOMIC_CLAIM"
+  },
+  {
+    "expert": "range_revert",
+    "manifest": "e4b1e84cc7006763caa1e6e6c2a826ec7917f5d35a2211c4a70359fac0762c79",
+    "data_hash": "b93c205782ee48274d8649ff723213da9804c5186882d21a6e17f1969921f54a",
+    "start": "2025-10-26 12:00:00+00:00",
+    "end": "2026-10-26 12:00:00+00:00",
+    "closed_trades": 97,
+    "net_return": -0.050287579101581104,
+    "stress_return": -0.10784173129024244,
+    "max_drawdown": 0.0661387674294871,
+    "bootstrap_lower": -0.000324306546992539,
+    "null_p": 0.8970514742628686,
+    "costs": {
+      "slippage": 128.507626245,
+      "funding": -30.644725649188587,
+      "extra_fees": 0.0
+    },
+    "stress_costs": {
+      "slippage": 385.5228787350001,
+      "funding": -8.47249676257659,
+      "extra_fees": 296.35404051
+    },
+    "protocol_hash": null,
+    "verdict": "BLOCKED",
+    "reasons": [
+      "historical/reused window is diagnostic only",
+      "net/stress return, drawdown, bootstrap or multiplicity-adjusted null criterion failed"
+    ],
+    "approval_ready": false,
+    "economic_verdict": "NO_ECONOMIC_CLAIM"
+  }
+]

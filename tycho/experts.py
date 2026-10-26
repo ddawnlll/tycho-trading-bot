@@ -116,8 +116,11 @@ class Expert:
     req_params: dict = field(default_factory=dict)
 
     def signals(self, df: pd.DataFrame, st: pd.DataFrame) -> Signals:
-        s = self.rule(df, st, **self.params)
-        gate = self.requires(st, **self.req_params).fillna(False).to_numpy(bool)
+        # Isolate plugin inputs: an expert cannot corrupt another expert's snapshot.
+        s = self.rule(df.copy(deep=True), st.copy(deep=True), **self.params)
+        gate = self.requires(st.copy(deep=True), **self.req_params).fillna(False).to_numpy(bool)
+        if any(len(getattr(s, f)) != len(df) for f in s.__dataclass_fields__):
+            raise ValueError(f"{self.name}: signal shape does not match snapshot")
         return Signals(s.long_entry & gate, s.short_entry & gate, *(getattr(s, f) for f in
                        ("long_stop", "short_stop", "long_trail", "short_trail", "long_exit", "short_exit")))
 

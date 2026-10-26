@@ -1,0 +1,21 @@
+[project]
+name = "tycho-trading-bot"
+version = "0.1.0"
+description = "Evidence-bound experts on NautilusTrader, paper execution only"
+requires-python = ">=3.12,<3.14"
+dependencies = ["nautilus_trader==1.231.0", "numpy>=2,<3", "pandas>=2.2,<4", "pyarrow>=18", "requests>=2.32"]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pyflakes>=3"]
+legacy = ["ccxt", "xgboost", "scikit-learn"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools.packages.find]
+include = ["tycho*", "scripts*"]
