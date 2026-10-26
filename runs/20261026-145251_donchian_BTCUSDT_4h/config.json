@@ -1,0 +1,33 @@
+{
+  "symbol": "BTCUSDT",
+  "tf": "4h",
+  "strategy": "donchian",
+  "risk": 0.01,
+  "lev": 3.0,
+  "slippage": 0.0002,
+  "min_trades": 40,
+  "is_end": "2023-12-31 23:59",
+  "oos_start": "2024-01-01",
+  "grid": {
+    "entry_n": [
+      20,
+      40,
+      55,
+      100
+    ],
+    "exit_n": [
+      10,
+      20,
+      40
+    ],
+    "stop_atr": [
+      1.5,
+      2.5,
+      4.0
+    ],
+    "allow_short": [
+      true,
+      false
+    ]
+  }
+}

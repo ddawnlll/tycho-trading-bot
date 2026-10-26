@@ -1,0 +1,50 @@
+{
+  "symbol": "BTCUSDT",
+  "tf": "4h",
+  "strategy": "trend_pullback",
+  "risk": 0.01,
+  "lev": 3.0,
+  "slippage": 0.0002,
+  "min_trades": 40,
+  "is_end": "2023-12-31 23:59",
+  "oos_start": "2024-01-01",
+  "grid": {
+    "fast": [
+      9
+    ],
+    "mid": [
+      21
+    ],
+    "slow": [
+      50,
+      100
+    ],
+    "hi_lookback": [
+      20,
+      40
+    ],
+    "max_pb_bars": [
+      5,
+      8,
+      12
+    ],
+    "stop_atr": [
+      0.25,
+      0.5,
+      1.0
+    ],
+    "trail_atr": [
+      2.0,
+      3.0,
+      4.0
+    ],
+    "trail_n": [
+      10,
+      20
+    ],
+    "allow_short": [
+      true,
+      false
+    ]
+  }
+}

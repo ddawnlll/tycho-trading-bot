@@ -1,0 +1,73 @@
+{
+  "headline": "donchian BTCUSDT 4h: OOS CAGR 2.7% DD -20.6% Sharpe 0.27 vs B&H CAGR 0.0% DD 0.0%",
+  "params": {
+    "entry_n": 40,
+    "exit_n": 20,
+    "stop_atr": 1.5,
+    "allow_short": false
+  },
+  "n_grid": 72,
+  "is_metrics": {
+    "start": "2020-01-01",
+    "end": "2023-12-31",
+    "total_return": 1.4311357990174063,
+    "cagr": 0.2488732627019674,
+    "max_dd": -0.14681680946377806,
+    "sharpe": 1.3773590171361398,
+    "mar": 1.6951278508975378,
+    "n_trades": 84,
+    "win_rate": 0.34523809523809523,
+    "avg_r": 1.3586048086896618,
+    "avg_win_r": 5.67781046072887,
+    "avg_loss_r": -0.91879453511283,
+    "max_r": 34.087593302374714,
+    "profit_factor": 3.258350471358095,
+    "long_share": 1.0
+  },
+  "oos_metrics": {
+    "start": "2024-01-01",
+    "end": "2026-10-26",
+    "total_return": 0.07755694299602278,
+    "cagr": 0.02686857348099303,
+    "max_dd": -0.20552672514814596,
+    "sharpe": 0.2711869852705149,
+    "mar": 0.13073031481246958,
+    "n_trades": 68,
+    "win_rate": 0.23529411764705882,
+    "avg_r": 0.1957200562455317,
+    "avg_win_r": 3.8603618494996983,
+    "avg_loss_r": -0.9318620339865192,
+    "max_r": 11.196894426886669,
+    "profit_factor": 1.2746561214844927,
+    "long_share": 1.0
+  },
+  "buy_hold_is": {
+    "start": "2020-01-01",
+    "end": "2023-12-31",
+    "total_return": 2.299220319615881,
+    "cagr": 0.34800529666745184,
+    "max_dd": -1.0,
+    "sharpe": 0.0,
+    "mar": 0.34800529666745184,
+    "n_trades": 1,
+    "win_rate": 1.0,
+    "avg_r": 4.853432433126886,
+    "avg_win_r": 4.853432433126886,
+    "avg_loss_r": 0.0,
+    "max_r": 4.853432433126886,
+    "profit_factor": Infinity,
+    "long_share": 1.0
+  },
+  "buy_hold_oos": {
+    "start": "2024-01-01",
+    "end": "2026-10-26",
+    "total_return": 0.0,
+    "cagr": 0.0,
+    "max_dd": 0.0,
+    "sharpe": 0.0,
+    "mar": 0.0,
+    "n_trades": 0
+  },
+  "grid_share_oos_profitable": 0.8333333333333334,
+  "grid_is_oos_spearman": 0.1020965978519519
+}
