@@ -1,0 +1,80 @@
+{
+  "headline": "leader_breakout NT total 73.5% sh 0.72 gap 0.12%; tsmom NT total 224.9% sh 0.77 gap 0.31%; dual_momentum NT total 49.8% sh 0.73 gap 1.00%; vol_expansion NT total 74.5% sh 0.78 gap 0.28%; trend_long NT total 216.4% sh 1.16 gap 0.03%",
+  "results": [
+    {
+      "expert": "leader_breakout",
+      "dataset": "dev",
+      "cagr": 0.0993837534997779,
+      "total": 0.7349672942239998,
+      "max_dd": 0.3452075454393352,
+      "sharpe": 0.723643150358683,
+      "closed_trades": 645,
+      "funding_paid": 1294.6154244399813,
+      "bootstrap_lower": -1.9008046424160216e-05,
+      "null_p": 0.07246376811594203,
+      "tycho_total": 0.7328644656612857,
+      "final_gap": 0.0012134985767116024,
+      "valid": true
+    },
+    {
+      "expert": "tsmom",
+      "dataset": "dev",
+      "cagr": 0.22465439188333836,
+      "total": 2.249495419682,
+      "max_dd": 0.5284006075415246,
+      "sharpe": 0.7655257954796475,
+      "closed_trades": 157,
+      "funding_paid": 6571.670666121239,
+      "bootstrap_lower": 8.810203219712579e-05,
+      "null_p": 0.04047976011994003,
+      "tycho_total": 2.2392943871004856,
+      "final_gap": 0.0031491526741553866,
+      "valid": true
+    },
+    {
+      "expert": "dual_momentum",
+      "dataset": "dev",
+      "cagr": 0.07199909711190378,
+      "total": 0.4982574293840001,
+      "max_dd": 0.14863336337103528,
+      "sharpe": 0.7322452840739356,
+      "closed_trades": 175,
+      "funding_paid": 981.9792056580728,
+      "bootstrap_lower": 6.1041227573659004e-06,
+      "null_p": 0.06046976511744128,
+      "tycho_total": 0.48345762777223533,
+      "final_gap": 0.009976558369240385,
+      "valid": true
+    },
+    {
+      "expert": "vol_expansion",
+      "dataset": "dev",
+      "cagr": 0.10051425217418464,
+      "total": 0.7453677314460001,
+      "max_dd": 0.22004661528530345,
+      "sharpe": 0.779719901305002,
+      "closed_trades": 746,
+      "funding_paid": 1373.9120550099283,
+      "bootstrap_lower": 4.725291915468928e-05,
+      "null_p": 0.03248375812093953,
+      "tycho_total": 0.7405616238980999,
+      "final_gap": 0.002761239522871106,
+      "valid": true
+    },
+    {
+      "expert": "trend_long",
+      "dataset": "dev",
+      "cagr": 0.2190346701808359,
+      "total": 2.1637353945989997,
+      "max_dd": 0.20115358750966905,
+      "sharpe": 1.1561064022150804,
+      "closed_trades": 542,
+      "funding_paid": 3157.8554177122255,
+      "bootstrap_lower": 0.00015916780635225243,
+      "null_p": 0.02148925537231384,
+      "tycho_total": 2.1627784104923506,
+      "final_gap": 0.0003025770327362842,
+      "valid": true
+    }
+  ]
+}

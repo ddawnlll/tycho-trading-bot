@@ -1,0 +1,65 @@
+{
+  "headline": "leader_breakout NT total 78.3% sh 0.72 gap 3.61%; tsmom NT total 258.6% sh 0.79 gap 11.50%; dual_momentum NT total 51.2% sh 0.73 gap 2.01%; vol_expansion NT total 80.8% sh 0.78 gap 4.46%; trend_long NT total 239.3% sh 1.16 gap 8.11%",
+  "results": [
+    {
+      "expert": "leader_breakout",
+      "dataset": "dev",
+      "cagr": 0.10453568898785637,
+      "total": 0.7827838333883621,
+      "max_dd": 0.36261347639596264,
+      "sharpe": 0.7181138888807088,
+      "closed_trades": 645,
+      "tycho_total": 0.7206064427760441,
+      "final_gap": 0.036136904446318674,
+      "valid": false
+    },
+    {
+      "expert": "tsmom",
+      "dataset": "dev",
+      "cagr": 0.24560834669429177,
+      "total": 2.5864277427269067,
+      "max_dd": 0.531104630565355,
+      "sharpe": 0.7874815430147901,
+      "closed_trades": 157,
+      "tycho_total": 2.2165273919620376,
+      "final_gap": 0.11499990694599216,
+      "valid": false
+    },
+    {
+      "expert": "dual_momentum",
+      "dataset": "dev",
+      "cagr": 0.07368753319325849,
+      "total": 0.5120323141437315,
+      "max_dd": 0.14902317942546994,
+      "sharpe": 0.7312667411361989,
+      "closed_trades": 175,
+      "tycho_total": 0.48216963698365145,
+      "final_gap": 0.020147948261073134,
+      "valid": false
+    },
+    {
+      "expert": "vol_expansion",
+      "dataset": "dev",
+      "cagr": 0.10725770144720959,
+      "total": 0.8084848643971461,
+      "max_dd": 0.23366057019542918,
+      "sharpe": 0.7782531474938578,
+      "closed_trades": 746,
+      "tycho_total": 0.7313495718313243,
+      "final_gap": 0.04455211923738345,
+      "valid": false
+    },
+    {
+      "expert": "trend_long",
+      "dataset": "dev",
+      "cagr": 0.2337611310414467,
+      "total": 2.392552284976856,
+      "max_dd": 0.21741048022562093,
+      "sharpe": 1.156898980161662,
+      "closed_trades": 542,
+      "tycho_total": 2.1381459020401583,
+      "final_gap": 0.08106901045337112,
+      "valid": false
+    }
+  ]
+}
