@@ -17,5 +17,12 @@ MAX_GROSS = 2.0          # total notional / equity
 MAX_LEV_POS = 1.0        # per-position notional / equity
 RISK_IS_PICK = 0.01      # what research selected
 RISK_DEFAULT = 0.005     # live default: half risk until live fills are confirmed to match backtest
-WARMUP_BARS = 300        # per-symbol history for Donchian/ATR (ATR EWM init influence ~e^-15)
+WARMUP_BARS = 2400       # per-symbol history: EMA200 converged, 1-year percentiles (2190) defined
 REGIME_WARMUP_BARS = 4500  # BTC history for EMA(1200): init influence (1-2/1201)^4500 ~ 0.06%
+
+# Expert ensemble (runs/*_ensemble_research IS pick by MAR: trend_long + xs_momentum, 5 positions).
+# Order = priority when several experts want the same coin on the same bar.
+EXPERTS = [
+    ("trend_long", {}, {}),
+    ("xs_momentum", {"top_k": 4, "exit_rank": 7}, {}),
+]

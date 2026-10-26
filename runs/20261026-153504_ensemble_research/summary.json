@@ -1,0 +1,20 @@
+{
+  "headline": "IS-pick trend_long+xs_momentum pos5: OOS CAGR 16.6% DD -19.3% Sharpe 0.95 vs trend_long alone OOS CAGR 16.2% Sharpe 0.93",
+  "pick": {
+    "experts": "trend_long+xs_momentum",
+    "max_positions": 5,
+    "is_cagr": 0.34794359196813596,
+    "is_dd": -0.20566925710234352,
+    "is_sharpe": 1.4377039252380062,
+    "is_mar": 1.6917627693622437,
+    "oos_cagr": 0.16613286137057037,
+    "oos_dd": -0.19308213510469574,
+    "oos_sharpe": 0.9504302980621961,
+    "oos_mar": 0.8604258559730937,
+    "oos_trades": 252,
+    "oos_sumR_by_expert": {
+      "trend_long": 115.6,
+      "xs_momentum": 1.2
+    }
+  }
+}

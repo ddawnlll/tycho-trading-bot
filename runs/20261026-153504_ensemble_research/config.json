@@ -1,0 +1,50 @@
+{
+  "expert_run": "20261026-153423_expert_research",
+  "admitted": [
+    "trend_long",
+    "funding_squeeze",
+    "xs_momentum"
+  ],
+  "experts": {
+    "trend_long": {
+      "name": "trend_long",
+      "rule": "trend_long",
+      "requires": "req_bull",
+      "params": {},
+      "req_params": {}
+    },
+    "funding_squeeze": {
+      "name": "funding_squeeze",
+      "rule": "funding_squeeze",
+      "requires": "req_shorts_crowded",
+      "params": {},
+      "req_params": {
+        "z": -1.0
+      }
+    },
+    "xs_momentum": {
+      "name": "xs_momentum",
+      "rule": "xs_momentum",
+      "requires": "req_strong_breadth",
+      "params": {
+        "top_k": 4,
+        "exit_rank": 7
+      },
+      "req_params": {}
+    }
+  },
+  "kw": {
+    "max_positions": 5,
+    "max_gross": 2.0,
+    "max_lev_pos": 1.0,
+    "risk": 0.005
+  },
+  "IS": [
+    "2020-01-01",
+    "2023-12-31 23:59"
+  ],
+  "OOS": [
+    "2024-01-01",
+    "2030-01-01"
+  ]
+}

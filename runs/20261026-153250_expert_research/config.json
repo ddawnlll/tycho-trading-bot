@@ -1,0 +1,101 @@
+{
+  "grids": {
+    "trend_long": [
+      {},
+      {}
+    ],
+    "trend_short": [
+      {
+        "entry_n": [
+          20,
+          30,
+          55
+        ],
+        "exit_n": [
+          10,
+          20
+        ]
+      },
+      {
+        "max_breadth": [
+          0.3,
+          0.5
+        ]
+      }
+    ],
+    "range_revert": [
+      {
+        "rsi_lo": [
+          5.0,
+          10.0,
+          20.0
+        ],
+        "exit_n": [
+          5,
+          10
+        ]
+      },
+      {}
+    ],
+    "squeeze_breakout": [
+      {
+        "sq_pct": [
+          0.1,
+          0.2
+        ],
+        "trail_atr": [
+          2.5,
+          3.5
+        ]
+      },
+      {
+        "max_vol_pct": [
+          0.35,
+          1.01
+        ]
+      }
+    ],
+    "funding_squeeze": [
+      {},
+      {
+        "z": [
+          -1.0,
+          -1.5,
+          -2.0
+        ]
+      }
+    ],
+    "xs_momentum": [
+      {
+        "top_k": [
+          2,
+          3,
+          4
+        ],
+        "exit_rank": [
+          5,
+          7
+        ]
+      },
+      {}
+    ]
+  },
+  "admit": {
+    "min_is_sharpe": 0.5,
+    "min_is_trades": 30
+  },
+  "kw": {
+    "max_positions": 5,
+    "max_gross": 2.0,
+    "max_lev_pos": 1.0,
+    "risk": 0.005
+  },
+  "IS": [
+    "2020-01-01",
+    "2023-12-31 23:59"
+  ],
+  "OOS": [
+    "2024-01-01",
+    "2030-01-01"
+  ]
+}

@@ -1,4 +1,4 @@
-"""Stress-test the configured strategy: per-year returns, cost stress, bootstrap drawdown.
+"""Stress-test the configured expert ensemble: per-year returns, cost stress, bootstrap drawdown.
 
 Usage: python -m scripts.validate [--risk 0.005]
 """
@@ -14,12 +14,20 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from tycho import config as C, runlog
 from tycho.engine import metrics
+from tycho.engine_multi import run_multi
+from tycho.ensemble import build_columns, configured_experts, window
+from tycho.marketstate import build_state
 from tycho.portfolio import load_universe
-from scripts.multi_research import build, run_window
 
 
 def kw(risk):
     return dict(max_positions=C.MAX_POSITIONS, max_gross=C.MAX_GROSS, max_lev_pos=C.MAX_LEV_POS, risk=risk)
+
+
+def run_window(cols, sigs, costs, groups, start, end, risk):
+    d, s = window(cols, sigs, start, end)
+    res = run_multi(d, s, costs=costs, groups=groups, **kw(risk))
+    return res, metrics(res["equity"], res["trades"])
 
 
 def main():
@@ -29,8 +37,9 @@ def main():
     a = ap.parse_args()
     data = load_universe(C.UNIVERSE, C.TIMEFRAME)
     out = {}
-    sigs, ranks, costs = build(data, C.STRATEGY, C.PARAMS, C.REGIME_N)
-    res, m_full = run_window(data, sigs, ranks, costs, "2020-01-01", "2030-01-01", use_rank=False, **kw(a.risk))
+    ms = build_state(data, C.REGIME_N)
+    cols, sigs, costs, groups = build_columns(data, configured_experts(), ms)
+    res, m_full = run_window(cols, sigs, costs, groups, "2020-01-01", "2030-01-01", a.risk)
     eq, tr = res["equity"], res["trades"]
     yearly = eq.resample("YE").last().pct_change()
     yearly.iloc[0] = eq.resample("YE").last().iloc[0] / eq.iloc[0] - 1
@@ -45,12 +54,10 @@ def main():
     out["best_month"] = float(monthly.max())
     # cost stress
     for mult in (2.0, 3.0):
-        s2, r2, c2 = build(data, C.STRATEGY, C.PARAMS, C.REGIME_N, slip_mult=mult)
-        for c in c2.values():
-            c.fee *= mult if mult > 1 else 1
-        _, m = run_window(data, s2, r2, c2, "2024-01-01", "2030-01-01", use_rank=False, **kw(a.risk))
+        c2 = {k: type(c)(fee=c.fee * mult, slippage=c.slippage * mult) for k, c in costs.items()}
+        _, m = run_window(cols, sigs, c2, groups, "2024-01-01", "2030-01-01", a.risk)
         out[f"oos_costs_x{mult:g}"] = m
-    _, out["oos_base"] = run_window(data, sigs, ranks, costs, "2024-01-01", "2030-01-01", use_rank=False, **kw(a.risk))
+    _, out["oos_base"] = run_window(cols, sigs, costs, groups, "2024-01-01", "2030-01-01", a.risk)
     # block bootstrap of MONTHLY returns (3-month blocks keep loss clustering; i.i.d. trades understate risk)
     rng = np.random.default_rng(7)
     mr = monthly.to_numpy()
@@ -73,7 +80,7 @@ def main():
                 {"yearly": ytab, "monthly": monthly.to_frame("ret"), "trades": tr,
                  "equity_daily": eq.resample("1D").last().to_frame()})
     print(ytab.round(3).to_string())
-    print({k: round(v, 3) for k, v in out["bootstrap"].items()})
+    print({k: (round(v, 3) if isinstance(v, float) else v) for k, v in out["bootstrap"].items()})
     for k in ("oos_base", "oos_costs_x2", "oos_costs_x3"):
         print(k, {x: round(out[k][x], 3) for x in ("cagr", "max_dd", "sharpe", "n_trades")})
     print(f"months positive {out['share_months_positive']:.0%}, worst month {out['worst_month']:.1%}, best {out['best_month']:.1%}")

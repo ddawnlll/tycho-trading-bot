@@ -1,71 +1,79 @@
-# Tycho — crypto trend bot (Binance USDT-M perpetuals)
+# Tycho — crypto expert-ensemble bot (Binance USDT-M perpetuals)
 
-Research → one validated strategy → the same rules in a paper/testnet/live runner.
-Every research invocation is saved under `runs/` (see `runs/README.md`, `runs/index.csv`).
+Research → experts that trade only in the market state they request → the same rules in a
+tycho runner and a NautilusTrader node. Every research invocation is saved under `runs/`
+(see `runs/README.md`, `runs/index.csv`).
 
-## What trades
-`tycho/config.py` is the single source of truth (backtest and live both read it):
+## Architecture
+- `tycho/marketstate.py` — **MarketState service**, causal, computed at each 4h close:
+  BTC regime (close vs EMA1200 ≈ 200 days), breadth (share of coins above EMA200), BTC vol
+  percentile, per-coin trend/range (EMA50/200 + efficiency ratio), funding z-score, 30-day
+  momentum rank.
+- `tycho/experts.py` — **experts**: each = signal rule + `requires(state)`; entries only where the
+  requested state holds. One expert per coin at a time (Binance one-way netting); priority = order
+  in `config.EXPERTS`.
+- `tycho/engine_multi.py` — shared-account backtester (caps: 5 positions, 2x gross, 1x per coin).
+- `tycho/nautilus_bt.py` — the same ensemble as a NautilusTrader `Strategy` (backtest).
+- `tycho/nautilus_live.py` — NautilusTrader `TradingNode` (sandbox / Binance demo / live).
+- `tycho/live.py` — lightweight ccxt runner (paper / demo / live) with the same decisions.
+- `tycho/config.py` — single source of truth for universe, experts, sizing.
 
-- Universe: BTC ETH SOL BNB XRP DOGE ADA AVAX LINK LTC DOT TRX (USDT-M perps), 4h bars
-- Entry: long when the 4h close breaks the prior 30-bar high, **only while BTC > EMA(1200 x 4h ≈ 200 days)**
-- Stop: entry-bar close − 3×ATR(20), trailed up to the 30-bar low; exchange-side stop order
-- Sizing: risk per trade = 0.5% of equity (research pick was 1%), ≤1x notional per position,
-  ≤2x gross, ≤5 concurrent positions
-- No shorts, no ML filter (both tested, both worse out-of-sample — see below)
-
-## Results (fees 0.05%/side, slippage 2–5 bps, real funding; IS 2020–2023, OOS 2024-01 → 2026-10)
-
-| config | period | CAGR | max DD | Sharpe |
+## Experts (selection on 2020–2023 only; OOS = 2024-01 → 2026-10, never used to select)
+| expert | requested state | IS Sharpe | admitted | OOS Sharpe |
 |---|---|---|---|---|
-| risk 0.5% | OOS 2024–26 | 16.2% | −18.8% | 0.93 |
-| risk 0.5% | OOS, 3× costs | 11.8% | −20.1% | 0.72 |
-| risk 1.0% | OOS 2024–26 | 28.7% | −31.2% | 0.92 |
-| 12-coin equal-weight buy & hold | OOS 2024–26 | 7.0% | −61.0% | 0.38 |
-| BTC spot buy & hold | OOS 2024–26 | 15.9% | −60.7% | 0.51 |
+| trend_long (Donchian 30/30, 3 ATR) | BTC bull | 1.42 | yes | 0.93 |
+| xs_momentum (top-4 by 30d return, daily) | BTC bull + breadth > 50% | 1.77 | yes | 0.33 |
+| funding_squeeze (shorts crowded) | BTC bull + funding z < −1 | 0.78 | yes | −0.44 |
+| squeeze_breakout (vol contraction) | low vol + bull | 0.36 | no | 0.22 |
+| trend_short (Donchian short) | BTC bear + weak breadth | 0.28 | no | −0.57 |
+| range_revert (RSI2 / Bollinger) | coin in range + bull | −0.59 | no | −2.06 |
 
-Per year at 0.5% risk: 2020 +66%, 2021 +75%, 2022 −0.8%, 2023 +20%, 2024 +48%, **2025 +5.3%, 2026 YTD −1.4%**.
-Only ~42% of months are positive; returns come from a few trending months. Block-bootstrap
-(3-month blocks): P(losing 12 months) ≈ 15%, 95th-pct drawdown ≈ −21% at 0.5% risk (−38% at 1%).
+Ensemble pick on IS (by MAR): **trend_long + xs_momentum, max 5 positions** (funding_squeeze lost
+OOS in every combination and was not picked).
 
-## What was tried and rejected (all runs in `runs/`)
-- **Martin-Luk-style first-pullback entries**: worked weakly on BTC alone, **lost money OOS** on the
-  12-coin portfolio in every variant (−3% to −12% CAGR).
-- **MA-trend (50/200) time-series momentum**: ~0–5% OOS CAGR.
-- **Long/short Donchian**: worse than long-only.
-- **XGBoost meta-label filter** (walk-forward, no leakage): OOS CAGR 16.4% → 11.1%; it filtered out
-  the rare big winners (+102R dropped in 2024) that trend following lives on.
-- Param optimisation itself: IS-best params ranked *worse* than median OOS (Spearman −0.28), so the
-  live params are the centre of the IS plateau, not the IS peak. 120/120 Donchian param sets were
-  OOS-profitable → the edge is the family (trend + regime), not a magic number.
+## Results (0.5% risk/trade, fees 0.05%/side, slippage 2–5 bps, real funding)
+| | CAGR | max DD | Sharpe |
+|---|---|---|---|
+| Ensemble, OOS 2024–26 | 16.6% | −19.3% | 0.95 |
+| Ensemble, OOS, 3× costs | 12.9% | −20.0% | 0.77 |
+| trend_long alone, OOS | 16.2% | −18.8% | 0.93 |
+| BTC spot buy & hold, OOS | 15.9% | −60.7% | 0.51 |
+
+Ensemble per year: 2020 +52%, 2021 +85%, 2022 −2%, 2023 +20%, 2024 +46%, **2025 +2%, 2026 YTD −1%**.
+46% of months positive. 3-month block bootstrap: P(losing 12 months) ≈ 18%, 95th-pct DD ≈ −24%.
+**Adding experts barely improved on trend_long alone** — the honest headline.
+
+## NautilusTrader cross-check (`runs/*_nautilus_crosscheck`)
+Same rounded bars, slippage 0, funding 0, both engines: BTC 44/44 trades identical, 12-coin trend
+286/286, ensemble 252/252; final equity within 0.03%, max daily gap ≤ 0.15%. Nautilus fills at the
+bar close (tycho: next open) and charges its own commissions, so the agreement is not by construction.
 
 ## Run
 ```bash
-uv venv -p 3.12 .venv && uv pip install -p .venv/Scripts/python.exe numpy pandas pyarrow requests xgboost scikit-learn ccxt pytest
-.venv/Scripts/python.exe scripts/download.py                 # ~5 min, public data
-.venv/Scripts/python.exe -m pytest -q tests                  # engine, causality, live==backtest replay
-.venv/Scripts/python.exe -m scripts.validate --risk 0.005    # re-run stress tests (saved to runs/)
-.venv/Scripts/python.exe -m scripts.live                     # paper trading loop (no keys)
+uv venv -p 3.12 .venv && uv pip install -p .venv/Scripts/python.exe numpy pandas pyarrow requests xgboost scikit-learn ccxt pytest pyflakes nautilus_trader
+.venv/Scripts/python.exe scripts/download.py                  # ~5 min, public data
+curl -s https://fapi.binance.com/fapi/v1/exchangeInfo -o data/exchange_info.json
+.venv/Scripts/python.exe -m pytest -q tests                   # ~4 min
+.venv/Scripts/python.exe -m scripts.expert_research           # per-expert IS/OOS
+.venv/Scripts/python.exe -m scripts.ensemble_research         # ensemble pick on IS
+.venv/Scripts/python.exe -m scripts.nautilus_crosscheck       # tycho vs NautilusTrader
+.venv/Scripts/python.exe -m scripts.validate --risk 0.005     # stress tests
+.venv/Scripts/python.exe -m scripts.nautilus_live             # Nautilus sandbox: live data, simulated fills
+.venv/Scripts/python.exe -m scripts.live                      # tycho paper runner
 ```
-Testnet/live need `BINANCE_API_KEY` / `BINANCE_API_SECRET` in the environment:
-`python -m scripts.live --mode testnet` (Binance demo account) and
-`python -m scripts.live --mode live --i-understand-real-money`. Journal: `journal/<mode>_YYYYMM.jsonl`.
+Demo / live need `BINANCE_API_KEY` / `BINANCE_API_SECRET`:
+`-m scripts.nautilus_live --mode testnet` (Binance demo account) or `--mode live --i-understand-real-money`
+(same flags for `-m scripts.live`). Journals: `journal/`; Nautilus logs MARKET_STATE each 4h bar.
 
 ## Known limitations
 - Backtest ≠ future. OOS is one 34-month window; 2025–26 were roughly flat.
-- testnet/live order paths (ccxt market orders, `stopLossPrice` reduce-only stops routed to
-  Binance's Algo Order API, demo trading switch) were checked against the ccxt 4.5.90 source but
-  **never executed** — no keys were used. Unverified: `reduceOnly` acceptance on algo orders,
-  `totalMarginBalance` on the demo account, one-way/cross margin mode (assumed, not set). Run
-  testnet first.
-- Safety behaviour (tested with a fake broker in `tests/test_live_cycle.py`): new stop is placed
-  before the old one is cancelled; if an entry's stop can't be placed the position is flattened;
-  state is saved after every fill; a bar is never processed twice (restart-safe); stale bars are
-  not traded; testnet/live refuse to start if state and exchange positions disagree.
-- Stops trigger on last price in live (CONTRACT_PRICE) like the backtest's bar lows; real
-  fills on fast moves will be worse than the stop price.
-- Live exit price after an exchange stop is logged as an estimate (last price), not the fill.
-- The bot starts flat; it does not adopt positions the backtest would already hold.
-- BNB funding history has many exact-zero records (can't distinguish from missing) → BNB long
-  costs may be slightly understated.
-- Sub-account research (`portfolio.py`) and shared-account engine (`engine_multi.py`) differ; live
-  matches the shared-account engine (verified by `tests/test_live.py`).
+- The 12-coin universe was picked in 2026 → survivorship bias, also in breadth/momentum rank.
+- Many variants were tried (all logged); IS-best parameters repeatedly did worse OOS than average.
+- Real-exchange order paths (tycho ccxt and Nautilus Binance exec client) were **never executed** —
+  no keys were used. Nautilus sandbox and backtest exercised the Nautilus order logic (market entry,
+  reduce-only STOP_MARKET, modify, cancel) on Nautilus' simulated exchange only. Run demo first.
+- Nautilus live: bar fetch for decisions is a blocking REST call (~15–30 s every 4 h) inside the
+  event loop; restart adoption flattens any position without a saved owner and an open stop.
+- tycho live: exit price after an exchange stop is logged as an estimate; stops trigger on last price.
+- Funding is in tycho backtests but not in Nautilus (not simulated there).
+- BNB funding history has many exact-zero records → BNB long costs may be slightly understated.

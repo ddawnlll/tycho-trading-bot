@@ -11,3 +11,9 @@ run,git,headline
 20261026-150641_validate_risk0.005,b05090c,"risk 0.005: full CAGR 27.7% DD -20.1% Sharpe 1.29; OOS base 16.2%, x3 costs 11.8%; P(losing year) 15%"
 20261026-150651_validate_risk0.01,b05090c,"risk 0.01: full CAGR 54.5% DD -36.6% Sharpe 1.34; OOS base 28.7%, x3 costs 19.3%; P(losing year) 17%"
 20261026-150737_meta_xgb,b05090c,XGB meta filter OOS(2024+) CAGR 11.1% DD -18.1% Sharpe 0.70 vs base 16.4% DD -18.8% Sharpe 0.92
+20261026-153250_expert_research,4b0134c,"admitted on IS: ['trend_long', 'squeeze_breakout', 'funding_squeeze', 'xs_momentum']; trend_long OOS sh 0.93; trend_short OOS sh -0.57; range_revert OOS sh -2.06; squeeze_breakout OOS sh 0.22; funding_squeeze OOS sh -0.44; xs_momentum OOS sh 0.33"
+20261026-153423_expert_research,4b0134c,"admitted on IS: ['trend_long', 'funding_squeeze', 'xs_momentum']; trend_long OOS sh 0.93; trend_short OOS sh -0.57; range_revert OOS sh -2.06; squeeze_breakout OOS sh 0.22; funding_squeeze OOS sh -0.44; xs_momentum OOS sh 0.33"
+20261026-153504_ensemble_research,4b0134c,IS-pick trend_long+xs_momentum pos5: OOS CAGR 16.6% DD -19.3% Sharpe 0.95 vs trend_long alone OOS CAGR 16.2% Sharpe 0.93
+20261026-153838_nautilus_crosscheck,4b0134c,1_btc_trend: PASS trades 44/44 final eq gap 0.040% | 2_universe_trend: PASS trades 286/286 final eq gap -0.028% | 3_ensemble: PASS trades 252/252 final eq gap -0.028%
+20261026-155304_validate_risk0.005,4b0134c,"risk 0.005: full CAGR 26.2% DD -20.6% Sharpe 1.22; OOS base 16.6%, x3 costs 12.9%; P(losing year) 18%"
+20261026-155317_validate_risk0.005,4b0134c,"risk 0.005: full CAGR 26.2% DD -20.6% Sharpe 1.22; OOS base 16.6%, x3 costs 12.9%; P(losing year) 18%"

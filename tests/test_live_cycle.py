@@ -55,7 +55,7 @@ def env(monkeypatch, tmp_path):
 
 
 def test_restart_does_not_rebuy_same_bar(env):
-    env["dec"] = Decision(bar_time=LAST + live.BAR, entries=[("ETHUSDT", 90.0)], regime_bull=True)
+    env["dec"] = Decision(bar_time=LAST + live.BAR, entries=[("trend_long", "ETHUSDT", 90.0)], regime_bull=True)
     b, acct, pos = FakeBroker(), {}, {}
     assert live.cycle("paper", b, acct, pos, 0.005)
     # simulate a crash + restart: reload persisted state, run the same bar again
@@ -66,7 +66,7 @@ def test_restart_does_not_rebuy_same_bar(env):
 
 
 def test_entry_flattened_when_stop_cannot_be_placed(env):
-    env["dec"] = Decision(bar_time=LAST + live.BAR, entries=[("ETHUSDT", 90.0)], regime_bull=True)
+    env["dec"] = Decision(bar_time=LAST + live.BAR, entries=[("trend_long", "ETHUSDT", 90.0)], regime_bull=True)
     b, pos = FakeBroker(fail_stop=True), {}
     live.cycle("paper", b, {}, pos, 0.005)
     assert b.buys == ["ETHUSDT"] and b.sells == ["ETHUSDT"] and pos == {}
@@ -85,6 +85,16 @@ def test_failed_stop_move_keeps_old_stop_and_retries(env):
 def test_stale_bars_are_not_traded(env, monkeypatch):
     monkeypatch.setattr(live, "fetch_all_bars",
                         lambda: {"BTCUSDT": pd.DataFrame({"close": [1.0]}, index=[LAST - live.BAR])})
-    env["dec"] = Decision(bar_time=LAST, entries=[("ETHUSDT", 90.0)], regime_bull=True)
+    env["dec"] = Decision(bar_time=LAST, entries=[("trend_long", "ETHUSDT", 90.0)], regime_bull=True)
     b = FakeBroker()
     assert live.cycle("paper", b, {}, {}, 0.005) is False and b.buys == []
+
+
+def test_signal_exit_and_one_expert_per_coin(env):
+    pos = {"ETHUSDT": Position("ETHUSDT", 1.0, 100.0, 90.0, 10.0, "x", stop_order_id="s", expert="xs_momentum")}
+    env["dec"] = Decision(bar_time=LAST + live.BAR, exits=["ETHUSDT"],
+                          entries=[("trend_long", "SOLUSDT", 90.0), ("xs_momentum", "SOLUSDT", 80.0)], regime_bull=True)
+    b = FakeBroker()
+    live.cycle("paper", b, {}, pos, 0.005)
+    assert b.sells == ["ETHUSDT"] and "ETHUSDT" not in pos
+    assert b.buys == ["SOLUSDT"] and pos["SOLUSDT"].expert == "trend_long" and pos["SOLUSDT"].stop == 90.0

@@ -1,7 +1,8 @@
-"""Live/paper execution of the configured strategy on Binance USDT-M perpetuals.
+"""Live/paper execution of the expert ensemble on Binance USDT-M perpetuals.
 
-The decision logic (`decide`) is a pure function of closed 4h bars + current positions, and is
-replayed against the backtest engine in tests (see tests/test_live.py) so live == backtest rules.
+Each cycle builds the MarketState from closed 4h bars; every configured expert requests it and
+only acts where its required state holds. `decide` is a pure function of bars + positions and is
+replayed against the backtest engine in tests (tests/test_live.py) so live == backtest rules.
 
 Modes:
   paper   : public market data only, simulated fills/stops, no keys needed (default)
@@ -24,8 +25,9 @@ import pandas as pd
 from . import config as C
 from .data import _get
 from .engine import Costs
+from .ensemble import configured_experts
+from .marketstate import build_state
 from .portfolio import MAJORS
-from .strategies import STRATEGIES, ema
 
 ROOT = Path(__file__).resolve().parent.parent
 STATE_DIR = ROOT / "live_state"
@@ -43,34 +45,47 @@ class Position:
     r_unit: float
     entry_time: str
     stop_order_id: str | None = None
+    expert: str = "trend_long"   # owner; one expert per coin (Binance one-way netting)
 
 
 @dataclass
 class Decision:
-    bar_time: pd.Timestamp                      # close time of the bar decided on
-    stop_moves: dict = field(default_factory=dict)   # symbol -> new stop
-    entries: list = field(default_factory=list)      # [(symbol, initial_stop)] in priority order
+    bar_time: pd.Timestamp                            # close time of the bar decided on
+    stop_moves: dict = field(default_factory=dict)    # symbol -> new stop
+    exits: list = field(default_factory=list)         # symbols to close at market (expert exit signal)
+    entries: list = field(default_factory=list)       # [(expert, symbol, initial_stop)] in priority order
     regime_bull: bool = False
+    state: dict = field(default_factory=dict)         # MarketState snapshot + which experts are active
 
 
 def decide(bars: dict[str, pd.DataFrame], positions: dict[str, Position]) -> Decision:
     """bars: CLOSED 4h bars per symbol, all ending at the same last bar."""
-    btc = bars["BTCUSDT"]
-    bull = bool(btc["close"].iloc[-1] > ema(btc["close"], C.REGIME_N).iloc[-1])
-    last = btc.index[-1]
-    d = Decision(bar_time=last + BAR, regime_bull=bull)
-    fn = STRATEGIES[C.STRATEGY]
-    for s in C.UNIVERSE:
-        df = bars.get(s)
-        if df is None or len(df) < 60 or df.index[-1] != last:
-            continue
-        sig = fn(df.iloc[-C.WARMUP_BARS:], **C.PARAMS)
-        if s in positions:
-            trail = sig.long_trail[-1]
-            if np.isfinite(trail) and trail > positions[s].stop:
-                d.stop_moves[s] = float(trail)
-        elif bull and sig.long_entry[-1] and np.isfinite(sig.long_stop[-1]):
-            d.entries.append((s, float(sig.long_stop[-1])))
+    last = bars["BTCUSDT"].index[-1]
+    live = {s: df for s, df in bars.items() if len(df) >= 60 and df.index[-1] == last}
+    ms = build_state(live, C.REGIME_N)
+    d = Decision(bar_time=last + BAR, regime_bull=bool(ms.btc_bull.iloc[-1]))
+    snap = ms.snapshot(last)
+    d.state = dict(btc_bull=snap["btc_bull"], breadth=snap["breadth"], btc_vol_pct=snap["btc_vol_pct"], experts={})
+    for ex in configured_experts():
+        active = []
+        for s in C.UNIVERSE:
+            if s not in live:
+                continue
+            st = ms.for_symbol(s)
+            sig = ex.signals(live[s], st)
+            if bool(ex.requires(st, **ex.req_params).fillna(False).iloc[-1]):
+                active.append(s)
+            p = positions.get(s)
+            if p is not None:
+                if p.expert != ex.name:
+                    continue
+                if sig.long_exit[-1]:
+                    d.exits.append(s)
+                elif np.isfinite(sig.long_trail[-1]) and sig.long_trail[-1] > p.stop:
+                    d.stop_moves[s] = float(sig.long_trail[-1])
+            elif sig.long_entry[-1] and np.isfinite(sig.long_stop[-1]):
+                d.entries.append((ex.name, s, float(sig.long_stop[-1])))
+        d.state["experts"][ex.name] = active  # coins where this expert's requested state holds
     return d
 
 
@@ -298,7 +313,15 @@ def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk
         except Exception as e:
             log({"event": "stop_move_failed", "symbol": s, "stop": new_stop, "kept": p.stop, "error": repr(e)})
         save_state(mode, account, positions)
-    for s, stop in dec.entries:
+    for s in dec.exits:
+        p = positions.pop(s)
+        exit_px = broker.sell(p, prices[s])
+        log({"event": "exit_signal", "symbol": s, "expert": p.expert, "exit": exit_px, "entry": p.entry,
+             "r": (exit_px - p.entry) * p.qty / p.r_unit})
+        save_state(mode, account, positions)
+    for expert, s, stop in dec.entries:
+        if s in positions:
+            continue  # coin already owned by a higher-priority expert
         if len(positions) >= C.MAX_POSITIONS:
             log({"event": "entry_skipped_full", "symbol": s})
             continue
@@ -313,10 +336,10 @@ def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk
         if not filled:
             log({"event": "entry_skipped_min_notional", "symbol": s, "qty": qty})
             continue
-        p = Position(s, filled, px, stop, filled * (px - stop), str(dec.bar_time))
+        p = Position(s, filled, px, stop, filled * (px - stop), str(dec.bar_time), expert=expert)
         positions[s] = p
         save_state(mode, account, positions)  # persist the fill before anything else can fail
-        log({"event": "entry", "symbol": s, "qty": filled, "price": px, "stop": stop, "equity": eq})
+        log({"event": "entry", "symbol": s, "expert": expert, "qty": filled, "price": px, "stop": stop, "equity": eq})
         try:
             p.stop_order_id = broker.place_stop(p, stop)
         except Exception as e:  # never hold an unprotected position: flatten it
@@ -328,7 +351,8 @@ def cycle(mode: str, broker, account: dict, positions: dict[str, Position], risk
     account["last_bar"] = str(dec.bar_time)
     eq = broker.equity(positions, prices)
     log({"event": "cycle", "bar": str(dec.bar_time), "regime_bull": dec.regime_bull, "equity": eq,
-         "open": {s: dict(qty=p.qty, entry=p.entry, stop=p.stop, upnl=p.qty * (prices[s] - p.entry))
+         "market_state": dec.state,
+         "open": {s: dict(expert=p.expert, qty=p.qty, entry=p.entry, stop=p.stop, upnl=p.qty * (prices[s] - p.entry))
                   for s, p in positions.items()}})
     save_state(mode, account, positions)
     return True

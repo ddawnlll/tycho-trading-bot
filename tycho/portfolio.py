@@ -1,7 +1,6 @@
 """Equal-capital sub-account portfolio: each symbol trades its own slice of capital independently."""
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 
 from .data import load, resample

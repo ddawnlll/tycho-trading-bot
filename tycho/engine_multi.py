@@ -35,9 +35,13 @@ def align(data: dict[str, pd.DataFrame], sigs: dict[str, Signals]):
 
 def run_multi(data: dict[str, pd.DataFrame], sigs: dict[str, Signals], rank: dict[str, np.ndarray] | None = None,
               risk: float = 0.005, max_lev_pos: float = 1.0, max_gross: float = 3.0, max_positions: int = 6,
-              costs: dict[str, Costs] | Costs = Costs(), equity0: float = 10_000.0) -> dict:
+              costs: dict[str, Costs] | Costs = Costs(), equity0: float = 10_000.0,
+              groups: dict[str, str] | None = None) -> dict:
+    """groups: column -> underlying symbol. At most one column per group may hold a position
+    (one expert per coin: Binance one-way mode nets positions per symbol)."""
     idx, syms, A, S = align(data, sigs)
     T, N = len(idx), len(syms)
+    gid = np.array([hash((groups or {}).get(s, s)) for s in syms])
     o, h, l, c, fund = A["open"], A["high"], A["low"], A["close"], A["funding"]
     R = np.zeros((T, N))
     if rank is not None:
@@ -90,6 +94,8 @@ def run_multi(data: dict[str, pd.DataFrame], sigs: dict[str, Signals], rank: dic
                 for _, j, side, stp in sorted(cand, key=lambda x: -x[0]):
                     if np.count_nonzero(qty) >= max_positions:
                         break
+                    if np.any(qty[gid == gid[j]] != 0):
+                        continue  # coin already held by another expert
                     px = o[i, j] * (1 + side * cst[j].slippage)
                     dist = side * (px - stp)
                     if dist <= 0:

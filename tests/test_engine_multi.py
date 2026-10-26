@@ -39,3 +39,14 @@ def test_caps_respected_and_rank_order():
     res2 = run_multi({"LO": d, "HI": d}, {"LO": sig, "HI": sig}, rank=rank, risk=0.05,
                      max_lev_pos=1.0, max_gross=1.0, max_positions=1)
     assert len(res2["trades"]) > 0 and set(res2["trades"].symbol) == {"HI"}
+
+
+def test_groups_allow_one_expert_per_coin():
+    d = _rand_df(800, 4)
+    sig = donchian(d, 10, 5, 2.0, allow_short=False)
+    res = run_multi({"A:X": d, "B:X": d}, {"A:X": sig, "B:X": sig}, groups={"A:X": "X", "B:X": "X"},
+                    risk=0.01, max_lev_pos=1.0, max_gross=5.0, max_positions=10)
+    assert len(res["trades"]) > 0 and set(res["trades"].symbol) == {"A:X"}  # B never co-holds X
+    free = run_multi({"A:X": d, "B:X": d}, {"A:X": sig, "B:X": sig},
+                     risk=0.01, max_lev_pos=1.0, max_gross=5.0, max_positions=10)
+    assert set(free["trades"].symbol) == {"A:X", "B:X"}
