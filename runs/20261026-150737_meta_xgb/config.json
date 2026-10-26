@@ -1,0 +1,36 @@
+{
+  "test_years": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "features": [
+    "ret_6",
+    "ret_24",
+    "ret_72",
+    "ret_180",
+    "atr_pct",
+    "atr_ratio",
+    "dist_ema21",
+    "dist_ema50",
+    "dist_ema200",
+    "slope_ema50",
+    "vol_z",
+    "funding_3d",
+    "range_pos_40",
+    "btc_ret_180",
+    "btc_dist_ema1200",
+    "rel_strength_180",
+    "hour"
+  ],
+  "label": "r>0",
+  "threshold": "median train proba",
+  "kw": {
+    "max_positions": 5,
+    "max_gross": 2.0,
+    "max_lev_pos": 1.0,
+    "risk": 0.005
+  }
+}

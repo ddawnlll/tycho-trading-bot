@@ -1,0 +1,18 @@
+{
+  "headline": "donchian rg1200: 120 sets, OOS Sharpe>0 in 100%, median OOS Sharpe 0.83, IS/OOS spearman -0.28; IS-pick OOS Sharpe 0.66 CAGR 21.2% DD -46.4%",
+  "is_pick": {
+    "entry_n": 30,
+    "exit_n": 40,
+    "stop_atr": 2.0,
+    "allow_short": false,
+    "is_cagr": 0.9984235911420634,
+    "is_dd": -0.4757627637958939,
+    "is_sharpe": 1.6231689310969901,
+    "oos_cagr": 0.21215253837590686,
+    "oos_dd": -0.4635251197267154,
+    "oos_sharpe": 0.6604936230599979,
+    "oos_trades": 535,
+    "oos_syms_pos": 10
+  },
+  "spearman": -0.2834919091603584
+}

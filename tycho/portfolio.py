@@ -27,14 +27,14 @@ def regime(btc: pd.DataFrame, n: int) -> tuple[pd.Series, pd.Series]:
 
 
 def backtest(data: dict, strategy: str, params: dict, start: str, end: str, risk: float, lev: float,
-             regime_n: int | None = None, capital: float = 10_000.0):
+             regime_n: int | None = None, capital: float = 10_000.0, signals: dict | None = None):
     per = capital / len(data)
     eqs, trades, per_sym = {}, [], {}
     bull = bear = None
     if regime_n:
         bull, bear = regime(data["BTCUSDT"], regime_n)
     for s, df in data.items():
-        sig = STRATEGIES[strategy](df, **params)
+        sig = signals[s] if signals is not None else STRATEGIES[strategy](df, **params)
         if regime_n:
             b = bull.reindex(df.index).fillna(False).to_numpy(bool)
             r = bear.reindex(df.index).fillna(False).to_numpy(bool)

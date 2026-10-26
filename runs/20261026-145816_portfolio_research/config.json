@@ -1,0 +1,88 @@
+{
+  "risk_total": 0.005,
+  "lev": 2.0,
+  "regimes": "0,1200",
+  "universe": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "BNBUSDT",
+    "XRPUSDT",
+    "DOGEUSDT",
+    "ADAUSDT",
+    "AVAXUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "DOTUSDT",
+    "TRXUSDT"
+  ],
+  "IS": [
+    "2020-01-01",
+    "2023-12-31 23:59"
+  ],
+  "OOS": [
+    "2024-01-01",
+    "2030-01-01"
+  ],
+  "variants": {
+    "tp_default": [
+      "trend_pullback",
+      {}
+    ],
+    "tp_btc_is_pick": [
+      "trend_pullback",
+      {
+        "slow": 100,
+        "hi_lookback": 40,
+        "max_pb_bars": 8,
+        "stop_atr": 1.0,
+        "trail_atr": 3.0,
+        "trail_n": 20,
+        "allow_short": false
+      }
+    ],
+    "tp_long": [
+      "trend_pullback",
+      {
+        "allow_short": false
+      }
+    ],
+    "donch_55_20": [
+      "donchian",
+      {
+        "entry_n": 55,
+        "exit_n": 20,
+        "stop_atr": 2.5
+      }
+    ],
+    "donch_55_20_long": [
+      "donchian",
+      {
+        "entry_n": 55,
+        "exit_n": 20,
+        "stop_atr": 2.5,
+        "allow_short": false
+      }
+    ],
+    "donch_btc_is_pick": [
+      "donchian",
+      {
+        "entry_n": 40,
+        "exit_n": 20,
+        "stop_atr": 1.5,
+        "allow_short": false
+      }
+    ],
+    "ma_50_200": [
+      "ma_trend",
+      {}
+    ],
+    "ma_50_200_long": [
+      "ma_trend",
+      {
+        "allow_short": false
+      }
+    ]
+  },
+  "sub_risk": 0.06
+}

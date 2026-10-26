@@ -1,3 +1,13 @@
 run,git,headline
 20261026-145242_trend_pullback_BTCUSDT_4h,uncommitted,trend_pullback BTCUSDT 4h: OOS CAGR 2.3% DD -6.5% Sharpe 0.44 vs B&H CAGR 0.0% DD 0.0%
 20261026-145251_donchian_BTCUSDT_4h,uncommitted,donchian BTCUSDT 4h: OOS CAGR 2.7% DD -20.6% Sharpe 0.27 vs B&H CAGR 0.0% DD 0.0%
+20261026-145816_portfolio_research,b05090c,IS-pick donch_btc_is_pick|rg1200: OOS CAGR 35.3% DD -27.5% Sharpe 1.01
+20261026-150112_portfolio_grid_donchian_rg1200,b05090c,"donchian rg1200: 120 sets, OOS Sharpe>0 in 100%, median OOS Sharpe 0.83, IS/OOS spearman -0.28; IS-pick OOS Sharpe 0.66 CAGR 21.2% DD -46.4%"
+20261026-150455_multi_research,b05090c,IS-pick pos5 gross3.0 risk0.01 rankFalse: OOS CAGR 28.7% DD -31.2% Sharpe 0.92 | basket B&H OOS CAGR 7.0% DD -61.0% Sharpe 0.38
+20261026-150540_validate_risk0.005,b05090c,"risk 0.005: full CAGR 27.7% DD -20.1% Sharpe 1.29; OOS base 16.2%, x3 costs 11.8%; P(losing year) 2%"
+20261026-150551_validate_risk0.01,b05090c,"risk 0.01: full CAGR 54.5% DD -36.6% Sharpe 1.34; OOS base 28.7%, x3 costs 19.3%; P(losing year) 2%"
+20261026-150618_validate_risk0.005,b05090c,"risk 0.005: full CAGR 27.7% DD -20.1% Sharpe 1.29; OOS base 16.2%, x3 costs 11.8%; P(losing year) 15%"
+20261026-150628_validate_risk0.01,b05090c,"risk 0.01: full CAGR 54.5% DD -36.6% Sharpe 1.34; OOS base 28.7%, x3 costs 19.3%; P(losing year) 17%"
+20261026-150641_validate_risk0.005,b05090c,"risk 0.005: full CAGR 27.7% DD -20.1% Sharpe 1.29; OOS base 16.2%, x3 costs 11.8%; P(losing year) 15%"
+20261026-150651_validate_risk0.01,b05090c,"risk 0.01: full CAGR 54.5% DD -36.6% Sharpe 1.34; OOS base 28.7%, x3 costs 19.3%; P(losing year) 17%"
+20261026-150737_meta_xgb,b05090c,XGB meta filter OOS(2024+) CAGR 11.1% DD -18.1% Sharpe 0.70 vs base 16.4% DD -18.8% Sharpe 0.92

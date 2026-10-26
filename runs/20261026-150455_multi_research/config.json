@@ -1,0 +1,41 @@
+{
+  "signal": [
+    "donchian",
+    {
+      "entry_n": 30,
+      "exit_n": 30,
+      "stop_atr": 3.0,
+      "allow_short": false
+    }
+  ],
+  "regime_n": 1200,
+  "grid": {
+    "max_positions": [
+      3,
+      5,
+      8,
+      12
+    ],
+    "max_gross": [
+      1.0,
+      2.0,
+      3.0
+    ],
+    "risk": [
+      0.005,
+      0.01
+    ],
+    "use_rank": [
+      true,
+      false
+    ]
+  },
+  "IS": [
+    "2020-01-01",
+    "2023-12-31 23:59"
+  ],
+  "OOS": [
+    "2024-01-01",
+    "2030-01-01"
+  ]
+}

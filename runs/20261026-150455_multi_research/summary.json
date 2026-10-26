@@ -1,0 +1,41 @@
+{
+  "headline": "IS-pick pos5 gross3.0 risk0.01 rankFalse: OOS CAGR 28.7% DD -31.2% Sharpe 0.92 | basket B&H OOS CAGR 7.0% DD -61.0% Sharpe 0.38",
+  "pick": {
+    "max_positions": 5,
+    "max_gross": 3.0,
+    "risk": 0.01,
+    "use_rank": false,
+    "is_cagr": 0.7537306535571613,
+    "is_max_dd": -0.36561303463114314,
+    "is_sharpe": 1.5871896249839283,
+    "is_mar": 2.0615530141521874,
+    "is_n_trades": 365,
+    "oos_cagr": 0.28683872551139666,
+    "oos_max_dd": -0.3123744630561347,
+    "oos_sharpe": 0.9239402109085735,
+    "oos_mar": 0.9182528005173419,
+    "oos_n_trades": 286
+  },
+  "basket_bh_is": {
+    "start": "2020-01-01",
+    "end": "2023-12-31",
+    "total_return": 9.759928158410387,
+    "cagr": 0.8118782954693182,
+    "max_dd": -0.8365862760180925,
+    "sharpe": 1.134997925106435,
+    "mar": 0.9704657113592908,
+    "n_trades": 0
+  },
+  "basket_bh_oos": {
+    "start": "2024-01-01",
+    "end": "2026-10-26",
+    "total_return": 0.21135554822209301,
+    "cagr": 0.07042880666839713,
+    "max_dd": -0.6101940035702138,
+    "sharpe": 0.37870629799832783,
+    "mar": 0.1154203519803895,
+    "n_trades": 0
+  },
+  "share_oos_sharpe_pos": 1.0,
+  "spearman_is_oos_mar": 0.13826086956521738
+}
