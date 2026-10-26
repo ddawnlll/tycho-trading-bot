@@ -1,0 +1,6 @@
+data/
+results/cache/
+project/.env
+project/storage/
+project/postgres-data/
+__pycache__/

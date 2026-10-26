@@ -1,0 +1,120 @@
+{
+  "name": "jesse_momentum_v2",
+  "created_utc": "2026-10-26",
+  "status": "PRE-REGISTERED before any backtest on market data (only a synthetic-candle speed probe was run)",
+  "economic_verdict": "NO_ECONOMIC_CLAIM",
+  "scope": "Research and simulation only. Jesse 3.5.3 (salehmir/jesse:3.5.3) is the research engine; Tycho/NautilusTrader stays the execution system. Nothing here changes Tycho's dependencies, frozen protocol (research/protocol.json), momentum v1 ledger or paper safety controls. No credentials, no orders, no activation.",
+  "known_contamination": [
+    "The author read docs/MOMENTUM_V1_RESULTS.md (Tycho v1) before writing this protocol: long-only alt breakouts degraded on holdout A, trend rules were not distinguishable from noise.",
+    "Binance USDT-M perpetual history 2020-01..2026-09 was used by Tycho v1 (12-coin dev universe and holdout A of 538 other perps). It is INSPECTED data: the walk-forward below is a historical diagnostic, never an untouched holdout.",
+    "Binance spot 2017-08..2019-12 for BTC ETH BNB XRP ADA LTC LINK TRX DOGE was Tycho v1 holdout B: INSPECTED, excluded from this holdout."
+  ],
+  "data": {
+    "source": "https://data.binance.vision public monthly archives (klines 1d and 1m, USDT-M fundingRate), sha256 CHECKSUM verified per file; symbol lists from the archive S3 listing (includes delisted symbols)",
+    "hard_cutoff_utc": "2026-10-01 00:00 (monthly archives up to 2026-09). The Tycho frozen prospective window (2026-10-26 20:00 UTC .. 2027-04-24 20:00 UTC) is never read.",
+    "gaps": "missing 1m rows are filled with flat zero-volume candles (Jesse needs contiguous 1m rows); every filled minute is counted in data/manifest.json",
+    "excluded_symbols": "stablecoins (USDC BUSD TUSD USDP FDUSD DAI EUR AEUR USDS PAX UST USTC USDE), index/composite contracts (BTCDOM DEFI FOOTBALL BLUEBIRD), dated futures (symbols with '_'), leveraged spot tokens (UP/DOWN/BULL/BEAR suffixes)"
+  },
+  "universe": {
+    "chunks": "calendar half-years (Jan 1 and Jul 1 00:00 UTC); membership fixed at chunk start",
+    "eligibility": "daily history >= 60 days before chunk start and a daily bar on the day before chunk start",
+    "rank": "median daily quote volume over the 60 days before chunk start; top 15",
+    "capital": "15 equal sub-accounts per chunk (empty slots hold cash), capital rebalanced equally at every chunk start; chunk ends at the half-year end or at the symbol's last archived minute (delisting), where any open position is closed at that minute's close"
+  },
+  "splits": {
+    "dev_walk_forward": {
+      "market": "Binance USDT-M perpetual futures",
+      "chunks": "2020-H1 .. 2026-H2 (2026-H2 ends 2026-09-30 23:59 UTC)",
+      "folds": "expanding window: for each test half-year from 2021-H1, pick the grid cell with the highest Sharpe of daily net portfolio returns on all earlier chunks (minimum 30 closed trades, else the cell with most trades); stitch the out-of-sample halves",
+      "classification": "HISTORICAL WALK-FORWARD DIAGNOSTIC on inspected data"
+    },
+    "final_holdout": {
+      "market": "Binance spot USDT pairs as a perpetual-price proxy (perps did not exist), excluding the nine Tycho holdout-B coins",
+      "chunks": "2018-H1 .. 2019-H2, warm-up from 2017-08",
+      "costs": "same fee/slippage rule; funding ASSUMED at the 0.01%/8h baseline (longs pay, shorts receive)",
+      "params": "the grid cell with the highest dev Sharpe over 2020-H1..2026-H2, frozen before the holdout is read",
+      "access": "read once, only for candidates that pass every walk-forward criterion; never used for tuning; marked INSPECTED afterwards",
+      "classification": "UNTOUCHED HOLDOUT (different instrument and era: weak but clean)"
+    }
+  },
+  "execution": {
+    "timeframe": "4h decisions on Jesse candles built from 1m; market orders at the decision bar close, stops on Jesse's intrabar simulation",
+    "taker_fee": 0.0005,
+    "slippage_per_side": "by chunk-start median daily quote volume: >= 1e9 USD 2 bp, >= 2e8 USD 5 bp, else 10 bp (passed to Jesse as part of the fee)",
+    "funding": "perps: actual Binance settlements; a position pays/receives when opened_at <= settlement < closed_at, amount = qty * 1m open at settlement * rate * side; deducted from sub-account equity after the Jesse run (Jesse has no funding model)",
+    "stress": "fee and slippage x3 (funding x1)",
+    "warmup_bars": 330,
+    "sizing_H1_H2": "risk 1% of sub-account equity per trade on the initial stop distance, notional capped at 1x sub-account equity",
+    "sizing_H3": "notional 1x sub-account equity per position"
+  },
+  "hypotheses": {
+    "H1_momentum_pullback": {
+      "claim": "In an established uptrend, a short-term RSI dip is followed by trend resumption that pays more than costs.",
+      "direction": "long only",
+      "entry": "flat and close > EMA300 and EMA50 > EMA300 and close/close[-180] - 1 > 0 and RSI14 < rsi_entry",
+      "exit": "stop at entry - stop_atr*ATR14; or RSI14 > 70; or close < EMA300; or 60 bars held",
+      "grid": {"rsi_entry": [35, 45], "stop_atr": [2.0, 3.0]}
+    },
+    "H2_breakout_continuation": {
+      "claim": "A volume-confirmed break of the n-bar high above the long trend continues far enough to pay costs.",
+      "direction": "long only",
+      "entry": "flat and close > max(high of the previous n bars) and volume > 1.5 * median(volume of previous 30 bars) and close > EMA300",
+      "exit": "chandelier stop = max(previous stop, highest close since entry - k*ATR14), initial stop close - k*ATR14",
+      "grid": {"n": [30, 90], "k": [3.0, 5.0]}
+    },
+    "H3_relative_strength": {
+      "claim": "Cross-sectional relative strength among liquid coins persists for a week: long the strongest k, short the weakest k earns a spread net of costs and funding.",
+      "direction": "long/short, dollar-balanced by construction (k longs, k shorts, equal notional)",
+      "rule": "every Monday 00:00 UTC rank chunk members with a valid score by close[-6]/close[-6-L] - 1; long the top k, short the bottom k, flat otherwise; needs >= 2k+1 scored coins",
+      "grid": {"L": [180, 300], "k": [3, 5]}
+    }
+  },
+  "baselines_run_first": [
+    "BTCUSDT perpetual buy and hold (1x, with funding), per chunk",
+    "equal-weight buy and hold of each chunk's 15 members (1x each sub-account, with funding)",
+    "each hypothesis rule itself is the non-ML baseline for the ML comparison",
+    "random-entry nulls (below)"
+  ],
+  "walk_forward_pass_criteria_all_required": {
+    "net_cagr_gt": 0,
+    "sharpe_ge": 0.5,
+    "max_dd_le": 0.30,
+    "closed_trades_ge": 100,
+    "stress_3x_cagr_gt": 0,
+    "block_bootstrap": "circular 30-day blocks, 2000 reps, seed 1729: 5th percentile of mean daily net return > 0",
+    "random_entry_null_p_le": 0.0167,
+    "null_definition": "H1/H2: same trade count and holding bars per symbol-chunk at random non-overlapping 4h entries, statistic = mean net close-to-close trade return (fee, slippage and funding applied); H3: scores permuted among eligible coins at each rebalance, statistic = Sharpe of the vectorized weekly long/short book. 1000 reps, seed 1729, p = (1 + #null >= observed)/(1 + reps); 0.0167 = 0.05/3 hypotheses",
+    "robustness_bounded": [
+      "at least 3 of 4 grid cells have positive net Sharpe over 2021-H1..2026-H2 at fixed parameters",
+      "one-bar delayed entry variant of the walk-forward choice: net CAGR > 0",
+      "dropping the symbol with the largest out-of-sample profit: net CAGR > 0",
+      "at least half of the out-of-sample calendar years 2021..2026 have net return >= 0"
+    ]
+  },
+  "ml": {
+    "model": "scikit-learn LogisticRegression(C=1.0, L2), features standardized on the training fold only",
+    "applies_to": "H1 and H2 (event signals); H3 is a ranking with few independent weekly observations and is excluded by rule",
+    "features_at_entry_bar_close": ["close/close[-180]-1", "close/close[-42]-1", "ATR14/close", "close/EMA300-1", "volume/median(volume of previous 30 bars)"],
+    "label": "trade net return after fee, slippage and funding > 0",
+    "training_rows": "trades of the walk-forward-selected cell from earlier chunks that closed at least 10 days before the test chunk starts (purge + embargo)",
+    "decision": "inside the Jesse strategy at each entry signal: enter only if predicted p >= the training-fold win rate",
+    "independence_gate": "fit only if the fold has >= 300 training trades, >= 150 distinct entry days and >= 60 trades in the minority class; the comparison is reported only if >= 6 test folds pass the gate, otherwise ML is SKIPPED_INSUFFICIENT_OBSERVATIONS",
+    "pass": "ML variant must meet every walk-forward criterion AND beat its non-ML rule on stitched out-of-sample Sharpe"
+  },
+  "holdout_pass_criteria_all_required": {
+    "net_return_gt": 0,
+    "sharpe_ge": 0.3,
+    "max_dd_le": 0.30,
+    "stress_3x_return_gt": 0,
+    "closed_trades_ge": 30
+  },
+  "compute_budget": {
+    "jesse_backtests_max": 20000,
+    "wall_clock_hours_max": 8,
+    "download_gb_max": 8,
+    "memory": "one Jesse backtest process at a time, container limit 1.5 GB"
+  },
+  "consequence_of_pass": "CANDIDATE_FOR_NEW_PREREGISTERED_PROSPECTIVE_PAPER_TRIAL, owner approval required; never auto-activated; real money stays disabled",
+  "consequence_of_fail": "REJECTED and kept in trials.jsonl; no re-tuning on the holdout; a changed idea needs a new pre-registration",
+  "amendments": []
+}
