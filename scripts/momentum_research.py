@@ -194,6 +194,79 @@ def stage_holdout():
     print("saved", d)
 
 
+# ------------------------------------------------------------------------------------------- nautilus
+def derived_filters(data: dict[str, pd.DataFrame]) -> dict[str, dict]:
+    """Tick/step for symbols missing from today's exchangeInfo (delisted): fine enough not to bind."""
+    from tycho import nautilus_bt as NB
+    known = NB.exchange_filters()
+    out = {}
+    for s, df in data.items():
+        if s in known:
+            out[s] = known[s]
+            continue
+        px = float(df["close"].median())
+        tick = 10.0 ** np.floor(np.log10(px) - 5)
+        step = 10.0 ** np.floor(np.log10(1.0 / px))  # ~<= 1 USDT per size increment
+        out[s] = dict(tick=f"{tick:.12f}".rstrip("0"), step=f"{max(step, 1e-8):.12f}".rstrip("0").rstrip(".") or "1")
+    return out
+
+
+def nautilus_confirm(name, cfg, data, start, end, tradable, slip_alt):
+    """Final params in NautilusTrader (fee+slippage as taker fee, funding simulated in the venue) vs
+    tycho with the identical cost representation on the same instrument-rounded bars.
+    Protocol: disagreement > 1% of final equity => INVALID."""
+    from tycho import nautilus_bt as NB
+    from tycho import nautilus_funding as NF
+    from tycho.engine import Costs
+    filt = derived_filters(data)
+    fee = {s: 0.0005 + (0.0002 if s in ("BTCUSDT", "ETHUSDT") else slip_alt) for s in data}
+    rounded = {s: NB.round_to_instrument(df, NB.make_instrument(s, filt[s])) for s, df in data.items()}
+    ms = build_state(rounded)
+    ex = make_expert(name, cfg["params"], cfg["req"])
+    cols, sigs, _, groups = build(rounded, [ex], ms, tradable=tradable)
+    d, sg = window(cols, sigs, start, end)
+    nt = NF.run({s: rounded[s] for s in tradable}, d, sg, start, end, filt, fee, **KW)
+    costs = {k: Costs(fee=fee[k.split(":")[1]], slippage=0.0) for k in d}
+    ty = run_multi(d, sg, costs=costs, groups=groups, **KW)
+    eq = nt["equity"]
+    gap = float(eq.iloc[-1] / ty["equity"].iloc[-1] - 1)
+    m = metrics(eq, pd.DataFrame())
+    lower, p = return_diagnostics(eq)
+    closed = int(nt["positions"]["ts_closed"].notna().sum()) if len(nt["positions"]) else 0
+    return dict(cagr=m["cagr"], total=m["total_return"], max_dd=-m["max_dd"], sharpe=m["sharpe"], closed_trades=closed,
+                funding_paid=nt["funding_paid"], bootstrap_lower=lower, null_p=p,
+                tycho_total=float(ty["equity"].iloc[-1] / ty["equity"].iloc[0] - 1), final_gap=gap,
+                valid=abs(gap) <= 0.01), eq
+
+
+def stage_nautilus(which: str):
+    wf = latest_wf()
+    if which == "dev":
+        data, start, end, slip_alt = load_dev(), "2021-01-01", str(DEV_END), 0.0005
+        tradable = list(data)
+    else:
+        protocol_committed()
+        data, start, end, slip_alt = load_holdout_perp(), "2021-01-01", "2026-09-30 20:00", 0.0010
+        tradable = [s for s in data if s != "BTCUSDT"]
+    rows, eqs = [], {}
+    for name in CANDIDATES:
+        res, eq = nautilus_confirm(name, wf[name]["final"], data, start, end, tradable, slip_alt)
+        rows.append(dict(expert=name, dataset=which, **res))
+        eqs[name] = eq.resample("1D").last()
+        append_trial(LEDGER, dict(event="nautilus_confirm", dataset=which, expert=name, final=wf[name]["final"],
+                                  classification="HISTORICAL_WALK_FORWARD" if which == "dev" else "UNTOUCHED_HOLDOUT",
+                                  **res))
+        print(json.dumps(rows[-1], default=str), flush=True)
+    d = runlog.new_run(f"momentum_nautilus_{which}")
+    runlog.save(d, dict(dataset=which, KW=KW), dict(headline="; ".join(
+        f"{r['expert']} NT total {r['total']:.1%} sh {r['sharpe']:.2f} gap {r['final_gap']:.2%}" for r in rows), results=rows),
+        {"equity_daily": pd.DataFrame(eqs)})
+    print("saved", d)
+
+
 if __name__ == "__main__":
     stage = sys.argv[1] if len(sys.argv) > 1 else "wf"
-    {"wf": stage_wf, "holdout": stage_holdout}[stage]()
+    if stage == "nautilus":
+        stage_nautilus(sys.argv[2] if len(sys.argv) > 2 else "dev")
+    else:
+        {"wf": stage_wf, "holdout": stage_holdout}[stage]()

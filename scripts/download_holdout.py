@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import io
 import re
+import time
 import sys
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
@@ -37,8 +38,15 @@ S = requests.Session()
 def s3_list(prefix: str) -> list[str]:
     out, marker = [], ""
     while True:
-        r = S.get(S3, params={"delimiter": "/", "prefix": prefix, "marker": marker}, timeout=60)
-        r.raise_for_status()
+        for attempt in range(5):
+            try:
+                r = S.get(S3, params={"delimiter": "/", "prefix": prefix, "marker": marker}, timeout=60)
+                r.raise_for_status()
+                break
+            except requests.RequestException:
+                if attempt == 4:
+                    raise
+                time.sleep(2 ** attempt)
         out += re.findall(r"<Prefix>([^<]+)</Prefix>", r.text)[1:] + re.findall(r"<Key>([^<]+)</Key>", r.text)
         m = re.search(r"<NextMarker>([^<]+)</NextMarker>", r.text)
         if "<IsTruncated>true</IsTruncated>" not in r.text or not m:
@@ -101,6 +109,13 @@ def months_of(keys: list[str]) -> list[str]:
 
 
 def perp_job(sym: str):
+    try:
+        return _perp_job(sym)
+    except Exception as e:  # logged and retried on the next invocation (cached symbols are skipped)
+        return sym, f"error {e!r}"
+
+
+def _perp_job(sym: str):
     path = OUT / "perp" / f"{sym}_4h.parquet"
     if path.exists():
         return sym, "cached"
@@ -137,7 +152,7 @@ def main():
         for sym, msg in ex.map(spot_job, SPOT):
             print("spot", sym, msg, flush=True)
     done = 0
-    with ThreadPoolExecutor(16) as ex:
+    with ThreadPoolExecutor(48) as ex:
         for sym, msg in ex.map(perp_job, perps):
             done += 1
             if done % 25 == 0 or "bars" not in msg:

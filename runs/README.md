@@ -19,3 +19,6 @@ and appends one line to `index.csv`. Runs are never deleted, including bad ones.
 - `20261026-153838_nautilus_crosscheck`: ran with the original Nautilus stop logic
   (`modify_order`), which Binance rejects for STOP_MARKET. Superseded by
   `20261026-160403_nautilus_crosscheck` (cancel/replace stops; per-trade exit + price checks).
+- `20261026-212815_momentum_nautilus_dev`: INVALID (tycho/Nautilus gaps 2–11%). Funding was an
+  after-the-fact overlay, so Nautilus kept sizing on pre-funding equity. Superseded by
+  `20261026-213424_momentum_nautilus_dev` (funding simulated inside the venue; all gaps <= 1%).
