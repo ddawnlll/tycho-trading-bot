@@ -18,3 +18,4 @@ run,git,headline
 20261026-155304_validate_risk0.005,4b0134c,"risk 0.005: full CAGR 26.2% DD -20.6% Sharpe 1.22; OOS base 16.6%, x3 costs 12.9%; P(losing year) 18%"
 20261026-155317_validate_risk0.005,4b0134c,"risk 0.005: full CAGR 26.2% DD -20.6% Sharpe 1.22; OOS base 16.6%, x3 costs 12.9%; P(losing year) 18%"
 20261026-160403_nautilus_crosscheck,96e410b,1_btc_trend: PASS trades 44/44 final eq gap 0.040% | 2_universe_trend: PASS trades 286/286 final eq gap -0.028% | 3_ensemble: PASS trades 252/252 final eq gap -0.028%
+20261026-212449_momentum_wf,d37dfd4,leader_breakout WF sh 0.58 cagr 8.9% dd 38.4% pass False; tsmom WF sh 0.72 cagr 23.6% dd 56.1% pass False; dual_momentum WF sh 0.74 cagr 6.2% dd 11.5% pass True; vol_expansion WF sh 0.55 cagr 6.4% dd 20.6% pass True; trend_long WF sh 1.14 cagr 21.9% dd 19.9% pass True

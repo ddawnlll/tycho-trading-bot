@@ -1,0 +1,17 @@
+{
+  "protocol": "momentum_protocol.json",
+  "KW": {
+    "risk": 0.005,
+    "max_positions": 5,
+    "max_gross": 2.0,
+    "max_lev_pos": 1.0
+  },
+  "years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ]
+}
