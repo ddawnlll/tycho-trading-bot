@@ -2,13 +2,34 @@
   "name": "momentum_candidates_v1",
   "created": "2026-10-27",
   "status": "PRE-REGISTERED before any backtest of these candidates",
-  "candidates": ["leader_breakout", "tsmom", "dual_momentum", "vol_expansion"],
-  "baselines": ["trend_long (current bot expert, fixed params)", "BTC spot buy-and-hold", "equal-weight dev basket buy-and-hold"],
+  "candidates": [
+    "leader_breakout",
+    "tsmom",
+    "dual_momentum",
+    "vol_expansion"
+  ],
+  "baselines": [
+    "trend_long (current bot expert, fixed params)",
+    "BTC spot buy-and-hold",
+    "equal-weight dev basket buy-and-hold"
+  ],
   "grids": "tycho/momentum.py GRIDS (4 cells per candidate, fixed before results)",
-  "sizing": {"risk_per_trade": 0.005, "max_positions": 5, "max_gross": 2.0, "max_lev_pos": 1.0},
-  "costs": {"taker_fee": 0.0005, "slippage_dev": {"BTC/ETH": 0.0002, "other": 0.0005},
-            "slippage_holdout_perp": 0.0010, "funding": "real Binance funding, longs pay positive",
-            "stress": "fees and slippage x3"},
+  "sizing": {
+    "risk_per_trade": 0.005,
+    "max_positions": 5,
+    "max_gross": 2.0,
+    "max_lev_pos": 1.0
+  },
+  "costs": {
+    "taker_fee": 0.0005,
+    "slippage_dev": {
+      "BTC/ETH": 0.0002,
+      "other": 0.0005
+    },
+    "slippage_holdout_perp": 0.001,
+    "funding": "real Binance funding, longs pay positive",
+    "stress": "fees and slippage x3"
+  },
   "frozen_prospective_window": "2026-10-26 20:00 UTC .. 2027-04-24 20:00 UTC (research/protocol.json): never read",
   "stages": {
     "walk_forward": {
@@ -28,13 +49,31 @@
     }
   },
   "pass_criteria": {
-    "walk_forward": {"net_cagr_gt": 0, "sharpe_ge": 0.5, "max_dd_le": 0.25, "trades_ge": 60, "stress_cagr_gt": 0},
-    "holdout_perp": {"net_cagr_gt": 0, "sharpe_ge": 0.4, "stress_return_gt": 0, "bootstrap_lower_gt": 0, "null_p_le": 0.01},
-    "holdout_spot_pre2020": {"net_return_gt": -0.10, "max_dd_le": 0.25},
+    "walk_forward": {
+      "net_cagr_gt": 0,
+      "sharpe_ge": 0.5,
+      "max_dd_le": 0.25,
+      "trades_ge": 60,
+      "stress_cagr_gt": 0
+    },
+    "holdout_perp": {
+      "net_cagr_gt": 0,
+      "sharpe_ge": 0.4,
+      "stress_return_gt": 0,
+      "bootstrap_lower_gt": 0,
+      "null_p_le": 0.01
+    },
+    "holdout_spot_pre2020": {
+      "net_return_gt": -0.1,
+      "max_dd_le": 0.25
+    },
     "all_required": true,
     "multiplicity": "5 strategies incl. incumbent; null p threshold 0.01 (evidence.return_diagnostics, 30-day blocks)"
   },
   "engine": "selection runs in tycho.engine_multi (Nautilus-parity tested); final numbers re-run in NautilusTrader with fee+slippage in the taker fee and a funding overlay; tycho vs Nautilus final equity must agree within 1% or the result is INVALID",
   "consequence_of_pass": "eligible for a NEW frozen prospective paper trial with owner approval; never auto-activated; real money stays disabled",
-  "consequence_of_fail": "rejected and recorded in research/momentum_trials.jsonl; no re-tuning on holdout data"
+  "consequence_of_fail": "rejected and recorded in research/momentum_trials.jsonl; no re-tuning on holdout data",
+  "amendments": [
+    "2026-10-27, before any backtest: momentum rank and breadth are recomputed among coins tradable at that time (liquidity gate + history), overriding MarketState's all-listed versions (tycho/momentum.pit_cross_section); costs scale fee and slippage together for the 3x stress"
+  ]
 }

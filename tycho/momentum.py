@@ -107,20 +107,37 @@ def liquid_mask(df: pd.DataFrame) -> pd.Series:
     return (daily_qvol.rolling(30 * DAY, min_periods=30 * DAY).median() >= MIN_QVOL_USD).fillna(False)
 
 
+def pit_cross_section(data: dict[str, pd.DataFrame], ms: MarketState, liquid: dict[str, pd.Series]):
+    """Momentum rank and breadth among coins that are tradable AT THAT TIME (no future-listed or
+    not-yet-liquid coins), overriding MarketState's all-listed versions. Causal."""
+    idx = ms.index
+    L = pd.DataFrame({s: liquid[s].reindex(idx).fillna(False) for s in data}).astype(bool)
+    ret30 = pd.DataFrame({s: np.log(df["close"] / df["close"].shift(30 * DAY)).reindex(idx) for s, df in data.items()})
+    rank = ret30.where(L).rank(axis=1, ascending=False)
+    above = pd.DataFrame({s: (df["close"] > ema(df["close"], 200)).astype(float).reindex(idx) for s, df in data.items()})
+    hist = pd.DataFrame({s: pd.Series(np.arange(1, len(df) + 1), index=df.index).reindex(idx) for s, df in data.items()})
+    breadth = above.where(L & (hist >= 1000)).mean(axis=1, skipna=True)
+    return rank, breadth
+
+
 def build(data: dict[str, pd.DataFrame], experts: list[Expert], ms: MarketState | None = None,
-          tradable: list[str] | None = None, slip_major=0.0002, slip_alt=0.0005, majors=("BTCUSDT", "ETHUSDT")):
-    """Like tycho.ensemble.build_columns, plus the point-in-time liquidity gate and a tradable list
-    (holdout: BTC drives the regime but is not traded)."""
+          tradable: list[str] | None = None, slip_major=0.0002, slip_alt=0.0005, majors=("BTCUSDT", "ETHUSDT"),
+          cost_mult: float = 1.0):
+    """Like tycho.ensemble.build_columns, plus point-in-time tradability (liquidity gate, rank and
+    breadth among currently tradable coins) and a tradable list (holdout: BTC sets the regime only)."""
     ms = ms or build_state(data)
     tradable = tradable or list(data)
+    liquid = {s: liquid_mask(df) for s, df in data.items()}
+    rank, breadth = pit_cross_section(data, ms, liquid)
     cols, sigs, costs, groups = {}, {}, {}, {}
     for ex in experts:
         for s in tradable:
             df = data[s]
-            st = ms.for_symbol(s).assign(liquid=liquid_mask(df))
+            st = ms.for_symbol(s).assign(liquid=liquid[s], mom_rank=rank[s].reindex(df.index),
+                                         breadth=breadth.reindex(df.index))
             key = f"{ex.name}:{s}"
             cols[key], sigs[key] = df, ex.signals(df, st)
-            costs[key] = Costs(slippage=slip_major if s in majors else slip_alt)
+            costs[key] = Costs(fee=0.0005 * cost_mult, slippage=(slip_major if s in majors else slip_alt) * cost_mult)
             groups[key] = s
     return cols, sigs, costs, groups
 
