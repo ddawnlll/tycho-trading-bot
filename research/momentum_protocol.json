@@ -1,0 +1,40 @@
+{
+  "name": "momentum_candidates_v1",
+  "created": "2026-10-27",
+  "status": "PRE-REGISTERED before any backtest of these candidates",
+  "candidates": ["leader_breakout", "tsmom", "dual_momentum", "vol_expansion"],
+  "baselines": ["trend_long (current bot expert, fixed params)", "BTC spot buy-and-hold", "equal-weight dev basket buy-and-hold"],
+  "grids": "tycho/momentum.py GRIDS (4 cells per candidate, fixed before results)",
+  "sizing": {"risk_per_trade": 0.005, "max_positions": 5, "max_gross": 2.0, "max_lev_pos": 1.0},
+  "costs": {"taker_fee": 0.0005, "slippage_dev": {"BTC/ETH": 0.0002, "other": 0.0005},
+            "slippage_holdout_perp": 0.0010, "funding": "real Binance funding, longs pay positive",
+            "stress": "fees and slippage x3"},
+  "frozen_prospective_window": "2026-10-26 20:00 UTC .. 2027-04-24 20:00 UTC (research/protocol.json): never read",
+  "stages": {
+    "walk_forward": {
+      "data": "12-coin dev universe, 2020-01-01 .. 2026-10-26 12:00 UTC (cached)",
+      "method": "expanding window, annual refit: for test year Y choose the grid cell with the highest Sharpe of daily net returns on all data before Y-01-01; OOS years 2021..2026 (2026 partial)",
+      "classification": "HISTORICAL WALK-FORWARD DIAGNOSTIC (dev data was used to design earlier experts)"
+    },
+    "final_params": "grid cell with highest Sharpe on the full dev period, fixed before holdouts",
+    "holdout_perp": {
+      "data": "every archived Binance USDT-M perpetual (delisted included) outside the dev universe with >=12 monthly files, 2021-01-01 .. 2026-09-30; BTC regime from dev BTC (not traded)",
+      "tradability": "point-in-time: 30-day median daily quote volume >= 20M USD and >= 200 bars of history",
+      "classification": "UNTOUCHED HOLDOUT (never used before this protocol)"
+    },
+    "holdout_spot_pre2020": {
+      "data": "Binance spot 4h, BTC ETH BNB XRP ADA LTC LINK TRX DOGE, trading 2018-01-01 .. 2019-12-31 (warmup from 2017-08), no funding",
+      "classification": "UNTOUCHED HOLDOUT (pre-perpetual era incl. 2018 bear market)"
+    }
+  },
+  "pass_criteria": {
+    "walk_forward": {"net_cagr_gt": 0, "sharpe_ge": 0.5, "max_dd_le": 0.25, "trades_ge": 60, "stress_cagr_gt": 0},
+    "holdout_perp": {"net_cagr_gt": 0, "sharpe_ge": 0.4, "stress_return_gt": 0, "bootstrap_lower_gt": 0, "null_p_le": 0.01},
+    "holdout_spot_pre2020": {"net_return_gt": -0.10, "max_dd_le": 0.25},
+    "all_required": true,
+    "multiplicity": "5 strategies incl. incumbent; null p threshold 0.01 (evidence.return_diagnostics, 30-day blocks)"
+  },
+  "engine": "selection runs in tycho.engine_multi (Nautilus-parity tested); final numbers re-run in NautilusTrader with fee+slippage in the taker fee and a funding overlay; tycho vs Nautilus final equity must agree within 1% or the result is INVALID",
+  "consequence_of_pass": "eligible for a NEW frozen prospective paper trial with owner approval; never auto-activated; real money stays disabled",
+  "consequence_of_fail": "rejected and recorded in research/momentum_trials.jsonl; no re-tuning on holdout data"
+}
