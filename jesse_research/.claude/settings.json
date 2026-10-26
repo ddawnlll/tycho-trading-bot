@@ -1,0 +1,21 @@
+{
+ "permissions": {
+  "deny": [
+   "mcp__jesse-mcp__store_exchange_api_key",
+   "mcp__jesse-mcp__get_exchange_api_keys",
+   "mcp__jesse-mcp__delete_exchange_api_key",
+   "mcp__jesse-mcp__store_data_provider_credentials",
+   "mcp__jesse-mcp__get_data_provider_credentials",
+   "mcp__jesse-mcp__delete_data_provider_credentials",
+   "mcp__jesse-mcp__validate_data_provider_credentials",
+   "mcp__jesse-mcp__create_live_draft",
+   "mcp__jesse-mcp__update_live_draft",
+   "mcp__jesse-mcp__copy_live_session",
+   "mcp__jesse-mcp__start_live_session",
+   "mcp__jesse-mcp__restart_live_session",
+   "mcp__jesse-mcp__stop_live_session",
+   "mcp__jesse-mcp__delete_live_session",
+   "mcp__jesse-mcp__update_config"
+  ]
+ }
+}

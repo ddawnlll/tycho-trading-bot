@@ -53,20 +53,47 @@
       "direction": "long only",
       "entry": "flat and close > EMA300 and EMA50 > EMA300 and close/close[-180] - 1 > 0 and RSI14 < rsi_entry",
       "exit": "stop at entry - stop_atr*ATR14; or RSI14 > 70; or close < EMA300; or 60 bars held",
-      "grid": {"rsi_entry": [35, 45], "stop_atr": [2.0, 3.0]}
+      "grid": {
+        "rsi_entry": [
+          35,
+          45
+        ],
+        "stop_atr": [
+          2.0,
+          3.0
+        ]
+      }
     },
     "H2_breakout_continuation": {
       "claim": "A volume-confirmed break of the n-bar high above the long trend continues far enough to pay costs.",
       "direction": "long only",
       "entry": "flat and close > max(high of the previous n bars) and volume > 1.5 * median(volume of previous 30 bars) and close > EMA300",
       "exit": "chandelier stop = max(previous stop, highest close since entry - k*ATR14), initial stop close - k*ATR14",
-      "grid": {"n": [30, 90], "k": [3.0, 5.0]}
+      "grid": {
+        "n": [
+          30,
+          90
+        ],
+        "k": [
+          3.0,
+          5.0
+        ]
+      }
     },
     "H3_relative_strength": {
       "claim": "Cross-sectional relative strength among liquid coins persists for a week: long the strongest k, short the weakest k earns a spread net of costs and funding.",
       "direction": "long/short, dollar-balanced by construction (k longs, k shorts, equal notional)",
       "rule": "every Monday 00:00 UTC rank chunk members with a valid score by close[-6]/close[-6-L] - 1; long the top k, short the bottom k, flat otherwise; needs >= 2k+1 scored coins",
-      "grid": {"L": [180, 300], "k": [3, 5]}
+      "grid": {
+        "L": [
+          180,
+          300
+        ],
+        "k": [
+          3,
+          5
+        ]
+      }
     }
   },
   "baselines_run_first": [
@@ -78,7 +105,7 @@
   "walk_forward_pass_criteria_all_required": {
     "net_cagr_gt": 0,
     "sharpe_ge": 0.5,
-    "max_dd_le": 0.30,
+    "max_dd_le": 0.3,
     "closed_trades_ge": 100,
     "stress_3x_cagr_gt": 0,
     "block_bootstrap": "circular 30-day blocks, 2000 reps, seed 1729: 5th percentile of mean daily net return > 0",
@@ -94,7 +121,13 @@
   "ml": {
     "model": "scikit-learn LogisticRegression(C=1.0, L2), features standardized on the training fold only",
     "applies_to": "H1 and H2 (event signals); H3 is a ranking with few independent weekly observations and is excluded by rule",
-    "features_at_entry_bar_close": ["close/close[-180]-1", "close/close[-42]-1", "ATR14/close", "close/EMA300-1", "volume/median(volume of previous 30 bars)"],
+    "features_at_entry_bar_close": [
+      "close/close[-180]-1",
+      "close/close[-42]-1",
+      "ATR14/close",
+      "close/EMA300-1",
+      "volume/median(volume of previous 30 bars)"
+    ],
     "label": "trade net return after fee, slippage and funding > 0",
     "training_rows": "trades of the walk-forward-selected cell from earlier chunks that closed at least 10 days before the test chunk starts (purge + embargo)",
     "decision": "inside the Jesse strategy at each entry signal: enter only if predicted p >= the training-fold win rate",
@@ -104,7 +137,7 @@
   "holdout_pass_criteria_all_required": {
     "net_return_gt": 0,
     "sharpe_ge": 0.3,
-    "max_dd_le": 0.30,
+    "max_dd_le": 0.3,
     "stress_3x_return_gt": 0,
     "closed_trades_ge": 30
   },
@@ -116,5 +149,9 @@
   },
   "consequence_of_pass": "CANDIDATE_FOR_NEW_PREREGISTERED_PROSPECTIVE_PAPER_TRIAL, owner approval required; never auto-activated; real money stays disabled",
   "consequence_of_fail": "REJECTED and kept in trials.jsonl; no re-tuning on the holdout; a changed idea needs a new pre-registration",
-  "amendments": []
+  "amendments": [
+    "2026-10-26, before any market-data backtest (implementation clarification, no results seen): Jesse computes non-sequential indicators on the last warm_up_candles (330) 4h candles, so EMA300/ATR14/RSI14 are evaluated on a fixed 330-bar window both inside the strategies and in the ML feature function.",
+    "2026-10-26, before any market-data backtest (implementation clarification): in Jesse a flip of an H3 position (long->short or short->long) closes at the rebalance bar and opens the new side on the next 4h close; entries from flat happen at the rebalance bar. The random-entry/permutation nulls and their observed statistics are computed on 4h close-to-close prices (vectorized), not on Jesse fills, so they test the signal rather than Jesse execution details.",
+    "2026-10-26, before any market-data backtest: walk-forward 'half_years_nonneg' is evaluated on calendar years of the stitched OOS series as written in robustness_bounded (at least half of years 2021..2026 with net return >= 0)."
+  ]
 }
