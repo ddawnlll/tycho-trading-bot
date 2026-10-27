@@ -24,6 +24,9 @@ from mv2_strategies import BAR_MS, STRATEGIES, features  # noqa: E402
 DATA, RES, REPO = Path("/data"), Path("/results"), Path("/repo")
 PRE = json.loads((REPO / "preregistration.json").read_text())
 UNI = json.loads((DATA / "universe.json").read_text()) if (DATA / "universe.json").exists() else {}
+CUTOFF_MS = 1_790_812_800_000  # 2026-10-01 00:00 UTC: last archived month is 2026-09 (Tycho frozen window untouched)
+for _c in UNI.get("perp", []):
+    _c["end_ms"] = min(_c["end_ms"], CUTOFF_MS)
 LEDGER = Path("/ledger/trials.jsonl")
 EX, TAKER, WARM, SLOTS, START = "Binance Perpetual Futures", 0.0005, 330, 15, 10_000.0
 DAY, MIN = 86_400_000, 60_000
