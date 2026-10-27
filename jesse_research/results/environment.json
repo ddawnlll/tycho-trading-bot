@@ -1,0 +1,10 @@
+{
+ "jesse_image": "salehmir/jesse@sha256:4c48ffdfa26f19de53c6c832a7e4bccd7f8e698e8fc59aded24aa99f03f2c092",
+ "jesse_version": "3.5.3 (Python 3.11.17 inside the image)",
+ "postgres_image_for_dashboard": "timescale/timescaledb@sha256:4c16bc1477e87128710e9846fd3f41aa961fce94a6f5d24c4825947ff706b8af",
+ "research_isolation": "./run.sh: docker --network none (bridge only for fetch_data.py), non-root uid, 1.5 GB memory cap, no host env/home; mounts only jesse_research/ (code read-only), data/, results/, trials.jsonl",
+ "mcp": "Jesse built-in MCP (Streamable HTTP) at http://127.0.0.1:9000/mcp, registered in Claude Code as 'jesse-mcp' (local scope, status Connected); tools/list returned 104 tools; list_project_files verified; get_live_sessions returned live_plugin_unavailable",
+ "mcp_safety": "dashboard container started with 'jesse run' only (no 'jesse install-live'), LICENSE_API_TOKEN empty, no exchange keys; port bound to 127.0.0.1; .claude/settings.json denies the MCP key/credential/live-session/config tools; the dashboard was stopped during batch runs to free memory",
+ "tycho_untouched": "no file under tycho/, scripts/, tests/, research/, pyproject.toml or the paper bot changed; work lives in jesse_research/ on branch research/jesse-momentum-v2",
+ "host": "Debian 13, 2 vCPU, 7.6 GB RAM (about 1 GB free), Docker 26.1.5"
+}

@@ -1,0 +1,7 @@
+[
+ "fetch run 1 stopped by the author after universe membership showed TradFi perps (XAU, XAG, CL, SNDK, MU); amendment recorded, fetch re-run (cached files reused). 1m files of the excluded symbols were downloaded but are never loaded.",
+ "dev run 1 crashed at 2021-H1 XRPUSDT: an H3 1x short slot reached negative equity and Jesse rejected the next order (InsufficientMargin, value -1926 USD). Fix committed before resuming: a slot with equity <= 0 opens nothing new (its loss stays in the portfolio). Runs cached before the crash were unaffected by the change.",
+ "Data: 1m archives absent for LUNAUSDT 2022-06 (delisted 2022-05), BCCUSDT 2018-12 (delisted), BCHABCUSDT 2019-12; funding archive absent for LUNAUSDT 2022-06.",
+ "Data: 2020-H1 perp chunk empty (archives start 2020-01, 60-day history rule); spot 2018-H1 empty, 2018-H2 has 3 eligible coins.",
+ "dev run 2 crashed at 2024-H1 TRBUSDT: after the Dec-2023 squeeze close - k*ATR14 was negative, an invalid Jesse stop price. Rule added before any result was inspected: no entry without a placeable protective stop (stop > 0). Earlier cached runs never hit this path."
+]

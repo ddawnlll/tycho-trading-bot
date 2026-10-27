@@ -56,6 +56,10 @@ class _Base(Strategy):
         """Candles the signal is evaluated on: one bar old for the delayed-entry robustness test."""
         return self.candles[:-1] if self.hp["delay"] else self.candles
 
+    def _stop_valid(self, mult):
+        """No entry without a placeable protective stop (ATR so large that the stop would be <= 0)."""
+        return self.price - mult * ta.atr(self.candles, 14) > 0
+
     def should_short(self):
         return False
 
@@ -79,7 +83,8 @@ class H1Pullback(_Base):
         close = c[-1, 2]
         ema300 = ta.ema(c, 300)
         return (close > ema300 and ta.ema(c, 50) > ema300 and close / c[-181, 2] - 1 > 0
-                and ta.rsi(c, 14) < self.hp["rsi_entry"] and model_allows(self.MODEL, c))
+                and ta.rsi(c, 14) < self.hp["rsi_entry"] and self._stop_valid(self.hp["stop_atr"])
+                and model_allows(self.MODEL, c))
 
     def go_long(self):
         stop = self.price - self.hp["stop_atr"] * ta.atr(self.candles, 14)
@@ -107,7 +112,7 @@ class H2Breakout(_Base):
         if self.done or len(c) < 331:
             return False
         return (c[-1, 2] > c[-n - 1:-1, 3].max() and c[-1, 5] > 1.5 * np.median(c[-31:-1, 5])
-                and c[-1, 2] > ta.ema(c, 300) and model_allows(self.MODEL, c))
+                and c[-1, 2] > ta.ema(c, 300) and self._stop_valid(self.hp["k"]) and model_allows(self.MODEL, c))
 
     def go_long(self):
         stop = self.price - self.hp["k"] * ta.atr(self.candles, 14)
