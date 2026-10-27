@@ -142,7 +142,7 @@ def run_one(hyp, params, variant, market, ch, mem, d, schedule=None, model=None)
            "futures_leverage_mode": "cross", "exchange": EX, "warm_up_candles": WARM}
     js = sym[:-4] + "-USDT"
     key = jh.key(EX, js)
-    hp = {"stop_at": float(d["stop_at"]), "delay": int(variant == "delay"), **params}
+    hp = {"stop_at": float(d["stop_at"]), "delay": int(variant.endswith("delay")), **params}
     t = time.time()
     r = backtest(cfg, [{"exchange": EX, "strategy": S, "symbol": js, "timeframe": "4h"}], [],
                  {key: {"exchange": EX, "symbol": js, "candles": d["trade"]}},
@@ -198,7 +198,7 @@ def h3_schedules(market, ch, bars, L, k):
     return {s: (np.array(mondays, float), np.array(v, float)) for s, v in sides.items()}, mondays
 
 
-def run_market(market, chunk_names, configs):
+def run_market(market, chunk_names, configs, model=None):
     """Run every (hyp, params, variant) config on every member of the given chunks."""
     for ch in [c for c in UNI[market] if c["chunk"] in chunk_names]:
         bars = {}
@@ -223,7 +223,7 @@ def run_market(market, chunk_names, configs):
             d = chunk_data(market, ch, mem)
             for hyp, params, variant in configs:
                 s = sched[ckey(params)][mem["symbol"]] if hyp == "H3" else None
-                run_one(hyp, params, variant, market, ch, mem, d, schedule=s)
+                run_one(hyp, params, variant, market, ch, mem, d, schedule=s, model=model)
             print(f"{market} {ch['chunk']} {mem['symbol']} done (runs this process: {RUNS['n']})", flush=True)
             if RUNS["n"] > PRE["compute_budget"]["jesse_backtests_max"]:
                 raise SystemExit("compute budget exhausted")
@@ -314,7 +314,7 @@ def bar_funding(market, sym, b, ch):
     return close_ts, f
 
 
-def event_null(market, chunk_names, pick, reps=1000, seed=1729):
+def event_null(market, chunk_names, pick, reps=1000, seed=1729, variant="base"):
     rng = np.random.default_rng(seed)
     obs, null = [], np.zeros(reps)
     n_tr = 0
@@ -323,7 +323,7 @@ def event_null(market, chunk_names, pick, reps=1000, seed=1729):
             continue
         hyp, params = pick(ch["chunk"])
         for mem in ch["members"]:
-            r = load_run(market, ch["chunk"], mem["symbol"], hyp, params, "base")
+            r = load_run(market, ch["chunk"], mem["symbol"], hyp, params, variant)
             if r is None or not r["trades"]:
                 continue
             b = np.load(RES / "bars" / market / ch["chunk"] / f"{mem['symbol']}.npy")
@@ -516,8 +516,39 @@ def trade_rows(market, chunk, hyp, params, variant="base"):
     return rows
 
 
-def stage_ml():
+def fold_model(hyp, p, name, names):
+    """Purged/embargoed LR fit for one test chunk; (model or None, gate info)."""
     from sklearn.linear_model import LogisticRegression
+    ch = next(c for c in UNI["perp"] if c["chunk"] == name)
+    train = [row for prev in names if prev < name for row in trade_rows("perp", prev, hyp, p)
+             if row[3] <= ch["start_ms"] - 10 * DAY]
+    y = np.array([r[1] for r in train])
+    days = len({int(r[2] // DAY) for r in train})
+    minority = int(min(y.sum(), len(y) - y.sum())) if len(y) else 0
+    info = {"train_trades": len(train), "distinct_entry_days": days, "minority": minority,
+            "gate": len(train) >= 300 and days >= 150 and minority >= 60}
+    if not info["gate"]:
+        return None, info
+    X = np.array([r[0] for r in train])
+    mu, sd = X.mean(0), X.std(0) + 1e-12
+    lr = LogisticRegression(C=1.0).fit((X - mu) / sd, y)
+    model = {"mean": mu, "std": sd, "coef": lr.coef_[0], "intercept": float(lr.intercept_[0]), "thr": float(y.mean())}
+    info["model"] = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in model.items()}
+    return model, info
+
+
+def run_with_model(hyp, p, name, model, variants):
+    ch = next(c for c in UNI["perp"] if c["chunk"] == name)
+    for variant in variants:
+        for mem in ch["members"]:
+            if (RES / "cache" / "perp" / name / mem["symbol"] / f"{hyp}_{ckey(p)}_{variant}.json").exists():
+                continue
+            d = chunk_data("perp", ch, mem)
+            if d is not None:
+                run_one(hyp, p, variant, "perp", ch, mem, d, model=model)
+
+
+def stage_ml():
     dev = json.loads((RES / "dev_analysis.json").read_text())
     names = dev["chunks"]
     out = {}
@@ -526,31 +557,9 @@ def stage_ml():
         folds = {}
         for name in dev["oos_chunks"]:
             p = picks[name]["params"]
-            ch = next(c for c in UNI["perp"] if c["chunk"] == name)
-            train = [row for prev in names if prev < name for row in trade_rows("perp", prev, hyp, p)
-                     if row[3] <= ch["start_ms"] - 10 * DAY]
-            y = np.array([r[1] for r in train])
-            days = len({int(r[2] // DAY) for r in train})
-            minority = int(min(y.sum(), len(y) - y.sum())) if len(y) else 0
-            ok = len(train) >= 300 and days >= 150 and minority >= 60
-            folds[name] = {"train_trades": len(train), "distinct_entry_days": days, "minority": minority, "gate": ok}
-            if not ok:
-                continue
-            X = np.array([r[0] for r in train])
-            mu, sd = X.mean(0), X.std(0) + 1e-12
-            lr = LogisticRegression(C=1.0).fit((X - mu) / sd, y)
-            model = {"mean": mu, "std": sd, "coef": lr.coef_[0], "intercept": float(lr.intercept_[0]), "thr": float(y.mean())}
-            folds[name]["model"] = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in model.items()}
-            for variant in ("ml", "ml_stress"):
-                for mem in ch["members"]:
-                    d = None
-                    path = RES / "cache" / "perp" / name / mem["symbol"] / f"{hyp}_{ckey(p)}_{variant}.json"
-                    if path.exists():
-                        continue
-                    d = chunk_data("perp", ch, mem)
-                    if d is None:
-                        continue
-                    run_one(hyp, p, variant, "perp", ch, mem, d, model=model)
+            model, folds[name] = fold_model(hyp, p, name, names)
+            if model is not None:
+                run_with_model(hyp, p, name, model, ("ml", "ml_stress"))
         n_ok = sum(f["gate"] for f in folds.values())
         res = {"folds": folds, "folds_passing_gate": n_ok}
         if n_ok < 6:
@@ -581,13 +590,67 @@ def stage_ml():
     (RES / "ml.json").write_text(json.dumps(out, indent=1, default=float))
 
 
+def stage_mlcheck():
+    """Remaining walk-forward criteria (null, bounded robustness, years) for ML variants that beat their rule."""
+    dev = json.loads((RES / "dev_analysis.json").read_text())
+    ml = json.loads((RES / "ml.json").read_text())
+    names = dev["chunks"]
+    crit = PRE["walk_forward_pass_criteria_all_required"]
+    for hyp in ("H1", "H2"):
+        v = ml[hyp]
+        if v["verdict"] != "PASS_ML_COMPARISON":
+            continue
+        okn, picks = v["chunks"], dev["walk_forward"][hyp]["picks"]
+        pick = lambda c, picks=picks, hyp=hyp: (hyp, picks[c]["params"])  # noqa: E731
+        for name in okn:
+            model, _ = fold_model(hyp, picks[name]["params"], name, names)
+            run_with_model(hyp, picks[name]["params"], name, model, ("ml_delay",))
+        cell_sharpe = {}
+        for p in cells(hyp):  # each fixed cell with its own fold models, on the chunks where its gate passes
+            ok = []
+            for name in okn:
+                model, info = fold_model(hyp, p, name, names)
+                if model is not None:
+                    run_with_model(hyp, p, name, model, ("ml",))
+                    ok.append(name)
+            cell_sharpe[ckey(p)] = {"chunks": ok, "sharpe": metrics(*stitched("perp", ok, lambda _c, p=p: (hyp, p), "ml")[1:])["sharpe"] if ok else None}
+        g, r, runs = stitched("perp", okn, pick, "ml")
+        base = metrics(r, runs, g)
+        delay = metrics(*stitched("perp", okn, pick, "ml_delay")[1:], None)
+        prof = {}
+        for run in runs:
+            prof[run["symbol"]] = prof.get(run["symbol"], 0.0) + sum(t["pnl"] - t["funding"] for t in run["trades"])
+        best_sym = max(prof, key=prof.get)
+        dropped = metrics(*stitched("perp", okn, pick, "ml", drop=(best_sym,))[1:], None)
+        null = event_null("perp", okn, pick, variant="ml")
+        pos = sum(1 for c in cell_sharpe.values() if c["sharpe"] is not None and c["sharpe"] > 0)
+        yrs = base["by_year"]
+        checks = {**v["checks"],
+                  "null_p_le_0.0167": null["p"] <= crit["random_entry_null_p_le"],
+                  "cells_positive_ge_3of4": pos >= 3,
+                  "delay_cagr_gt_0": delay["cagr"] > 0,
+                  "drop_best_symbol_cagr_gt_0": dropped["cagr"] > 0,
+                  "half_years_nonneg": sum(x >= 0 for x in yrs.values()) >= len(yrs) / 2}
+        verdict = "PASS_WALK_FORWARD_ML" if all(checks.values()) else "REJECT"
+        v["full_walk_forward"] = {"null": null, "cells": cell_sharpe, "positive_cells": pos, "delayed_entry": delay,
+                                  "drop_best_symbol": {"symbol": best_sym, **dropped}, "checks": checks, "verdict": verdict}
+        v["verdict"] = verdict
+        v["note"] = "all preregistered walk-forward criteria evaluated for the ML variant (stage mlcheck)"
+        ledger({"stage": "ml_full_walk_forward", "hyp": hyp, "null_p": null["p"], "positive_cells": pos,
+                "delay_cagr": delay["cagr"], "drop_best": [best_sym, dropped["cagr"]], "checks": checks, "verdict": verdict})
+        print(hyp, verdict, checks, flush=True)
+    (RES / "ml.json").write_text(json.dumps(ml, indent=1, default=float))
+
+
 def stage_holdout():
     marker = RES / "holdout.json"
     if marker.exists():
         raise SystemExit("holdout already read once; refusing to re-run (preregistration)")
     dev = json.loads((RES / "dev_analysis.json").read_text())
-    survivors = [h for h, v in dev["walk_forward"].items() if v["verdict"] == "PASS_WALK_FORWARD"]
-    out = {"survivors": survivors, "results": {}}
+    ml = json.loads((RES / "ml.json").read_text())
+    survivors = [(h, False) for h, v in dev["walk_forward"].items() if v["verdict"] == "PASS_WALK_FORWARD"]
+    survivors += [(h, True) for h in ("H1", "H2") if ml.get(h, {}).get("verdict") == "PASS_WALK_FORWARD_ML"]
+    out = {"survivors": [f"{h}{'+LR' if m else ''}" for h, m in survivors], "results": {}}
     if not survivors:
         out["note"] = "No candidate passed walk-forward; the holdout was NOT read and stays untouched."
         marker.write_text(json.dumps(out, indent=1))
@@ -595,22 +658,35 @@ def stage_holdout():
         return
     names = [c["chunk"] for c in UNI["spot"]]
     crit = PRE["holdout_pass_criteria_all_required"]
-    for hyp in survivors:
+    for hyp, use_ml in survivors:
+        label = hyp + ("+LR" if use_ml else "")
         full = max(cells(hyp), key=lambda p: metrics(*stitched("perp", dev["chunks"], lambda _c: (hyp, p))[1:])["sharpe"])
-        ledger({"stage": "holdout_params_frozen", "hyp": hyp, "params": full})
-        run_market("spot", names, [(hyp, full, "base"), (hyp, full, "stress")])
-        g, r, runs = stitched("spot", names, lambda _c: (hyp, full))
+        model, info = None, None
+        if use_ml:  # fit on every dev trade of the frozen cell (no embargo needed: the holdout is 2018-19)
+            from sklearn.linear_model import LogisticRegression
+            rows = [row for n in dev["chunks"] for row in trade_rows("perp", n, hyp, full)]
+            X, y = np.array([r[0] for r in rows]), np.array([r[1] for r in rows])
+            mu, sd = X.mean(0), X.std(0) + 1e-12
+            lr = LogisticRegression(C=1.0).fit((X - mu) / sd, y)
+            model = {"mean": mu, "std": sd, "coef": lr.coef_[0], "intercept": float(lr.intercept_[0]), "thr": float(y.mean())}
+            info = {"train_trades": len(rows), **{k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in model.items()}}
+        variants = ("ml", "ml_stress") if use_ml else ("base", "stress")
+        ledger({"stage": "holdout_params_frozen", "hyp": label, "params": full, "model": info})
+        run_market("spot", names, [(hyp, full, v) for v in variants], model=model)
+        g, r, runs = stitched("spot", names, lambda _c: (hyp, full), variants[0])
         m = metrics(r, runs, g)
-        s = metrics(*stitched("spot", names, lambda _c: (hyp, full), "stress")[1:], None)
+        st = metrics(*stitched("spot", names, lambda _c: (hyp, full), variants[1])[1:], None)
         checks = {"net_return_gt_0": m["net_return"] > crit["net_return_gt"], "sharpe_ge_0.3": m["sharpe"] >= crit["sharpe_ge"],
-                  "max_dd_le_0.30": m["max_dd"] <= crit["max_dd_le"], "stress_return_gt_0": s["net_return"] > 0,
+                  "max_dd_le_0.30": m["max_dd"] <= crit["max_dd_le"], "stress_return_gt_0": st["net_return"] > 0,
                   "trades_ge_30": m["trades"] >= crit["closed_trades_ge"]}
         v = "CANDIDATE_FOR_NEW_PREREGISTERED_PROSPECTIVE_PAPER_TRIAL" if all(checks.values()) else "REJECT"
-        out["results"][hyp] = {"params": full, "holdout": m, "stress_3x": s, "checks": checks, "verdict": v}
-        ledger({"stage": "holdout", "hyp": hyp, "params": full, "metrics": {k: m[k] for k in ("net_return", "sharpe", "max_dd", "trades")},
-                "checks": checks, "verdict": v})
+        out["results"][label] = {"params": full, "model": info, "holdout": m, "stress_3x": st, "checks": checks, "verdict": v}
+        ledger({"stage": "holdout", "hyp": label, "params": full,
+                "metrics": {k: m[k] for k in ("net_return", "sharpe", "max_dd", "trades")}, "checks": checks, "verdict": v})
+        print(label, v, checks, flush=True)
     marker.write_text(json.dumps(out, indent=1, default=float))
 
 
 if __name__ == "__main__":
-    {"dev": stage_dev, "analyze": stage_analyze, "ml": stage_ml, "holdout": stage_holdout}[sys.argv[1]]()
+    {"dev": stage_dev, "analyze": stage_analyze, "ml": stage_ml, "mlcheck": stage_mlcheck,
+     "holdout": stage_holdout}[sys.argv[1]]()
