@@ -1,0 +1,2 @@
+H2 PASS_WALK_FORWARD_ML {'net_cagr_gt_0': True, 'sharpe_ge_0.5': True, 'max_dd_le_0.30': True, 'trades_ge_100': True, 'stress_3x_cagr_gt_0': True, 'bootstrap_q05_gt_0': True, 'beats_rule_sharpe': True, 'null_p_le_0.0167': True, 'cells_positive_ge_3of4': True, 'delay_cagr_gt_0': True, 'drop_best_symbol_cagr_gt_0': True, 'half_years_nonneg': True}
+EXIT 0

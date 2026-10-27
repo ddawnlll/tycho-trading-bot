@@ -690,8 +690,115 @@
    "bootstrap_q05_gt_0": true,
    "beats_rule_sharpe": true
   },
-  "verdict": "PASS_ML_COMPARISON",
-  "note": "random-entry null and bounded robustness were not re-run for the ML variant; a PASS here would still need them before any holdout use"
+  "verdict": "PASS_WALK_FORWARD_ML",
+  "note": "all preregistered walk-forward criteria evaluated for the ML variant (stage mlcheck)",
+  "full_walk_forward": {
+   "null": {
+    "observed_mean_trade_return": 0.03560043207423162,
+    "null_mean": 0.009185047544408149,
+    "null_q95": 0.020880527834280693,
+    "p": 0.000999000999000999,
+    "trades": 386
+   },
+   "cells": {
+    "n30_k3.0": {
+     "chunks": [
+      "2022-H1",
+      "2023-H1",
+      "2023-H2",
+      "2024-H1",
+      "2024-H2",
+      "2025-H1",
+      "2025-H2",
+      "2026-H1",
+      "2026-H2"
+     ],
+     "sharpe": 0.6776573732842981
+    },
+    "n30_k5.0": {
+     "chunks": [
+      "2022-H1",
+      "2023-H1",
+      "2023-H2",
+      "2024-H1",
+      "2024-H2",
+      "2025-H1",
+      "2025-H2",
+      "2026-H1",
+      "2026-H2"
+     ],
+     "sharpe": 0.7385053883522954
+    },
+    "n90_k3.0": {
+     "chunks": [
+      "2022-H1",
+      "2023-H1",
+      "2023-H2",
+      "2024-H1",
+      "2024-H2",
+      "2025-H1",
+      "2025-H2",
+      "2026-H1",
+      "2026-H2"
+     ],
+     "sharpe": 0.5260005973572709
+    },
+    "n90_k5.0": {
+     "chunks": [
+      "2023-H1",
+      "2023-H2",
+      "2024-H1",
+      "2024-H2",
+      "2025-H1",
+      "2025-H2",
+      "2026-H1",
+      "2026-H2"
+     ],
+     "sharpe": 0.9385132517154501
+    }
+   },
+   "positive_cells": 4,
+   "delayed_entry": {
+    "days": 1550,
+    "net_return": 0.0849728454884191,
+    "cagr": 0.019390477452994492,
+    "sharpe": 0.8099205195403926,
+    "max_dd": 0.025081920163645077,
+    "trades": 385,
+    "win_rate": 0.38441558441558443,
+    "fees_usd": 747.3429273676072,
+    "funding_usd": 1134.0265610174808,
+    "filled_minutes": 36000
+   },
+   "drop_best_symbol": {
+    "symbol": "XRPUSDT",
+    "days": 1550,
+    "net_return": 0.06543209128821181,
+    "cagr": 0.01503700555786014,
+    "sharpe": 0.6623606159638892,
+    "max_dd": 0.023602137794631717,
+    "trades": 356,
+    "win_rate": 0.38202247191011235,
+    "fees_usd": 714.1058168174245,
+    "funding_usd": 1042.522146737158,
+    "filled_minutes": 28800
+   },
+   "checks": {
+    "net_cagr_gt_0": true,
+    "sharpe_ge_0.5": true,
+    "max_dd_le_0.30": true,
+    "trades_ge_100": true,
+    "stress_3x_cagr_gt_0": true,
+    "bootstrap_q05_gt_0": true,
+    "beats_rule_sharpe": true,
+    "null_p_le_0.0167": true,
+    "cells_positive_ge_3of4": true,
+    "delay_cagr_gt_0": true,
+    "drop_best_symbol_cagr_gt_0": true,
+    "half_years_nonneg": true
+   },
+   "verdict": "PASS_WALK_FORWARD_ML"
+  }
  },
  "H3": {
   "verdict": "EXCLUDED_BY_PREREGISTRATION"
