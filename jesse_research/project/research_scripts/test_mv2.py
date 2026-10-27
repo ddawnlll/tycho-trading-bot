@@ -68,6 +68,11 @@ def test_all():
     assert t["opened_at"] < T0 + 8 * 3_600_000 < t["closed_at"] <= ch["end_ms"]
     assert np.isclose(t["funding"], t["qty"] * full[full[:, 0] == T0 + 8 * 3_600_000, 1][0] * 0.001)
     assert np.isclose(res["equity"][-1][1], res["finishing_balance"] - t["funding"])
+    # ML features must be finite outside a backtest (Jesse's default indicator window is 240 < 300)
+    from mv2_strategies import features
+    long4h = synth_1m(400, T0)
+    long4h[:, 0] = T0 + BAR_MS * np.arange(400)
+    assert np.isfinite(features(long4h)).all(), features(long4h)
     print("test_mv2: all checks passed")
 
 

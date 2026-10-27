@@ -21,8 +21,8 @@ def features(c: np.ndarray) -> np.ndarray:
     return np.array([
         close / c[-181, 2] - 1,
         close / c[-43, 2] - 1,
-        ta.atr(w, 14) / close,
-        close / ta.ema(w, 300) - 1,
+        ta.atr(w, 14, sequential=True)[-1] / close,  # sequential: no re-slicing to the global default (240)
+        close / ta.ema(w, 300, sequential=True)[-1] - 1,
         c[-1, 5] / max(np.median(c[-31:-1, 5]), 1e-12),
     ])
 
