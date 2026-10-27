@@ -4,3 +4,6 @@ project/.env
 project/storage/
 project/postgres-data/
 __pycache__/
+project/AGENTS.md
+results_fetch.log
+results/bars/

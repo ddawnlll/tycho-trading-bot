@@ -66,8 +66,11 @@ def s3_list(prefix):
         marker = m.group(1)
 
 
+NON_COIN = set()  # perps whose exchangeInfo underlyingType != COIN (TradFi), filled in main()
+
+
 def tradable(sym, market):
-    if not sym.endswith("USDT") or "_" in sym:
+    if not sym.endswith("USDT") or "_" in sym or (market == "perp" and sym in NON_COIN):
         return False
     base = sym[:-4]
     if base in STABLE or base in INDEX:
@@ -145,7 +148,7 @@ def daily_job(args):
 
 def universe(root, market):
     first, last = MARKETS[market][3:]
-    daily = {p.stem: np.load(p) for p in sorted((root / "daily" / market).glob("*.npy"))}
+    daily = {p.stem: np.load(p) for p in sorted((root / "daily" / market).glob("*.npy")) if tradable(p.stem, market)}
     out = []
     for name, start, end in chunks(first, last):
         t0 = ms(start)
@@ -217,6 +220,8 @@ def funding_job(args):
 
 def main(root):
     root = Path(root)
+    info = json.loads((root / "exchange_info_20261026.json").read_text())
+    NON_COIN.update(s["symbol"] for s in info["symbols"] if s.get("underlyingType") != "COIN")
     mpath = root / "manifest_raw.json"
     manifest = json.loads(mpath.read_text()) if mpath.exists() else {}
     listing = {}
@@ -231,6 +236,8 @@ def main(root):
                     print("daily", market, i, sym, msg, flush=True)
         mpath.write_text(json.dumps(manifest))
     uni = {m: universe(root, m) for m in MARKETS}
+    for c in uni["perp"]:
+        assert not {x["symbol"] for x in c["members"]} & NON_COIN
     (root / "universe.json").write_text(json.dumps(uni, indent=1))
     jobs, fjobs = set(), set()
     for market, (_, first, last, *_ ) in MARKETS.items():
