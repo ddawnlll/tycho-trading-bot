@@ -1,0 +1,66 @@
+perp 2020-H2 BTCUSDT done (runs this process: 37)
+perp 2020-H2 ETHUSDT done (runs this process: 74)
+perp 2020-H2 BCHUSDT done (runs this process: 111)
+perp 2020-H2 LINKUSDT done (runs this process: 148)
+perp 2020-H2 ADAUSDT done (runs this process: 185)
+perp 2020-H2 XTZUSDT done (runs this process: 222)
+perp 2020-H2 EOSUSDT done (runs this process: 259)
+perp 2020-H2 XRPUSDT done (runs this process: 296)
+perp 2020-H2 LTCUSDT done (runs this process: 333)
+perp 2020-H2 ETCUSDT done (runs this process: 370)
+perp 2020-H2 VETUSDT done (runs this process: 407)
+perp 2020-H2 BNBUSDT done (runs this process: 444)
+perp 2020-H2 TRXUSDT done (runs this process: 481)
+perp 2020-H2 XLMUSDT done (runs this process: 518)
+perp 2020-H2 IOSTUSDT done (runs this process: 555)
+perp 2021-H1 BTCUSDT done (runs this process: 592)
+perp 2021-H1 ETHUSDT done (runs this process: 629)
+Traceback (most recent call last):
+  File "/work/research_scripts/mv2_run.py", line 616, in <module>
+    {"dev": stage_dev, "analyze": stage_analyze, "ml": stage_ml, "holdout": stage_holdout}[sys.argv[1]]()
+  File "/work/research_scripts/mv2_run.py", line 418, in stage_dev
+    run_market("perp", names, dev_configs())
+  File "/work/research_scripts/mv2_run.py", line 226, in run_market
+    run_one(hyp, params, variant, market, ch, mem, d, schedule=s)
+  File "/work/research_scripts/mv2_run.py", line 147, in run_one
+    r = backtest(cfg, [{"exchange": EX, "strategy": S, "symbol": js, "timeframe": "4h"}], [],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/research/backtest.py", line 104, in backtest
+    return _isolated_backtest(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/research/backtest.py", line 162, in _isolated_backtest
+    return _execute_isolated_backtest(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/research/backtest.py", line 251, in _execute_isolated_backtest
+    backtest_result = simulator(
+                      ^^^^^^^^^^
+  File "/jesse-docker/jesse/modes/backtest_mode.py", line 550, in simulator
+    return _skip_simulator(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/modes/backtest_mode.py", line 1905, in _skip_simulator
+    _execute_routes(i, candles_step)
+  File "/jesse-docker/jesse/modes/backtest_mode.py", line 2249, in _execute_routes
+    r.strategy._execute()
+  File "/jesse-docker/jesse/strategies/Strategy.py", line 1360, in _execute
+    self._check()
+  File "/jesse-docker/jesse/strategies/Strategy.py", line 1170, in _check
+    self._execute_short()
+  File "/jesse-docker/jesse/strategies/Strategy.py", line 734, in _execute_short
+    self._submit_sell_orders()
+  File "/jesse-docker/jesse/strategies/Strategy.py", line 699, in _submit_sell_orders
+    self.broker.sell_at_market(o[0])
+  File "/jesse-docker/jesse/services/broker.py", line 31, in sell_at_market
+    return self.api.market_order(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/services/api.py", line 57, in market_order
+    return self.drivers[exchange].market_order(symbol, qty, current_price, side, reduce_only)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/exchanges/sandbox/Sandbox.py", line 16, in market_order
+    return order_service.create_order({
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/jesse-docker/jesse/services/order_service.py", line 44, in create_order
+    e.on_order_submission(order)
+  File "/jesse-docker/jesse/models/FuturesExchange.py", line 120, in on_order_submission
+    raise InsufficientMargin(
+jesse.exceptions.InsufficientMargin: Cannot submit an order with a value of $-1926 when your available margin is $-1926. Consider increasing leverage number from the settings or reducing the order size.
+EXIT 1

@@ -48,7 +48,8 @@ class _Base(Strategy):
 
     @property
     def done(self):
-        return self.decision_ts >= self.hp["stop_at"]
+        # a slot whose equity is <= 0 opens nothing new; its loss stays in the portfolio sum
+        return self.decision_ts >= self.hp["stop_at"] or self.balance <= 0
 
     @property
     def sig(self):
