@@ -7,6 +7,10 @@ dependencies = ["nautilus_trader==1.231.0", "numpy>=2,<3", "pandas>=2.2,<4", "py
 
 [project.optional-dependencies]
 test = ["pytest>=8", "pyflakes>=3"]
+# v2 research statistics (tycho/v2/): Hansen SPA and Romano-Wolf step-down tests come
+# from arch; scipy provides the normal quantiles used by the deflated Sharpe ratio.
+v2 = ["arch>=8,<9", "scipy>=1.11,<2"]
+v2-test = ["statsmodels>=0.14,<1"]
 legacy = ["ccxt", "xgboost", "scikit-learn"]
 
 [tool.pytest.ini_options]
