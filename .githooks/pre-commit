@@ -1,0 +1,4 @@
+#!/bin/sh
+# Blocks commits that touch files frozen by the v1 prospective protocol.
+# Enable once per clone:  git config core.hooksPath .githooks
+exec python3 scripts/check_frozen.py --staged
